@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'MainWindow.ui'
+# Form implementation generated from reading ui file 'main_window_qt.ui'
 #
 # Created: Sun Oct 16 20:00:34 2016
 #      by: pyside-uic 0.2.15 running on PySide 1.2.4
@@ -204,7 +204,7 @@ class Ui_sourceConnectMainWindow(object):
 
     def retranslateUi(self, sourceConnectMainWindow):
         sourceConnectMainWindow.setWindowTitle(QtGui.QApplication.translate("sourceConnectMainWindow", "SourceConnect", None, QtGui.QApplication.UnicodeUTF8))
-        self.sourceContentBox.setTitle(QtGui.QApplication.translate("sourceConnectMainWindow", "Source Contents", None, QtGui.QApplication.UnicodeUTF8))
+        self.sourceContentBox.setTitle(QtGui.QApplication.translate("sourceConnectMainWindow", "source Contents", None, QtGui.QApplication.UnicodeUTF8))
         self.sourceContentLineEdit.setPlaceholderText(QtGui.QApplication.translate("sourceConnectMainWindow", "Type source content name here and press search", None, QtGui.QApplication.UnicodeUTF8))
         self.sourceContentSearchButton.setText(QtGui.QApplication.translate("sourceConnectMainWindow", "Search", None, QtGui.QApplication.UnicodeUTF8))
         self.tagBox.setTitle(QtGui.QApplication.translate("sourceConnectMainWindow", "Tags", None, QtGui.QApplication.UnicodeUTF8))
@@ -213,9 +213,9 @@ class Ui_sourceConnectMainWindow(object):
         self.sourcesBox.setTitle(QtGui.QApplication.translate("sourceConnectMainWindow", "Sources", None, QtGui.QApplication.UnicodeUTF8))
         self.sourceLineEdit.setPlaceholderText(QtGui.QApplication.translate("sourceConnectMainWindow", "Type source name here and press search", None, QtGui.QApplication.UnicodeUTF8))
         self.sourcesSearchButton.setText(QtGui.QApplication.translate("sourceConnectMainWindow", "Search", None, QtGui.QApplication.UnicodeUTF8))
-        self.SourceSummaryBox.setTitle(QtGui.QApplication.translate("sourceConnectMainWindow", "Source Summary", None, QtGui.QApplication.UnicodeUTF8))
+        self.SourceSummaryBox.setTitle(QtGui.QApplication.translate("sourceConnectMainWindow", "source Summary", None, QtGui.QApplication.UnicodeUTF8))
         self.fileMenu.setTitle(QtGui.QApplication.translate("sourceConnectMainWindow", "File", None, QtGui.QApplication.UnicodeUTF8))
         self.helpMenu.setTitle(QtGui.QApplication.translate("sourceConnectMainWindow", "Help", None, QtGui.QApplication.UnicodeUTF8))
         self.addTagAction.setText(QtGui.QApplication.translate("sourceConnectMainWindow", "Add Tag", None, QtGui.QApplication.UnicodeUTF8))
-        self.addSourceAction.setText(QtGui.QApplication.translate("sourceConnectMainWindow", "Add Source", None, QtGui.QApplication.UnicodeUTF8))
+        self.addSourceAction.setText(QtGui.QApplication.translate("sourceConnectMainWindow", "Add source", None, QtGui.QApplication.UnicodeUTF8))
 

@@ -10,13 +10,14 @@ class Source(object):
         self.images = [] # array of strings of image names
         self.pdfs = [] # array of strings of pdf names
 
+    def addTag(self, tag):
+        self.tags.append(tag)
 
     def getContentList(self):
         # returns list of tuples: file name, file absolute path
-        path = self.location.replace('\\', '/')
+        path = self.location.replace('\\', '\\\\')
         contents = []
         for dirPath, subDirs, files in os.walk(path):
-            print dirPath
             for f in files:
                 contents.append((f, dirPath + f))
             return contents
