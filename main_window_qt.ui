@@ -289,11 +289,14 @@
     </property>
     <addaction name="addTagAction"/>
     <addaction name="addSourceAction"/>
+    <addaction name="actionLoad_Database"/>
+    <addaction name="actionSave_Changes"/>
    </widget>
    <widget class="QMenu" name="helpMenu">
     <property name="title">
      <string>Help</string>
     </property>
+    <addaction name="actionDocumentation"/>
    </widget>
    <addaction name="fileMenu"/>
    <addaction name="helpMenu"/>
@@ -307,6 +310,21 @@
   <action name="addSourceAction">
    <property name="text">
     <string>Add Source</string>
+   </property>
+  </action>
+  <action name="actionLoad_Database">
+   <property name="text">
+    <string>Load Database</string>
+   </property>
+  </action>
+  <action name="actionSave_Changes">
+   <property name="text">
+    <string>Save Changes</string>
+   </property>
+  </action>
+  <action name="actionDocumentation">
+   <property name="text">
+    <string>Documentation</string>
    </property>
   </action>
  </widget>
