@@ -11,9 +11,21 @@ class MainAppWindow(QMainWindow, main_window_qt.Ui_sourceConnectMainWindow):
         self.item = QListWidgetItem("hey there mr billy!")
         self.databaseName = None
         self.database = None
+        self.tagListWidget.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        self.sourcesList.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.connect(self.sourceContentSearchButton, SIGNAL('clicked()'), self.updateSourceContentList)
         self.connect(self.actionLoad_Database, SIGNAL('triggered()'), self.loadDatabase)
+        self.connect(self.tagListWidget, SIGNAL('itemSelectionChanged()'), self.updateSourcesList)
+        #self.connect(self.tagListWidget, SIGNAL('selectionChanged()'), self.updateSourcesList)
+        #self.connect(self.tagListWidget, SIGNAL('currentItemChanged()'), self.updateSourcesList)
+        self.connect(self.tagSearchButton, SIGNAL('clicked()'), self.tagListWidget.clearSelection)
+        self.connect(self.sourcesSearchButton, SIGNAL('clicked()'), self.sourcesList.clear)
 
+
+    def findTag(self, tagName):
+        for tag in self.database.tags:
+            if tagName == tag.name:
+                return tag
 
     def updateSourceContentList(self):
         self.sourceContentList.clear()
@@ -30,13 +42,30 @@ class MainAppWindow(QMainWindow, main_window_qt.Ui_sourceConnectMainWindow):
     def updateSourcesList(self):
         self.sourcesList.clear()
         sourceName = self.sourceLineEdit.text()
+        selectedTagListItems = self.tagListWidget.selectedItems()
+        print selectedTagListItems
+        print "here"
         if (sourceName == None or sourceName == "") and self.database != None:
-            for i in xrange(len(self.database.sources)):
-                self.sourcesList.addItem(QListWidgetItem(self.database.sources[i].title))
-        elif self.database != None:
-            for i in xrange(len(self.database.sources)):
-                if self.database.sources[i].title == sourceName:
+            for selectedTagListItem in selectedTagListItems:
+                selectedTagName = selectedTagListItem.text()
+                print selectedTagName
+                tag = self.findTag(selectedTagName)
+                for s in tag.sources:
+                    self.sourcesList.addItem(QListWidgetItem(s.title))
+            if not selectedTagListItems:
+                for i in xrange(len(self.database.sources)):
                     self.sourcesList.addItem(QListWidgetItem(self.database.sources[i].title))
+        elif self.database:
+            for selectedTagListItem in selectedTagListItems:
+                selectedTagName = selectedTagListItem.text()
+                tag = self.findTag(selectedTagName)
+                for s in tag.sources:
+                    if s.title == sourceName:
+                        self.sourcesList.addItem(QListWidgetItem(s.title))
+            if not selectedTagListItems:
+                for i in xrange(len(self.database.sources)):
+                    if self.database.sources[i].title == sourceName:
+                        self.sourcesList.addItem(QListWidgetItem(self.database.sources[i].title))
 
     def updateTagsList(self):
         self.tagListWidget.clear()
