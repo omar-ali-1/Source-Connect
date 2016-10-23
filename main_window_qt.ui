@@ -59,12 +59,18 @@
              </font>
             </property>
             <property name="placeholderText">
-             <string>Type source content name here and press search</string>
+             <string>Search contents of selected source</string>
             </property>
            </widget>
           </item>
           <item row="1" column="0" colspan="3">
-           <widget class="QListWidget" name="sourceContentList"/>
+           <widget class="QListWidget" name="sourceContentList">
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
+           </widget>
           </item>
           <item row="0" column="1">
            <widget class="QPushButton" name="sourceContentSearchButton">
@@ -119,7 +125,7 @@
           <bool>false</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_8">
-          <item row="0" column="0">
+          <item row="0" column="1">
            <widget class="QLineEdit" name="tagLineEdit">
             <property name="font">
              <font>
@@ -131,11 +137,11 @@
              </font>
             </property>
             <property name="placeholderText">
-             <string>Type tag name here and press search</string>
+             <string>Search tags</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
+          <item row="0" column="2">
            <widget class="QPushButton" name="tagSearchButton">
             <property name="font">
              <font>
@@ -150,8 +156,44 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="0" colspan="2">
-           <widget class="QListWidget" name="tagListWidget"/>
+          <item row="0" column="0">
+           <widget class="QPushButton" name="superTagButton">
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+              <weight>50</weight>
+              <bold>false</bold>
+              <underline>false</underline>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>All tags for which selections are subtags</string>
+            </property>
+            <property name="statusTip">
+             <string/>
+            </property>
+            <property name="text">
+             <string>← Super-tags</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="3">
+           <widget class="QListWidget" name="tagListWidget">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Select to view sources. Double-click to view sub-tags.</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -192,7 +234,13 @@
          </property>
          <layout class="QGridLayout" name="gridLayout_7">
           <item row="1" column="0" colspan="3">
-           <widget class="QListWidget" name="sourcesList"/>
+           <widget class="QListWidget" name="sourcesList">
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
+           </widget>
           </item>
           <item row="0" column="0">
            <widget class="QLineEdit" name="sourceLineEdit">
@@ -206,7 +254,7 @@
              </font>
             </property>
             <property name="placeholderText">
-             <string>Type source name here and press search</string>
+             <string>Search Sources</string>
             </property>
            </widget>
           </item>
@@ -264,7 +312,15 @@
          </property>
          <layout class="QGridLayout" name="gridLayout_6">
           <item row="0" column="0">
-           <widget class="QTextBrowser" name="sourceTextBrowser"/>
+           <widget class="QTextBrowser" name="sourceTextBrowser">
+            <property name="font">
+             <font>
+              <weight>50</weight>
+              <bold>false</bold>
+              <underline>false</underline>
+             </font>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -289,8 +345,11 @@
     </property>
     <addaction name="addTagAction"/>
     <addaction name="addSourceAction"/>
-    <addaction name="actionLoad_Database"/>
-    <addaction name="actionSave_Changes"/>
+    <addaction name="separator"/>
+    <addaction name="newDatabaseAction"/>
+    <addaction name="loadDatabaseAction"/>
+    <addaction name="saveToDatabaseAction"/>
+    <addaction name="saveAsNewDatabaseAction"/>
    </widget>
    <widget class="QMenu" name="helpMenu">
     <property name="title">
@@ -306,25 +365,62 @@
    <property name="text">
     <string>Add Tag</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+T</string>
+   </property>
   </action>
   <action name="addSourceAction">
    <property name="text">
     <string>Add Source</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
   </action>
-  <action name="actionLoad_Database">
+  <action name="loadDatabaseAction">
    <property name="text">
     <string>Load Database</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
   </action>
-  <action name="actionSave_Changes">
+  <action name="saveToDatabaseAction">
    <property name="text">
-    <string>Save Changes</string>
+    <string>Save to Current Database</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+S</string>
+   </property>
+   <property name="softKeyRole">
+    <enum>QAction::SelectSoftKey</enum>
+   </property>
+   <property name="priority">
+    <enum>QAction::NormalPriority</enum>
    </property>
   </action>
   <action name="actionDocumentation">
    <property name="text">
     <string>Documentation</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+D</string>
+   </property>
+  </action>
+  <action name="newDatabaseAction">
+   <property name="text">
+    <string>New Database</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
+  </action>
+  <action name="saveAsNewDatabaseAction">
+   <property name="text">
+    <string>Save as New Database</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+N</string>
    </property>
   </action>
  </widget>
