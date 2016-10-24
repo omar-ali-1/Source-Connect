@@ -93,7 +93,7 @@ sg29
 sbasg31
 S'2'
 sg32
-S'Artificial Intelligence Lecture'
+S'Artificial Intelligence Lecture - Chomsky'
 p46
 sbag1
 (g10

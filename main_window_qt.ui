@@ -52,7 +52,7 @@
             <property name="font">
              <font>
               <family>MS Shell Dlg 2</family>
-              <pointsize>10</pointsize>
+              <pointsize>11</pointsize>
               <weight>50</weight>
               <bold>false</bold>
               <underline>false</underline>
@@ -67,8 +67,11 @@
            <widget class="QListWidget" name="sourceContentList">
             <property name="font">
              <font>
-              <pointsize>10</pointsize>
+              <pointsize>12</pointsize>
              </font>
+            </property>
+            <property name="toolTip">
+             <string>Double click content item to open it</string>
             </property>
            </widget>
           </item>
@@ -76,7 +79,7 @@
            <widget class="QPushButton" name="sourceContentSearchButton">
             <property name="font">
              <font>
-              <pointsize>10</pointsize>
+              <pointsize>11</pointsize>
               <weight>50</weight>
               <bold>false</bold>
               <underline>false</underline>
@@ -125,12 +128,12 @@
           <bool>false</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_8">
-          <item row="0" column="1">
+          <item row="0" column="2">
            <widget class="QLineEdit" name="tagLineEdit">
             <property name="font">
              <font>
               <family>MS Shell Dlg 2</family>
-              <pointsize>10</pointsize>
+              <pointsize>11</pointsize>
               <weight>50</weight>
               <bold>false</bold>
               <underline>false</underline>
@@ -141,8 +144,26 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="2">
+          <item row="0" column="3">
            <widget class="QPushButton" name="tagSearchButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>45</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>40</width>
+              <height>16777215</height>
+             </size>
+            </property>
             <property name="font">
              <font>
               <pointsize>10</pointsize>
@@ -158,6 +179,24 @@
           </item>
           <item row="0" column="0">
            <widget class="QPushButton" name="superTagButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>45</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>45</width>
+              <height>16777215</height>
+             </size>
+            </property>
             <property name="font">
              <font>
               <pointsize>10</pointsize>
@@ -167,17 +206,89 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>All tags for which selections are subtags</string>
+             <string>Supertags of selected tags (all tags for which selections are subtags)</string>
             </property>
             <property name="statusTip">
              <string/>
             </property>
             <property name="text">
-             <string>← Super-tags</string>
+             <string> Sup ↑</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="0" colspan="3">
+          <item row="0" column="1">
+           <widget class="QPushButton" name="subTagButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>45</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>45</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+              <weight>50</weight>
+              <bold>false</bold>
+              <underline>false</underline>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Subtags of selected tags (all tags for which selections are supertags)</string>
+            </property>
+            <property name="statusTip">
+             <string/>
+            </property>
+            <property name="text">
+             <string>↓ Sub</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="4">
+           <widget class="QPushButton" name="tagSearchButton_2">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>45</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>40</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+              <weight>50</weight>
+              <bold>false</bold>
+              <underline>false</underline>
+             </font>
+            </property>
+            <property name="text">
+             <string>Clear</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="5">
            <widget class="QListWidget" name="tagListWidget">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -187,11 +298,11 @@
             </property>
             <property name="font">
              <font>
-              <pointsize>10</pointsize>
+              <pointsize>12</pointsize>
              </font>
             </property>
             <property name="toolTip">
-             <string>Select to view sources. Double-click to view sub-tags.</string>
+             <string>Select one or more tags to view their associated sources. Double-click a tag to view its sub-tags.</string>
             </property>
            </widget>
           </item>
@@ -237,8 +348,11 @@
            <widget class="QListWidget" name="sourcesList">
             <property name="font">
              <font>
-              <pointsize>10</pointsize>
+              <pointsize>12</pointsize>
              </font>
+            </property>
+            <property name="toolTip">
+             <string>Select one or more sources to view their contents</string>
             </property>
            </widget>
           </item>
@@ -247,7 +361,7 @@
             <property name="font">
              <font>
               <family>MS Shell Dlg 2</family>
-              <pointsize>10</pointsize>
+              <pointsize>11</pointsize>
               <weight>50</weight>
               <bold>false</bold>
               <underline>false</underline>
@@ -262,7 +376,7 @@
            <widget class="QPushButton" name="sourcesSearchButton">
             <property name="font">
              <font>
-              <pointsize>10</pointsize>
+              <pointsize>11</pointsize>
               <weight>50</weight>
               <bold>false</bold>
               <underline>false</underline>
@@ -315,6 +429,7 @@
            <widget class="QTextBrowser" name="sourceTextBrowser">
             <property name="font">
              <font>
+              <pointsize>15</pointsize>
               <weight>50</weight>
               <bold>false</bold>
               <underline>false</underline>
@@ -424,6 +539,21 @@
    </property>
   </action>
  </widget>
+ <tabstops>
+  <tabstop>tagLineEdit</tabstop>
+  <tabstop>sourceLineEdit</tabstop>
+  <tabstop>sourceContentLineEdit</tabstop>
+  <tabstop>sourceContentList</tabstop>
+  <tabstop>superTagButton</tabstop>
+  <tabstop>tagListWidget</tabstop>
+  <tabstop>sourcesList</tabstop>
+  <tabstop>tagSearchButton</tabstop>
+  <tabstop>sourcesSearchButton</tabstop>
+  <tabstop>sourceTextBrowser</tabstop>
+  <tabstop>subTagButton</tabstop>
+  <tabstop>tagSearchButton_2</tabstop>
+  <tabstop>sourceContentSearchButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
