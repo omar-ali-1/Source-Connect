@@ -9,7 +9,7 @@ class MainAppWindow(QMainWindow, main_window_qt.Ui_sourceConnectMainWindow):
         super(MainAppWindow, self).__init__(parent)
         self.setupUi(self)
         self.item = QListWidgetItem("hey there mr billy!")
-        self.databaseName = None
+        self.databasePath = None
         self.database = None
 
         self.tagListWidget.setSelectionMode(QAbstractItemView.ExtendedSelection)
@@ -17,6 +17,7 @@ class MainAppWindow(QMainWindow, main_window_qt.Ui_sourceConnectMainWindow):
 
         self.connect(self.sourceContentSearchButton, SIGNAL('clicked()'), self.updateSourceContentList)
         self.connect(self.loadDatabaseAction, SIGNAL('triggered()'), self.loadDatabase)
+        self.newDatabaseAction.triggered.connect(self.createDatabase)
         self.connect(self.tagListWidget, SIGNAL('itemSelectionChanged()'), self.updateSourcesList)
         self.connect(self.sourcesList, SIGNAL('itemSelectionChanged()'), self.updateSourceContentList)
         # new connection style
@@ -24,6 +25,17 @@ class MainAppWindow(QMainWindow, main_window_qt.Ui_sourceConnectMainWindow):
         self.sourcesList.itemSelectionChanged.connect(self.displaySummary)
         self.connect(self.tagSearchButton, SIGNAL('clicked()'), self.tagListWidget.clearSelection)
         self.connect(self.sourcesSearchButton, SIGNAL('clicked()'), self.sourcesList.clear)
+
+    def createDatabase(self):
+        msgBox = QMessageBox()
+        msgBox.setText("To create a new database, simply create an empty new folder anywhere on your computer, name it, "
+                       "then load it like you would an existing database.")
+        #msgBox.setInformativeText("Do you want to save your changes?")
+        #msgBox.setStandardButtons(QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel)
+        #msgBox.setDefaultButton(QMessageBox.Save)
+        ret = msgBox.exec_()
+        newDatabaseName = QFileDialog.getSaveFileName(self)
+        print newDatabaseName
 
     def displaySummary(self):
         selectedSourceItems = self.sourcesList.selectedItems()
@@ -108,8 +120,15 @@ class MainAppWindow(QMainWindow, main_window_qt.Ui_sourceConnectMainWindow):
                     self.tagListWidget.addItem(QListWidgetItem(self.database.tags[i].name))
 
     def loadDatabase(self):
-        self.databaseName = QFileDialog.getExistingDirectory(self)
-        self.database = pickle.load(open(self.databaseName + "\\systemFile.p", "rb"))
+        systemFileExists = False
+        self.databasePath = QFileDialog.getExistingDirectory(self)
+        for path, dirs, files in os.walk(self.databasePath):
+            for file in files:
+                if file == "systemFile.p": systemFileExists = True
+        if not systemFileExists:
+            newDataBase = database.Database(self.databasePath.split("\\")[-1])
+            pickle.dump(newDataBase, open(self.databasePath + "\\systemFile.p", "wb"))
+        self.database = pickle.load(open(self.databasePath + "\\systemFile.p", "rb"))
         # print self.databaseName
         self.updateTagsList()
         self.updateSourcesList()

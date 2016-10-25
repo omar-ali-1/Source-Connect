@@ -256,7 +256,7 @@
            </widget>
           </item>
           <item row="0" column="4">
-           <widget class="QPushButton" name="tagSearchButton_2">
+           <widget class="QPushButton" name="clearTagsButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -551,7 +551,7 @@
   <tabstop>sourcesSearchButton</tabstop>
   <tabstop>sourceTextBrowser</tabstop>
   <tabstop>subTagButton</tabstop>
-  <tabstop>tagSearchButton_2</tabstop>
+  <tabstop>clearTagsButton</tabstop>
   <tabstop>sourceContentSearchButton</tabstop>
  </tabstops>
  <resources/>
