@@ -1,38 +1,86 @@
+import TrieStructure
 
 class Tag(object):
 
-    def __init__(self, name, sources=None, relatedTags=None):
+    def __init__(self, name):
         self.name = name
-        self.sources = sources or [] # list of source object pointers
-        self.relatedTags = relatedTags or []
-        self.superTags = []
-        self.subTags = []
+        self.deleted = False
+        self.sources = TrieStructure.TrieTree() # Trie of source object pointers
+        self.relatedTags = TrieStructure.TrieTree()
+        self.superTags = TrieStructure.TrieTree()
+        self.subTags = TrieStructure.TrieTree()
 
     def addSource(self, source):
-        self.sources.append(source)
+        self.sources.insert(source.name, source)
 
     def getSources(self):
         return self.sources
 
     def deleteSource(self, sourceName):
-        for i in xrange(len(self.sources)):
-            if sourceName == self.sources[i].title:
-                self.sources.pop(i)
+            node = self.sources.head
+            for letter in sourceName:
+                if letter in node.children:
+                    node = node.children[letter]
+                else:
+                    locationExists = False
+                    break
+            if locationExists:
+                node.word = None
+                node.item = None
 
     def addRelatedTag(self, tag):
-        self.relatedTags.append(tag)
+        self.relatedTags.insert(tag.name, tag)
 
     def getRelatedTags(self):
         return self.relatedTags
 
     def deleteRelatedTag(self, tagName):
-        for i in xrange(len(self.relatedTags)):
-            if tagName == self.relatedTags[i].name:
-                self.relatedTags.pop(i)
+        node = self.relatedTags.head
+        locationExists = True
+        for letter in tagName:
+            if letter in node.children:
+                node = node.children[letter]
+            else:
+                locationExists = False
+                break
+        if locationExists:
+            node.word = None
+            node.item = None
 
     def addSuperTag(self, tag):
-        self.superTags.append(tag)
+        self.superTags.insert(tag.name, tag)
 
+    def getSuperTags(self):
+        return self.superTags
+
+    def deleteSuperTag(self, tagName):
+        node = self.superTags.head
+        locationExists = True
+        for letter in tagName:
+            if letter in node.children:
+                node = node.children[letter]
+            else:
+                locationExists = False
+                break
+        if locationExists:
+            node.word = None
+            node.item = None
 
     def addSubTag(self, tag):
-        self.subTags.append(tag)
+        self.subTags.insert(tag.name, tag)
+
+    def getSubTags(self):
+        return self.subTags
+
+    def deleteSubTag(self, tagName):
+        node = self.subTags.head
+        locationExists = True
+        for letter in tagName:
+            if letter in node.children:
+                node = node.children[letter]
+            else:
+                locationExists = False
+                break
+        if locationExists:
+            node.word = None
+            node.item = None

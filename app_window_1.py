@@ -1,6 +1,6 @@
 from PySide.QtCore import *
 from PySide.QtGui import *
-import sys, main_window_qt, source, database, tag, os.path, subprocess
+import sys, main_window_qt, source, database, tag, os.path, subprocess, shutil
 import cPickle as pickle
 
 
@@ -8,9 +8,10 @@ class MainAppWindow(QMainWindow, main_window_qt.Ui_sourceConnectMainWindow):
     def __init__(self, parent=None):
         super(MainAppWindow, self).__init__(parent)
         self.setupUi(self)
-        self.item = QListWidgetItem("hey there mr billy!")
         self.databasePath = None
         self.database = None
+        self.displayedTags = None
+        self.displayedSources = None
 
         self.tagListWidget.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.sourcesList.setSelectionMode(QAbstractItemView.ExtendedSelection)
@@ -19,10 +20,9 @@ class MainAppWindow(QMainWindow, main_window_qt.Ui_sourceConnectMainWindow):
         self.connect(self.loadDatabaseAction, SIGNAL('triggered()'), self.loadDatabase)
         self.newDatabaseAction.triggered.connect(self.createDatabase)
         self.connect(self.tagListWidget, SIGNAL('itemSelectionChanged()'), self.updateSourcesList)
-        self.connect(self.sourcesList, SIGNAL('itemSelectionChanged()'), self.updateSourceContentList)
+        self.connect(self.sourcesList, SIGNAL('itemSelectionChanged()'), self.sourceSelected)
         # new connection style
         self.sourceContentList.itemDoubleClicked.connect(self.openItem)
-        self.sourcesList.itemSelectionChanged.connect(self.displaySummary)
         self.connect(self.tagSearchButton, SIGNAL('clicked()'), self.tagListWidget.clearSelection)
         self.connect(self.sourcesSearchButton, SIGNAL('clicked()'), self.sourcesList.clear)
 
@@ -34,39 +34,31 @@ class MainAppWindow(QMainWindow, main_window_qt.Ui_sourceConnectMainWindow):
         #msgBox.setStandardButtons(QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel)
         #msgBox.setDefaultButton(QMessageBox.Save)
         ret = msgBox.exec_()
-        newDatabaseName = QFileDialog.getSaveFileName(self)
-        print newDatabaseName
+        #newDatabaseName = QFileDialog.getSaveFileName(self)
+        #print newDatabaseName
 
-    def displaySummary(self):
+    def sourceSelected(self):
+        selectedSources = []
         selectedSourceItems = self.sourcesList.selectedItems()
-        if len(selectedSourceItems) == 1:
-            sourceItem = selectedSourceItems[0]
-            selectedSource = self.findSource(sourceItem.text())
-            self.sourceTextBrowser.setSource(QUrl.fromLocalFile(self.database.directory + '\\' + selectedSource.location \
-                                             + '\\' + "summary.html"))
+        for sourceItem in selectedSourceItems:
+            selectedSources.append(self.findDisplayedSource(sourceItem.text()))
+        self.displaySummary(selectedSources)
+        self.updateSourceContentList(selectedSources)
 
-    def openItem(self, sourceContentItem):
-        selectedSourceItems = self.sourcesList.selectedItems()
-        for selectedSourceItem in selectedSourceItems:
-            source = self.findSource(selectedSourceItem.text())
-            for path, directories, files in os.walk(self.database.directory + '\\' + source.location ):
-                for file in files:
-                    if file == sourceContentItem.text():
-                        subprocess.Popen([self.database.directory + '\\' + source.location + '\\' + file], shell=True)
+    def displaySummary(self, selectedSources): #should contain one source
+        if len(selectedSources) == 1:
+            selectedSource = selectedSources[0]
+            #print selectedSources
+            self.sourceTextBrowser.setSource(QUrl.fromLocalFile(self.databasePath + '\\' + \
+                                                                selectedSource.location + '\\' + "summary.html"))
 
-
-    def findTag(self, tagName):
-        for tag in self.database.tags:
-            if tagName == tag.name:
-                return tag
-
-    def findSource(self, sourceName):
-        for source in self.database.sources:
-            if sourceName == source.title:
-                return source
-
-    def updateSourceContentList(self):
+    def updateSourceContentList(self, selectedSources):
         self.sourceContentList.clear()
+        for source in selectedSources:
+            for path, directories, files in os.walk(self.databasePath + '\\' + source.location):
+                for file in files:
+                    self.sourceContentList.addItem(QListWidgetItem(file))
+        '''
         sourceContentName = self.sourceContentLineEdit.text()
         selectedSourceItems = self.sourcesList.selectedItems()
         if (sourceContentName == None or sourceContentName == ""):
@@ -82,9 +74,85 @@ class MainAppWindow(QMainWindow, main_window_qt.Ui_sourceConnectMainWindow):
                     for file in files:
                         if file == sourceContentName:
                             self.sourceContentList.addItem(QListWidgetItem(file.split))
+        '''
+
+    def openItem(self, sourceContentItem):
+        selectedSourceItems = self.sourcesList.selectedItems()
+        for selectedSourceItem in selectedSourceItems:
+            source = self.findDisplayedSource(selectedSourceItem.text())
+            for path, directories, files in os.walk(self.databasePath + '\\' + source.location ):
+                for file in files:
+                    if file == sourceContentItem.text():
+                        subprocess.Popen([self.databasePath + '\\' + source.location + '\\' + file], shell=True)
+
+    def deleteSource(self, source):
+        source.deleted = True
+        shutil.rmtree(self.databasePath + '\\' + source.location)
+
+    def deleteTag(self, tag):
+        tag.deleted = True
+
+
+    def findDisplayedSource(self, sourceName):
+        if self.displayedSources != None:
+            trie = self.displayedSources
+            return trie.search(sourceName, 0)[0][0]
+
+    def findDisplayedTag(self, tagName):
+        if self.displayedTags != None:
+            node = self.displayedTags
+            for letter in tagName:
+                if letter in node.children:
+                    node = node.children[letter]
+            return node.item
+
+# continue here make sure update works and implement search functions
+
+
+    def updateSourceOperation(self, node):
+        source = node.item
+        if source and not source.deleted:
+            self.sourcesList.addItem(QListWidgetItem(source.name))
 
     def updateSourcesList(self):
         self.sourcesList.clear()
+        self.displayedSources.traverseInOrder(self.updateSourceOperation)
+
+    def updateTagOperation(self, node):
+        tag = node.item
+        #print tag
+        if tag and not tag.deleted:
+            self.tagListWidget.addItem(QListWidgetItem(tag.name))
+
+    def updateTagsList(self):
+        self.tagListWidget.clear()
+        self.displayedTags.traverseInOrder(self.updateTagOperation)
+
+    def loadDatabase(self):
+        systemFileExists = False
+        #print 'here'
+        self.databasePath = QFileDialog.getExistingDirectory(self)
+        for path, dirs, files in os.walk(self.databasePath):
+            for file in files:
+                if file == "systemFile.p": systemFileExists = True
+                #print systemFileExists
+        if not systemFileExists:
+            newDataBase = database.Database(self.databasePath.split("\\")[-1])
+            pickle.dump(newDataBase, open(self.databasePath + "\\systemFile.p", "wb"))
+        self.database = pickle.load(open(self.databasePath + "\\systemFile.p", "rb"))
+        #print self.database.name
+
+        self.displayedSources = self.database.sources
+        self.displayedTags = self.database.tags
+        #self.displayedTags.printTree()
+        #self.displayedSources.printTree()
+        self.updateTagsList()
+        self.updateSourcesList()
+
+    def printt(selfs, obj):
+        print obj
+
+'''
         sourceName = self.sourceLineEdit.text()
         selectedTagListItems = self.tagListWidget.selectedItems()
         if (sourceName == None or sourceName == "") and self.database != None:
@@ -107,28 +175,4 @@ class MainAppWindow(QMainWindow, main_window_qt.Ui_sourceConnectMainWindow):
                 for i in xrange(len(self.database.sources)):
                     if self.database.sources[i].title == sourceName:
                         self.sourcesList.addItem(QListWidgetItem(self.database.sources[i].title))
-
-    def updateTagsList(self):
-        self.tagListWidget.clear()
-        tagName = self.tagLineEdit.text()
-        if (tagName == None or tagName == "") and self.database != None:
-            for i in xrange(len(self.database.tags)):
-                self.tagListWidget.addItem(QListWidgetItem(self.database.tags[i].name))
-        elif self.database != None:
-            for i in xrange(len(self.database.tags)):
-                if self.database.tags[i].name == tagName:
-                    self.tagListWidget.addItem(QListWidgetItem(self.database.tags[i].name))
-
-    def loadDatabase(self):
-        systemFileExists = False
-        self.databasePath = QFileDialog.getExistingDirectory(self)
-        for path, dirs, files in os.walk(self.databasePath):
-            for file in files:
-                if file == "systemFile.p": systemFileExists = True
-        if not systemFileExists:
-            newDataBase = database.Database(self.databasePath.split("\\")[-1])
-            pickle.dump(newDataBase, open(self.databasePath + "\\systemFile.p", "wb"))
-        self.database = pickle.load(open(self.databasePath + "\\systemFile.p", "rb"))
-        # print self.databaseName
-        self.updateTagsList()
-        self.updateSourcesList()
+'''
