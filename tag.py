@@ -16,7 +16,7 @@ class Tag(object):
     def getSources(self):
         return self.sources
 
-    def deleteSource(self, sourceName):
+    '''def deleteSource(self, sourceName):
             node = self.sources.head
             for letter in sourceName:
                 if letter in node.children:
@@ -26,61 +26,40 @@ class Tag(object):
                     break
             if locationExists:
                 node.word = None
-                node.item = None
+                node.item = None'''
 
     def addRelatedTag(self, tag):
         self.relatedTags.insert(tag.name, tag)
+        tag.relatedTags.insert(self.name, self)
 
     def getRelatedTags(self):
         return self.relatedTags
 
     def deleteRelatedTag(self, tagName):
-        node = self.relatedTags.head
-        locationExists = True
-        for letter in tagName:
-            if letter in node.children:
-                node = node.children[letter]
-            else:
-                locationExists = False
-                break
-        if locationExists:
-            node.word = None
-            node.item = None
+        relatedTag = self.relatedTags.search(tagName, 0)[0][0]
+        self.relatedTags.deleteItem(tagName)
+        relatedTag.relatedTags.deleteItem(self.name)
 
     def addSuperTag(self, tag):
         self.superTags.insert(tag.name, tag)
+        tag.subTags.insert(self.name, self)
 
     def getSuperTags(self):
         return self.superTags
 
     def deleteSuperTag(self, tagName):
-        node = self.superTags.head
-        locationExists = True
-        for letter in tagName:
-            if letter in node.children:
-                node = node.children[letter]
-            else:
-                locationExists = False
-                break
-        if locationExists:
-            node.word = None
-            node.item = None
+        superTag = self.superTags.search(tagName, 0)[0][0]
+        self.superTags.deleteItem(tagName)
+        superTag.subTags.deleteItem(self.name)
 
     def addSubTag(self, tag):
         self.subTags.insert(tag.name, tag)
+        tag.superTags.insert(self.name, self)
 
     def getSubTags(self):
         return self.subTags
 
     def deleteSubTag(self, tagName):
-        node = self.subTags.head
-        locationExists = True
-        for letter in tagName:
-            if letter in node.children:
-                node = node.children[letter]
-            else:
-                locationExists = False
-                break
-        if locationExists:
-            node.word = None
-            node.item = None
+        subTag = self.subTags.search(tagName, 0)[0][0]
+        self.subTags.deleteItem(tagName)
+        subTag.superTags.deleteItem(self.name)

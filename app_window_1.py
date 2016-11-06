@@ -1,7 +1,148 @@
 from PySide.QtCore import *
 from PySide.QtGui import *
-import sys, main_window_qt, source, database, tag, os.path, subprocess, shutil
+from edit_tag_dialog import *
+from add_tag_dialog import *
+from choose_items_dialog import *
+import sys, main_window_qt, source, database, tag, os.path, subprocess, shutil, TrieStructure
 import cPickle as pickle
+
+
+class ChooseItemsDialog(QDialog, Ui_chooseContentDialog):
+    def __init__(self, itemTree=None, parent=None):
+        super(ChooseItemsDialog, self).__init__(parent)
+        self.itemTree = itemTree  # Trie Tree of tags or sources
+        self.setupUi(self)
+        self.updateDisplayedItems()
+
+    def updateDisplayedItemOperation(self, node):
+        item = node.item
+        if item and not item.deleted:
+            self.chooseItemDialogList.addItem(QListWidgetItem(item.name))
+
+    def updateDisplayedItems(self):
+        self.chooseItemDialogList.clear()
+        self.itemTree.traverseInOrder(self.updateDisplayedItemOperation)
+
+
+
+
+class AddTagDialog(QDialog, Ui_AddTagDialog):
+    def __init__(self, parent=None):
+        super(AddTagDialog, self).__init__(parent)
+        self.setupUi(self)
+
+
+
+class EditTagDialog(QDialog, Ui_editTagDialog):
+    def __init__(self, tag=None, database=None, parent=None):
+        super(EditTagDialog, self).__init__(parent)
+        self.setupUi(self)
+        self.tag = tag
+        self.database = database
+        self.tagNameLineEdit.setText(self.tag.name)
+        self.displayedSuperTags = self.tag.superTags
+        self.displayedSubTags = self.tag.subTags
+        self.displayedRelatedTags = self.tag.relatedTags
+        self.displayedSources = self.tag.sources
+        self.updateRelatedTagsList()
+        self.updateSubtagsList()
+        self.updateSources()
+        self.updateSupertagsList()
+
+        self.relatedTagAddButton.clicked.connect(self.addRelatedTags)
+        self.relatedTagRemoveButton.clicked.connect(self.removeRelatedTags)
+        self.subtagAddButton.clicked.connect(self.addSubTags)
+        self.subtagRemoveButton.clicked.connect(self.removeSubTags)
+        self.supertagAddButton.clicked.connect(self.addSuperTags)
+        self.supertagRemoveButton.clicked.connect(self.removeSuperTags)
+
+    def addRelatedTags(self):
+        dialog = ChooseItemsDialog(self.database.tags)
+        if dialog.exec_():
+            selectedTagItems = dialog.chooseItemDialogList.selectedItems()
+            for item in selectedTagItems:
+                newRelatedTag = self.database.findTag(item.text())
+                self.tag.addRelatedTag(newRelatedTag)
+            self.updateRelatedTagsList()
+
+    def removeRelatedTags(self):
+        selectedRelatedTagItems = self.relatedTagsList.selectedItems()
+        for item in selectedRelatedTagItems:
+            self.tag.deleteRelatedTag(item.text())
+        self.updateRelatedTagsList()
+
+    def addSuperTags(self):
+        dialog = ChooseItemsDialog(self.database.tags)
+        if dialog.exec_():
+            selectedTagItems = dialog.chooseItemDialogList.selectedItems()
+            for item in selectedTagItems:
+                newSuperTag = self.database.findTag(item.text())
+                self.tag.addSuperTag(newSuperTag)
+            self.updateSupertagsList()
+
+    def removeSuperTags(self):
+        selectedSupertagItems = self.supertagsList.selectedItems()
+        for item in selectedSupertagItems:
+            self.tag.deleteSuperTag(item.text())
+        self.displayedSuperTags = self.tag.superTags
+        self.updateSupertagsList()
+
+    def addSubTags(self):
+        dialog = ChooseItemsDialog(self.database.tags)
+        if dialog.exec_():
+            selectedTagItems = dialog.chooseItemDialogList.selectedItems()
+            for item in selectedTagItems:
+                newSubTag = self.database.findTag(item.text())
+                self.tag.addSubTag(newSubTag)
+            self.updateSubtagsList()
+
+    def removeSubTags(self):
+        selectedRelatedTagItems = self.subTagsList.selectedItems()
+        for item in selectedRelatedTagItems:
+            self.tag.deleteSubTag(item.text())
+        self.updateSubtagsList()
+
+
+
+
+    def addSourceToList(self, node):
+        source = node.item
+        if source and not source.deleted:
+            self.taggedSourcesList.addItem(QListWidgetItem(source.name))
+
+    def updateSources(self):
+        self.taggedSourcesList.clear()
+        self.displayedSources.traverseInOrder(self.addSourceToList)
+
+    def addRelatedTagToList(self, node):
+        relatedTag = node.item
+        if relatedTag and not relatedTag.deleted:
+            self.relatedTagsList.addItem(QListWidgetItem(relatedTag.name))
+
+    def updateRelatedTagsList(self):
+        self.relatedTagsList.clear()
+        self.displayedRelatedTags.traverseInOrder(self.addRelatedTagToList)
+
+    def addSupertagToList(self, node):
+        superTag = node.item
+        if superTag and not superTag.deleted:
+            self.supertagsList.addItem(QListWidgetItem(superTag.name))
+
+    def updateSupertagsList(self):
+        self.supertagsList.clear()
+        self.displayedSuperTags.traverseInOrder(self.addSupertagToList)
+
+    def addSubtagToList(self, node):
+        subTag = node.item
+        if subTag and not subTag.deleted:
+            self.subTagsList.addItem(QListWidgetItem(subTag.name))
+
+    def updateSubtagsList(self):
+        self.subTagsList.clear()
+        self.displayedSubTags.traverseInOrder(self.addSubtagToList)
+
+
+
 
 
 class MainAppWindow(QMainWindow, main_window_qt.Ui_sourceConnectMainWindow):
@@ -15,16 +156,47 @@ class MainAppWindow(QMainWindow, main_window_qt.Ui_sourceConnectMainWindow):
 
         self.tagListWidget.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.sourcesList.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        ###############################################################################################################
+        self.tagListWidget.setContextMenuPolicy(Qt.ActionsContextMenu)
 
+        self.editTagAction = QAction("Edit Tag (select only one)", None)
+        self.editTagAction.triggered.connect(self.editTag)
+        self.tagListWidget.addAction(self.editTagAction)
+
+        self.addTagAction = QAction("Add Tag", None)
+        self.addTagAction.triggered.connect(self.addTag)
+        self.tagListWidget.addAction(self.addTagAction)
+        ###############################################################################################################
         self.connect(self.sourceContentSearchButton, SIGNAL('clicked()'), self.updateSourceContentList)
         self.connect(self.loadDatabaseAction, SIGNAL('triggered()'), self.loadDatabase)
         self.newDatabaseAction.triggered.connect(self.createDatabase)
-        self.connect(self.tagListWidget, SIGNAL('itemSelectionChanged()'), self.updateSourcesList)
-        self.connect(self.sourcesList, SIGNAL('itemSelectionChanged()'), self.sourceSelected)
+        self.connect(self.tagListWidget, SIGNAL('itemSelectionChanged()'), self.tagsSelected)
+        self.connect(self.sourcesList, SIGNAL('itemSelectionChanged()'), self.sourcesSelected)
         # new connection style
         self.sourceContentList.itemDoubleClicked.connect(self.openItem)
         self.connect(self.tagSearchButton, SIGNAL('clicked()'), self.tagListWidget.clearSelection)
         self.connect(self.sourcesSearchButton, SIGNAL('clicked()'), self.sourcesList.clear)
+
+    def addTag(self):
+        addTagDialog = AddTagDialog()
+        if addTagDialog.exec_():
+            newTagName = addTagDialog.addTagLineEdit.text()
+            if newTagName:
+                newTag = tag.Tag(newTagName)
+                self.database.addTag(newTag)
+                self.updateTagsList()
+
+    def editTag(self):
+        selectedTagItems = self.tagListWidget.selectedItems()
+        if len(selectedTagItems) == 1:
+            selectedTagName = selectedTagItems[0].text()
+            selectedTag = self.findDisplayedTag(selectedTagName)
+            editTagDialog = EditTagDialog(selectedTag, self.database)
+            editTagDialog.exec_()
+            text = editTagDialog.tagNameLineEdit.text()
+            if text != selectedTag.name:
+                self.database.renameTag(selectedTag, text)
+            self.updateTagsList()
 
     def createDatabase(self):
         msgBox = QMessageBox()
@@ -37,7 +209,24 @@ class MainAppWindow(QMainWindow, main_window_qt.Ui_sourceConnectMainWindow):
         #newDatabaseName = QFileDialog.getSaveFileName(self)
         #print newDatabaseName
 
-    def sourceSelected(self):
+    def insertSourceOperation(self, node):
+        if node.item and node.item.deleted == False:
+            self.displayedSources.insert(node.item.name, node.item)
+
+    def tagsSelected(self):
+        selectedTags = []
+        selectedTagItems = self.tagListWidget.selectedItems()
+        for tagItem in selectedTagItems:
+            selectedTags.append(self.findDisplayedTag(tagItem.text()))
+        if len(selectedTags) == 0:
+            self.displayedSources = self.database.sources
+        else:
+            self.displayedSources = TrieStructure.TrieTree()
+            for tag in selectedTags:
+                tag.sources.traverseInOrder(self.insertSourceOperation)
+        self.updateSourcesList()
+
+    def sourcesSelected(self):
         selectedSources = []
         selectedSourceItems = self.sourcesList.selectedItems()
         for sourceItem in selectedSourceItems:
@@ -51,6 +240,8 @@ class MainAppWindow(QMainWindow, main_window_qt.Ui_sourceConnectMainWindow):
             #print selectedSources
             self.sourceTextBrowser.setSource(QUrl.fromLocalFile(self.databasePath + '\\' + \
                                                                 selectedSource.location + '\\' + "summary.html"))
+        else:
+            self.sourceTextBrowser.clear()
 
     def updateSourceContentList(self, selectedSources):
         self.sourceContentList.clear()
@@ -100,11 +291,8 @@ class MainAppWindow(QMainWindow, main_window_qt.Ui_sourceConnectMainWindow):
 
     def findDisplayedTag(self, tagName):
         if self.displayedTags != None:
-            node = self.displayedTags
-            for letter in tagName:
-                if letter in node.children:
-                    node = node.children[letter]
-            return node.item
+            trie = self.displayedTags
+            return trie.search(tagName, 0)[0][0]
 
 # continue here make sure update works and implement search functions
 
