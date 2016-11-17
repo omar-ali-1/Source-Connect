@@ -1,10 +1,14 @@
 import sys, tag, TrieStructure, shutil
 
 class Database(object):
-    def __init__(self, name):
+    def __init__(self, name, path):
         self.name = name
+        self.path = path
         self.sources = TrieStructure.TrieTree() # Trie Tree of source objects
         self.tags = TrieStructure.TrieTree() # Trie Tree of Tag objects
+
+    def updatePath(self, path):
+        self.path = path
 
     def addTag(self, tag): # arg is Tag object
         self.tags.insert(tag.name, tag)
@@ -12,14 +16,27 @@ class Database(object):
     def searchTags(self, tagName, maxCost=0): # arg should be Tag.name
         return self.tags.search(tagName, maxCost) #list of found Tag objects
 
-    def addSource(self, source):
+    def addSourceObjectOnly(self, source):
         self.sources.insert(source.name, source)
 
     def searchSources(self, sourceName, maxCost=0): # arg is Source object
         return self.sources.search(sourceName, maxCost) #list of found Source objects
 
     def deleteSource(self, source):
-        source.deleted = True
+        sourceDir = source.locationRelToDatabase
+        def delFromTags(node):
+            if node.item:
+                node.item.sources.deleteItem(source.name)
+        source.tags.traverseInOrder(delFromTags)
+        self.sources.deleteItem(source.name)
+        shutil.rmtree(self.path + '\\\\' + sourceDir)
+
+    def deleteSourceObjectOnly(self, source):
+        def delFromTags(node):
+            if node.item:
+                node.item.sources.deleteItem(source.name)
+        source.tags.traverseInOrder(delFromTags)
+        self.sources.deleteItem(source.name)
 
     def findSource(self, sourceName):
         if self.sources != None:
@@ -61,7 +78,7 @@ class Database(object):
         related = tag.relatedTags
         sources = tag.sources
         self.deleteTag(tag)
-        tag.name = newName
+        temp.name = newName
         def insertInSubTags(node):
             if node.item:
                 node.item.subTags.insert(temp.name, temp)
@@ -79,3 +96,14 @@ class Database(object):
         related.traverseInOrder(insertInRelatedTags)
         sources.traverseInOrder(insertInTags)
         self.addTag(temp)
+
+    def renameSource(self, source, newName):
+        temp = source
+        tags = source.tags
+        self.deleteSourceObjectOnly(source)
+        temp.name = newName
+        def insertInTags(node):
+            if node.item:
+                node.item.sources.insert(temp.name, temp)
+        tags.traverseInOrder(insertInTags)
+        self.addSourceObjectOnly(temp)

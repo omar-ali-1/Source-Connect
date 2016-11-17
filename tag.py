@@ -12,6 +12,12 @@ class Tag(object):
 
     def addSource(self, source):
         self.sources.insert(source.name, source)
+        source.tags.insert(self.name, self)
+
+    def deleteTaggedSource(self, sourceName):
+        taggedSource = self.sources.search(sourceName, 0)[0][0]
+        self.sources.deleteItem(sourceName)
+        taggedSource.tags.deleteItem(self.name)
 
     def getSources(self):
         return self.sources
