@@ -9,9 +9,9 @@ from choose_items_dialog import *
 import sys, main_window_qt, source, database, tag, os.path, subprocess, shutil, TrieStructure
 import cPickle as pickle
 import operator
-from django.utils.encoding import smart_str, smart_unicode
-from PySide.QtWebKit import *
-import chardet
+#from django.utils.encoding import smart_str, smart_unicode
+#from PySide.QtWebKit import *
+#import chardet
 # import docx2html
 sys.setrecursionlimit(30000)
 
@@ -315,29 +315,52 @@ class MainAppWindow(QMainWindow, main_window_qt.Ui_sourceConnectMainWindow):
         self.setupSourceTree()
         self.setupTagList()
         self.setupTextBrowser()
-
-        #self.sourcesList.setSelectionMode(QAbstractItemView.ExtendedSelection)
-
-        ###############################################################################################################
+        self.setupActionMenu()
 
 
+    def setupActionMenu(self):
         self.connect(self.loadDatabaseAction, SIGNAL('triggered()'), self.loadDatabase)
         self.newDatabaseAction.triggered.connect(self.createDatabase)
-
-
-
         #self.sourceContentList.itemDoubleClicked.connect(self.openItem)
-
-
-
         self.saveToDatabaseAction.triggered.connect(self.saveChangesToCurrentDatabase)
 
-
     def setupTextBrowser(self):
+        #cursor = QTextCursor()
+        #self.sourceTextBrowser.setTextCursor(cursor)
         self.sourceTextBrowser.textChanged.connect(self.summaryEdited)
         self.saveButton.clicked.connect(self.saveSummary)
         self.sourceTextBrowser.setReadOnly(False)
         self.saveToDatabaseAction.triggered.connect(self.saveSummary)
+        self.italicButton.clicked.connect(self.italicClicked)
+        self.boldButton.clicked.connect(self.boldClicked)
+        self.underlineButton.clicked.connect(self.underlineClicked)
+
+    def italicClicked(self):
+        cursor = self.sourceTextBrowser.textCursor()
+        isItalic = self.sourceTextBrowser.fontItalic()
+        fmt = QTextCharFormat()
+        fmt.setFontItalic(not isItalic)
+        cursor.mergeCharFormat(fmt)
+        self.sourceTextBrowser.mergeCurrentCharFormat(fmt)
+
+    def boldClicked(self):
+        cursor = self.sourceTextBrowser.textCursor()
+        isBold = self.sourceTextBrowser.fontWeight() > QFont.Normal
+        fmt = QTextCharFormat()
+        if not isBold:
+            fmt.setFontWeight(QFont.Bold)
+        else:
+            fmt.setFontWeight(QFont.Normal)
+        cursor.mergeCharFormat(fmt)
+        self.sourceTextBrowser.mergeCurrentCharFormat(fmt)
+
+    def underlineClicked(self):
+        cursor = self.sourceTextBrowser.textCursor()
+        isUnderlined = self.sourceTextBrowser.fontUnderline()
+        fmt = QTextCharFormat()
+        fmt.setFontUnderline(not isUnderlined)
+        cursor.mergeCharFormat(fmt)
+        self.sourceTextBrowser.mergeCurrentCharFormat(fmt)
 
     def setupTagList(self):
         self.tagListWidget.setSelectionMode(QAbstractItemView.ExtendedSelection)
@@ -356,15 +379,15 @@ class MainAppWindow(QMainWindow, main_window_qt.Ui_sourceConnectMainWindow):
         self.tagListWidget.addAction(self.deleteTagsAction)
 
         self.connect(self.tagListWidget, SIGNAL('itemSelectionChanged()'), self.tagsSelected)
-        self.connect(self.tagSearchButton, SIGNAL('clicked()'), self.tagListWidget.clearSelection)
         self.clearTagsButton.clicked.connect(self.tagListWidget.clearSelection)
         self.superTagButton.clicked.connect(self.superTagsRequested)
         self.subTagButton.clicked.connect(self.subTagsRequested)
+        self.allTagsButton.clicked.connect(self.allTagsRequested)
         self.tagListWidget.itemDoubleClicked.connect(self.subTagsRequested)
         self.tagLineEdit.textChanged.connect(self.searchTags)
+        self.tagListWidget.itemDoubleClicked.connect(self.subTagsRequested)
 
     def setupSourceTree(self):
-        self.connect(self.sourcesSearchButton, SIGNAL('clicked()'), self.sourcesList.clear)
         self.sourceLineEdit.textChanged.connect(self.searchSources)
         self.connect(self.sourcesList, SIGNAL('itemSelectionChanged()'), self.displaySummary)
         self.sourcesList.itemDoubleClicked.connect(self.openItem)
@@ -382,17 +405,41 @@ class MainAppWindow(QMainWindow, main_window_qt.Ui_sourceConnectMainWindow):
         self.deleteSourcesAction.triggered.connect(self.deleteSources)
         self.sourcesList.addAction(self.deleteSourcesAction)
 
-    def superTagsRequested(self): # continue here
-        pass
-        '''clear = True
+    def superTagsRequested(self):
+        newDisplayedTags = TrieStructure.TrieTree()
         selectedTagItems = self.tagListWidget.selectedItems()
+        if len(selectedTagItems) == 0:
+            return
+        def insertOperation(node):
+            newDisplayedTags.insert(node.item.name, node.item)
+
         for item in selectedTagItems:
-            tag = self.database.findTag(item.text())
-            if '''
+            tag = self.findDisplayedTag(item.text())
+            tag.superTags.traverseInOrder(insertOperation)
+        self.displayedTags = newDisplayedTags
+        self.updateTagsList()
 
 
     def subTagsRequested(self):
-        pass
+        newDisplayedTags = TrieStructure.TrieTree()
+        selectedTagItems = self.tagListWidget.selectedItems()
+        if len(selectedTagItems) == 0:
+            return
+
+        def insertOperation(node):
+
+            newDisplayedTags.insert(node.item.name, node.item)
+
+        for item in selectedTagItems:
+            tag = self.findDisplayedTag(item.text())
+            tag.subTags.traverseInOrder(insertOperation)
+        if newDisplayedTags.nodeCount > 1:
+            self.displayedTags = newDisplayedTags
+            self.updateTagsList()
+
+    def allTagsRequested(self):
+        self.displayedTags = self.database.tags
+        self.updateTagsList()
 
 
     def searchTags(self):
@@ -413,8 +460,13 @@ class MainAppWindow(QMainWindow, main_window_qt.Ui_sourceConnectMainWindow):
             results = sorted(self.displayedSources.search(text, 25), key=operator.itemgetter(1, 0))
             self.sourcesList.clear()
             for tuple in results:
-                self.sourcesList.addItem(QListWidgetItem(tuple[0].name))
-
+                source = tuple[0]
+                item = QTreeWidgetItem(self.sourcesList)
+                item.setText(0, source.name)
+                for path, dirs, files in os.walk(self.database.path + '\\' + source.locationRelToDatabase):
+                    for file in files:
+                        child = QTreeWidgetItem(item)
+                        child.setText(0, file)
 
     def addSource(self):
         addSourceDialog = AddSourceDialog()
@@ -442,7 +494,7 @@ class MainAppWindow(QMainWindow, main_window_qt.Ui_sourceConnectMainWindow):
     def deleteSources(self):
         selectedSourceItems = self.sourcesList.selectedItems()
         for item in selectedSourceItems:
-            self.database.deleteSource(self.database.findSource(item.text()))
+            self.database.deleteSource(self.database.findSource(item.text(0)))
         self.updateSourcesList()
 
     def addTag(self):
@@ -490,6 +542,7 @@ class MainAppWindow(QMainWindow, main_window_qt.Ui_sourceConnectMainWindow):
             self.displayedSources.insert(node.item.name, node.item)
 
     def tagsSelected(self):
+        self.sourcesList.clearSelection()
         selectedTags = []
         selectedTagItems = self.tagListWidget.selectedItems()
         for tagItem in selectedTagItems:
@@ -502,15 +555,14 @@ class MainAppWindow(QMainWindow, main_window_qt.Ui_sourceConnectMainWindow):
                 tag.sources.traverseInOrder(self.insertSourceOperation)
         self.updateSourcesList()
 
-    '''def sourcesSelected(self):
-        selectedSources = []
-        selectedSourceItems = self.sourcesList.selectedItems()
-        for sourceItem in selectedSourceItems:
-            selectedSources.append(self.findDisplayedSource(sourceItem.text()))
-        self.displaySummary(selectedSources)
-        self.updateSourceContentList(selectedSources)'''
+
+    # a bug needs to be fixed: when selecting a source with no tags selected, and its summary is displayed, then when
+    # a tag is selected, an error is raised :
+    # return trie.search(sourceName, 0)[0][0]
+    # IndexError: list index out of range
 
     def displaySummary(self): #should contain one source
+        #print self.sourcesList.selectedItems()[0].text(0)
         if len(self.sourcesList.selectedItems()) > 0:
             sourceItem = self.sourcesList.selectedItems()[0]
         else:
@@ -519,11 +571,12 @@ class MainAppWindow(QMainWindow, main_window_qt.Ui_sourceConnectMainWindow):
         if sourceItem.parent() is not None:
             sourceItem = sourceItem.parent()
         selectedSource = self.findDisplayedSource(sourceItem.text(0))
-        self.summary = self.database.path + '\\' + selectedSource.locationRelToDatabase + '\\' + "summary.html"
-        summaryFile = open(self.summary, 'r')
-        self.summaryHTML = summaryFile.read().decode("utf-8")
-        self.sourceTextBrowser.setHtml(self.summaryHTML)
-        summaryFile.close()
+        if selectedSource:
+            self.summary = self.database.path + '\\' + selectedSource.locationRelToDatabase + '\\' + "summary.html"
+            summaryFile = open(self.summary, 'r')
+            self.summaryHTML = summaryFile.read().decode("utf-8")
+            self.sourceTextBrowser.setHtml(self.summaryHTML)
+            summaryFile.close()
 
     def saveSummary(self):
         summaryFile = open(self.summary, 'w')
@@ -542,23 +595,6 @@ class MainAppWindow(QMainWindow, main_window_qt.Ui_sourceConnectMainWindow):
                 for file in files:
                     if file != 'summary.html':
                         self.sourceContentList.addItem(QListWidgetItem(file))
-        '''
-        sourceContentName = self.sourceContentLineEdit.text()
-        selectedSourceItems = self.sourcesList.selectedItems()
-        if (sourceContentName == None or sourceContentName == ""):
-            for sourceItem in selectedSourceItems:
-                source = self.findSource(sourceItem.text())
-                for path, directories, files in os.walk(self.database.directory + '\\' + source.location):
-                    for file in files:
-                        self.sourceContentList.addItem(QListWidgetItem(file))
-        else:
-            for sourceItem in selectedSourceItems:
-                source = self.findSource(sourceItem.text())
-                for path, directories, files in os.walk(self.database.directory + '\\' + source.location):
-                    for file in files:
-                        if file == sourceContentName:
-                            self.sourceContentList.addItem(QListWidgetItem(file.split))
-        '''
 
     def openItem(self):
         selectedSourceTreeItems = self.sourcesList.selectedItems()
@@ -572,18 +608,12 @@ class MainAppWindow(QMainWindow, main_window_qt.Ui_sourceConnectMainWindow):
                 if file == selectedItem.text(0):
                     subprocess.Popen([self.databasePath + '\\' + source.locationRelToDatabase + '\\' + file], shell=True)
 
-    '''def deleteSource(self, source):
-        source.deleted = True
-        shutil.rmtree(self.databasePath + '\\' + source.locationRelToDatabase)
-
-    def deleteTag(self, tag):
-        tag.deleted = True'''
-
 
     def findDisplayedSource(self, sourceName):
         if self.displayedSources != None:
-            trie = self.displayedSources
-            return trie.search(sourceName, 0)[0][0]
+            trie = self.database.sources
+            result = trie.search(sourceName, 0)
+            return result[0][0]
 
     def findDisplayedTag(self, tagName):
         if self.displayedTags != None:
@@ -647,28 +677,3 @@ class MainAppWindow(QMainWindow, main_window_qt.Ui_sourceConnectMainWindow):
 
     def saveChangesToCurrentDatabase(self):
         pickle.dump(self.database, open(self.databasePath + "\\systemFile.p", "wb"))
-
-'''
-        sourceName = self.sourceLineEdit.text()
-        selectedTagListItems = self.tagListWidget.selectedItems()
-        if (sourceName == None or sourceName == "") and self.database != None:
-            for selectedTagListItem in selectedTagListItems:
-                selectedTagName = selectedTagListItem.text()
-                tag = self.findTag(selectedTagName)
-                for s in tag.sources:
-                    self.sourcesList.addItem(QListWidgetItem(s.title))
-            if not selectedTagListItems:
-                for i in xrange(len(self.database.sources)):
-                    self.sourcesList.addItem(QListWidgetItem(self.database.sources[i].title))
-        elif self.database:
-            for selectedTagListItem in selectedTagListItems:
-                selectedTagName = selectedTagListItem.text()
-                tag = self.findTag(selectedTagName)
-                for s in tag.sources:
-                    if s.title == sourceName:
-                        self.sourcesList.addItem(QListWidgetItem(s.title))
-            if not selectedTagListItems:
-                for i in xrange(len(self.database.sources)):
-                    if self.database.sources[i].title == sourceName:
-                        self.sourcesList.addItem(QListWidgetItem(self.database.sources[i].title))
-'''

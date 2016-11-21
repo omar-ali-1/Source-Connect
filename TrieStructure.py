@@ -18,6 +18,7 @@ class TrieTree(object):
             'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', '1', '2', '3', '4', '5', '6', '7', '8', '9', ' ']
 
     def insert(self, word, item):
+        self.nodeCount += 1
         node = self.head
         for letter in word:
             if letter not in node.children:
@@ -74,7 +75,7 @@ class TrieTree(object):
         if node == 'head':
             node = getattr(self, 'head')
         #print node.word
-        if operation:
+        if operation and node.item:
             operation(node)
         #print node.children
         sortedChildrenKeys = sorted([k for k in node.children])
@@ -93,6 +94,7 @@ class TrieTree(object):
                 if node.word == word:
                     node.word = None
                     node.item = None
+                    self.nodeCount -= 1
                     if len(node.children) == 0:
                         return 1
                     else:
