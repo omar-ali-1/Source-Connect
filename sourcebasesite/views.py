@@ -23,7 +23,7 @@ providers = {
 }
 
 def home(request):
-    return render(request, "base.html")
+    return render(request, "sourcebasesite/home.html")
 
 
 
