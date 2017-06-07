@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+
+
+
+{% block content %}
+<div class="row">
+	<div class="col-xs-12">
+		<a href="{% url 'editSource' source.key.id %}" class="btn btn-primary" role="button">Edit Source</a>
+
+		<div class="btn-group" role="group" aria-label="...">
+			<button type="button" class="btn btn-primary" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Related Tags</button>
+			<button type="button" class="btn btn-primary">Somewhat Related Tags</button>
+			<button type="button" class="btn btn-primary">Marginally Related Tags</button>
+		</div>
+
+		<hr>
+
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-xs-12">
+		<div class="collapse" id="collapseExample">
+		  	<div class="well">
+				{% for tag in tags %}
+					<a href="{% url 'source' %}?q={{ tag.title }}">
+						| {{ tag.title }} | 
+					</a>
+				{% endfor %}
+		  	</div>
+		  <hr>
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-xs-12">
+	 	{{ source.description | safe }} 
+	</div>
+</div>
+
+<hr>
+        	
+
+{% endblock content %}

@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+
+{% block content %}
+
+<link href="{% static 'sourcebasesite/taggle.js-1.11.1/example/css/taggle.css' %}" rel="stylesheet">
+<link href="{% static 'sourcebasesite/taggle.js-1.11.1/example/css/projects.min.css' %}" rel="stylesheet">
+<link href="{% static 'sourcebasesite/taggle.js-1.11.1/example/css/twilight.css' %}" rel="stylesheet">
+ <!--{{ source.title }} -->
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<form action="{% url 'saveSource' source.key.id %}" method="post">
+
+	{% csrf_token %}
+
+	<div class="row">
+		<div class="col-xs-12">
+			<a class="btn btn-primary" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+			  	Tags <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+			</a>
+			<hr>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="collapse" id="collapseExample">
+	            <div class="well">
+		            <div class="row">
+		            	<div class="col-xs-10">
+			            	<h5>Topics related to this source.</h5>
+			           	</div>
+			        </div>
+		            <div  id="edit_source_taggle" class="textarea input clearfix example1"></div>
+
+
+
+		            
+	            <div class="row">
+	            	<div class="col-xs-4">
+		            	<button type="submit" class="btn btn-primary">Save</button>
+		           	</div>
+		        </div>
+	        	</div>
+			  <hr>
+			</div>
+		</div>
+	</div>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script src="{% static 'sourcebasesite/taggle.js-1.11.1/src/taggle.js' %}"></script>
+	<script>
+		new Taggle('edit_source_taggle');
+	</script>
+
+
+
+<!-- 
+
+
+	<script type="Javascript">
+		var edit_source_taggle = new Taggle('edit_source_taggle');
+		var tags = "{{tags}}"
+		console.log(tags)
+		for (var i = 0; i < tags.length; i++) {
+			edit_source_taggle.add(tags[i].title);
+		}
+	</script>
+
+ -->
+	<div class="form-group">
+	    <input type="hidden" name="title" id="title" value="{{ source.title }}" />
+	    
+
+	    <div class="row">
+	    	<textarea class="form-control" rows="5" name="description" id="mytextarea" >{{ source.description }}
+	    	</textarea>
+	    </div>
+
+	    <br /> 
+
+	    <div id="txtEditor">
+	    </div>
+
+	  	<button type="submit" class="btn btn-primary">Save</button>
+	</div>
+</form>
+
+
+
+{% endblock content %}

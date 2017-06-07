@@ -1,7 +1,12 @@
 {% extends 'base.html' %}
 
+    {% block styles %}
+
+<link href="static/sourcebasesite/css/home_style.css" rel="stylesheet">
+    {% endblock styles %}
 
 {% block carousel %}
+
     <!-- Carousel
     ================================================== -->
     <div id="myCarousel" class="carousel slide" data-ride="carousel">
@@ -54,8 +59,13 @@
     </div><!-- /.carousel -->
 {% endblock carousel %}
 
+{% block content %}
+    <!-- Marketing messaging and featurettes
+    ================================================== -->
+    <!-- Wrap the rest of the page in another container to center all the content. -->
 
-{% block marketing %}
+
+
       <!-- Three columns of text below the carousel -->
       <div class="row">
         <div class="col-lg-4">
@@ -116,4 +126,12 @@
           <img class="featurette-image img-responsive center-block" data-src="holder.js/500x500/auto" alt="Generic placeholder image">
         </div>
       </div>
-{% endblock marketing %}
+
+
+
+      <!-- /END THE FEATURETTES -->
+
+{% endblock content %}
+
+{% block scripts %}
+{% endblock scripts %}

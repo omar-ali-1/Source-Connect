@@ -15,9 +15,22 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from sourcebasesite.views import *
+#from django.views.generic import RedirectView
 
+# TODO: redirect urls that don't match anything to home (/source/)
 
 urlpatterns = [
-    url(r'^$', include('sourcebasesite.urls')), # change to source/
-    url(r'^admin/', admin.site.urls),
+    # url(r'^$', RedirectView.as_view(url='/source/')), # change to source/
+    url(r'^$', home, name='home'),
+    url(r'^about/', about, name='about'),
+    url(r'^discuss/', discuss, name='discuss'),
+    url(r'^read/', read, name='read'),
+    url(r'^act/', act, name='act'),
+    url(r'^about/', about, name='about'),
+    url(r'^contact/', contact, name='contact'),
+    url(r'^test/', test, name='test'),
+    #url(r'^source/', source, name='source'),
+    url(r'^source/', include('sourcebasesite.urls')),
+    url(r'^admin/', admin.site.urls)
 ]
