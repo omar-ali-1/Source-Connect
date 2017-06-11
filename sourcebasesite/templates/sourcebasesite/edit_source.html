@@ -5,10 +5,6 @@
 
 {% block content %}
 
-<link href="{% static 'sourcebasesite/taggle.js-1.11.1/example/css/taggle.css' %}" rel="stylesheet">
-<link href="{% static 'sourcebasesite/taggle.js-1.11.1/example/css/projects.min.css' %}" rel="stylesheet">
-<link href="{% static 'sourcebasesite/taggle.js-1.11.1/example/css/twilight.css' %}" rel="stylesheet">
- <!--{{ source.title }} -->
 
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
@@ -49,9 +45,11 @@
 		</div>
 	</div>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-	<script src="{% static 'sourcebasesite/taggle.js-1.11.1/src/taggle.js' %}"></script>
+	<script src="{% static 'sourcebasesite/taggle.js-1.11.1/src/taggle.min.js' %}"></script>
 	<script>
-		new Taggle('edit_source_taggle');
+		new Taggle('edit_source_taggle', {
+    tags: {{ tags|safe }}
+});
 	</script>
 
 

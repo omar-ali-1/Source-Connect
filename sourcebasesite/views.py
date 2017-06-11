@@ -15,6 +15,8 @@ from models import *
 from google.appengine.ext.webapp.util import run_wsgi_app
 
 from django.template.defaultfilters import slugify
+from ast import literal_eval
+import logging
 
 # Create your views here.
 
@@ -78,7 +80,7 @@ def editSource(request, sourceID):
     source = key.get()
     tags = []
     for relation in SourceTagRel.query(SourceTagRel.source==source.key):
-                tags.append(relation.tag.get())
+                tags.append(relation.tag.get().title.encode('utf-8'))
     return render(request, "sourcebasesite/edit_source.html", {'source': source, 'tags': tags})
 
 def newSource(request):
@@ -93,6 +95,46 @@ def saveSource(request, sourceID):
     key = ndb.Key('Source', sourceID)
     source = key.get()
     title = request.POST['title']
+    tagNames = request.POST.getlist('taggles[]')
+    tagNamesSet = set()
+    for tagName in tagNames:
+        tagNamesSet.add(tagName)
+
+    logging.info(tagNames)
+    logging.info(tagNamesSet)
+
+    newTagNames = []
+    oldTagNames = []
+    needDelTags = []
+    relations = SourceTagRel.query(SourceTagRel.source==source.key)
+
+    logging.info(relations)
+
+    for relation in relations:
+        oldTagNames.append(relation.tag.get().title)
+
+    logging.info(oldTagNames)
+
+    oldTagNamesSet = set()
+    for tagName in tagNames:
+        if tagName not in oldTagNamesSet:
+            newTagNames.append(tagName)
+    logging.info("New tag names:")
+    logging.info(newTagNames)
+    for tagName in oldTagNames:
+        if tagName not in tagNamesSet:
+            needDelTags.append(tagName)
+    for tagName in newTagNames:
+        tag = Tag.query(Tag.title == tagName).get()
+        if tag is None:
+            tag = Tag(title = tagName)
+            tag.put()
+        logging.info(tag.title)
+        logging.info(tag.key)
+        SourceTagRel(source = key, tag = tag.key).put()
+    for tagName in needDelTags:
+        SourceTagRel.query(SourceTagRel.tag==Tag.query(Tag.title == tagName).get().key).get().key.delete()
+
     description = request.POST['description']
     source.title = title
     source.description = description

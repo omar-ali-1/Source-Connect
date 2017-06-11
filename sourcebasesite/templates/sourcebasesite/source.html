@@ -21,7 +21,6 @@
 	</div>
 	<div class='col-xs-10 col-sm-10 col-md-10 search'>
 	<form action="{% url 'source' %}" method="get">
-		{% csrf_token %}
 		<div class="input-group">
 		  <input type="text" name="q" id="q" class="form-control" aria-label="..." value="{{ q }}">
 		  <div class="input-group-btn">
