@@ -8,6 +8,14 @@
 {% block content %}
 <div class="row">
 	<div class="col-xs-12">
+		{% if error %}
+		<h3>{{error}}</h3>
+		{% endif %}
+	</div>
+
+</div>
+<div class="row">
+	<div class="col-xs-12">
 		<a href="{% url 'editSource' source.key.id %}" class="btn btn-primary" role="button">Edit Source</a>
 
 		<div class="btn-group" role="group" aria-label="...">
@@ -26,9 +34,9 @@
 		<div class="collapse" id="collapseExample">
 		  	<div class="well">
 				{% for tag in tags %}
-					<a href="{% url 'source' %}?q={{ tag.title }}">
-						| {{ tag.title }} | 
-					</a>
+					| <a href="{% url 'source' %}?q={{ tag.title }}">
+						{{ tag.title }}
+					</a> | 
 				{% endfor %}
 		  	</div>
 		  <hr>

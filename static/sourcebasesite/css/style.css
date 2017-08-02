@@ -83,7 +83,7 @@ body {
 ------------------------- */
 
 .featurette-divider {
-  margin: 80px 0; /* Space out the Bootstrap <hr> more */
+  margin: 20px 0; /* Space out the Bootstrap <hr> more */
 }
 
 /* Thin out the marketing headings */
@@ -113,7 +113,7 @@ body {
 
   /* The navbar becomes detached from the top, so we round the corners */
   .navbar-wrapper .navbar {
-    border-radius: 4px;
+    border-radius: 0;
   }
 
   /* Bump up size of carousel content */
@@ -490,4 +490,39 @@ ul.taggle_list {
     display:inline-block;
     float: none;
     vertical-align: top;
+}
+
+/* footer fix */
+/*
+this solution was replaced with use of container class to get footer to have same width as page content
+footer {
+    
+    -webkit-margin-before: 0.1em;
+    -webkit-margin-after: 0.1em;
+    -webkit-margin-start: 10%;
+    -webkit-margin-end: 10%;
+    padding-left: 1%;
+    padding-right: 1%;
+}
+*/
+.site {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+.site-content {
+  flex: 1;
+}
+/* footer fix */
+
+ul {
+  -webkit-margin-before: 1em; 
+  -webkit-margin-after: 1em;
+  -webkit-margin-start: 0px;
+  -webkit-margin-end: 0px;
+  -webkit-padding-start: 40px;
+
+}
+
 }

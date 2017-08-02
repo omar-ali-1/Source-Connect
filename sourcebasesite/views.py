@@ -63,13 +63,13 @@ def source(request):
     #    keylist.append(str(source.key))
     return render(request, "sourcebasesite/source.html", {'source_dic': keylist, 'q': q})
 
-def detail(request, sourceID):
+def detail(request, sourceID, error=None):
     sourceKey = ndb.Key(Source, sourceID)
     source = sourceKey.get()
     tags = []
     for relation in SourceTagRel.query(SourceTagRel.source==source.key):
                 tags.append(relation.tag.get())
-    return render(request, "sourcebasesite/source_detail.html", {'source': source, 'tags': tags})
+    return render(request, "sourcebasesite/source_detail.html", {'source': source, 'tags': tags, 'error':error})
 
 
 def test(request):
@@ -85,11 +85,17 @@ def editSource(request, sourceID):
 
 def newSource(request):
     post = request.POST
-    source = Source(title=post['title'])
-    key = ndb.Key('Source', slugify(post['title']))
-    source.key = key
-    source.put()
-    return HttpResponseRedirect(reverse('detail', args=(source.key.id(),)))
+    slug = slugify(post['title'])
+    source = Source.get_by_id(slug)
+    if source is None:
+        source = Source(title=post['title'])
+        key = ndb.Key('Source', slugify(post['title']))
+        source.key = key
+        source.put()
+        return HttpResponseRedirect(reverse('detail', args=(source.key.id(),)))
+    else:
+        error = "A source with the title you entered already exists. Please edit this source instead."
+        return detail(request, slug, error)
 
 def saveSource(request, sourceID):
     key = ndb.Key('Source', sourceID)
@@ -115,7 +121,7 @@ def saveSource(request, sourceID):
 
     logging.info(oldTagNames)
 
-    oldTagNamesSet = set()
+    oldTagNamesSet = set(oldTagNames)
     for tagName in tagNames:
         if tagName not in oldTagNamesSet:
             newTagNames.append(tagName)

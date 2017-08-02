@@ -27,10 +27,12 @@
   selector: 'edittitle',
   inline: true,
   toolbar: 'undo redo',
-  menubar: false
+  menubar: false,
+  branding: false
 });
 tinymce.init({
   selector: 'textarea',
+  branding: false,
   height: 500,
   theme: 'modern',
   plugins: [
@@ -39,7 +41,7 @@ tinymce.init({
     'insertdatetime media nonbreaking save table contextmenu directionality',
     'emoticons template paste textcolor colorpicker textpattern imagetools codesample toc'
   ],
-  toolbar1: 'undo redo | insert | fontselect | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
+  toolbar1: 'undo redo | insert | fontselect | fontsizeselect | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
   toolbar2: 'print preview media | forecolor backcolor emoticons | codesample',
   image_advtab: true,
   templates: [
@@ -79,54 +81,59 @@ tinymce.init({
   </head>
 <!-- NAVBAR
 ================================================== -->
-  <body>
-    <div class="navbar-wrapper">
-      <div class="container-fluid">
+  <body class="site">
+    <header>
+      <div class="navbar-wrapper">
+        <div class="container-fluid">
 
-        <nav class="navbar navbar-inverse navbar-static-top center">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-              <a class="navbar-brand" href="/">Sourcebase</a>
+          <nav class="navbar navbar-inverse navbar-fixed-top center">
+            <div class="container">
+              <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                  <span class="sr-only">Toggle navigation</span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">Sourcebase</a>
+              </div>
+              <div id="navbar" class="navbar-collapse collapse navbar-inner">
+                <ul class="nav navbar-nav">
+                  <li><a href="/">Home</a></li>
+                  <li><a href="/source/">Source</a></li>
+                  <li><a href="/discuss/">Discuss</a></li>  
+                  <li><a href="/read/">Read</a></li>
+                  <li><a href="/act/">Act</a></li>  
+                  <li><a href="/about/">About</a></li>    
+                  <li><a href="/contact/">Contact</a></li>
+
+                </ul>
+              </div>
             </div>
-            <div id="navbar" class="navbar-collapse collapse navbar-inner">
-              <ul class="nav navbar-nav">
-                <li><a href="/">Home</a></li>
-                <li><a href="/source/">Source</a></li>
-                <li><a href="/discuss/">Discuss</a></li>  
-                <li><a href="/read/">Read</a></li>
-                <li><a href="/act/">Act</a></li>  
-                <li><a href="/about/">About</a></li>    
-                <li><a href="/contact/">Contact</a></li>
+          </nav>
 
-              </ul>
-            </div>
-          </div>
-        </nav>
-
+        </div>
       </div>
-    </div>
+    </header>
+    <main class="site-content">
+      {% block carousel %}
+      {% endblock carousel %}
 
-  {% block carousel %}
-  {% endblock carousel %}
+      <div class="container ">
+        {% block content %}
+        {% endblock content %}
 
-    <div class="container marketing">
-  {% block content %}
+        
 
-  {% endblock content %}
-      <!-- FOOTER -->
-            <hr class="featurette-divider">
-      <div class="footer">
+      </div><!-- /.container -->
+    </main>
+    <footer>
+      <div class="container">
+        <hr class="featurette-divider">
         <p class="pull-right"><a href="#">Back to top</a></p>
         <p>&copy; 2017 Sourcebase &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
       </div>
-
-    </div><!-- /.container -->
+    </footer>
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
