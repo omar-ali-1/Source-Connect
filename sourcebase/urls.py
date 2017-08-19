@@ -30,7 +30,8 @@ urlpatterns = [
     url(r'^about/', about, name='about'),
     url(r'^contact/', contact, name='contact'),
     url(r'^test/', test, name='test'),
-    #url(r'^source/', source, name='source'),
     url(r'^source/', include('sourcebasesite.urls')),
+    #url(r'^source/', source, name='source'),
+    url(r'^issues/', include('issuesite.urls')),
     url(r'^admin/', admin.site.urls)
 ]
