@@ -6,24 +6,53 @@ from google.appengine.ext import ndb
 
 from django.template.defaultfilters import slugify
 
-class Source(ndb.Model):
+from sourcebasesite.views import *
+
+
+# find and implement efficient way to implement relationships between entities
+
+
+class Issue(ndb.Model):
     """Profile -- User profile object"""
     title = ndb.StringProperty(required=True)
     description = ndb.TextProperty()
     content = ndb.TextProperty()
     slug = ndb.ComputedProperty(lambda self: slugify(self.title))
-    #id = ndb.ComputedProperty(lambda self: self.slug)
 
-# Create your models here.
-class Tag(ndb.Model):
+
+class Argument(ndb.Model):
     """Profile -- User profile object"""
     title = ndb.StringProperty(required=True)
-    description = ndb.StringProperty()
-    slug = ndb.ComputedProperty(lambda self: slugify(self.title))
+    description = ndb.TextProperty()
+    content = ndb.TextProperty()
 
-class SourceTagRel(ndb.Model):
-    source = ndb.KeyProperty(kind=Source,
+# Relations
+#----------
+class IssueArgumentRel(ndb.Model):
+    source = ndb.KeyProperty(kind=Issue,
+                                   required=True)
+    tag = ndb.KeyProperty(kind=Argument,
+                                   required=True)
+    relation = ndb.TextProperty(required=True)
+
+class ArgumentSourceRel(ndb.Model):
+    source = ndb.KeyProperty(kind=Argument,
+                                   required=True)
+    tag = ndb.KeyProperty(kind=Source,
+                                   required=True)
+    relation = ndb.TextProperty(required=True)
+
+class IssueTagRel(ndb.Model):
+    source = ndb.KeyProperty(kind=Issue,
                                    required=True)
     tag = ndb.KeyProperty(kind=Tag,
                                    required=True)
     relation = ndb.TextProperty()
+
+class ArgumentTagRel(ndb.Model):
+    source = ndb.KeyProperty(kind=Argument,
+                                   required=True)
+    tag = ndb.KeyProperty(kind=Tag,
+                                   required=True)
+    relation = ndb.TextProperty()
+

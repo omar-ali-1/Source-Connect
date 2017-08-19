@@ -60,3 +60,10 @@ def issue(request):
     #    keylist.append(str(source.key))
     return render(request, "sourcebasesite/source.html", {'source_dic': keylist, 'q': q})
 
+def detail(request, sourceID, error=None):
+    issueKey = ndb.Key(Issue, issueID)
+    issue = issueKey.get()
+    tags = []
+    for relation in SourceTagRel.query(SourceTagRel.source==source.key):
+                tags.append(relation.tag.get())
+    return render(request, "sourcebasesite/source_detail.html", {'issue': issue, 'arguments': arguments, 'error':error})
