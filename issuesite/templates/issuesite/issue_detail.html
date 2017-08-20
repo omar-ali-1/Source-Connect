@@ -16,7 +16,7 @@
 </div>
 <div class="row">
 	<div class="col-xs-12">
-		<a href="{% url 'editSource' source.key.id %}" class="btn btn-primary" role="button">Edit Issue</a>
+		<a href="{% url 'editIssue' issue.key.id %}" class="btn btn-primary" role="button">Edit Issue</a>
 
 		<hr>
 
@@ -46,7 +46,7 @@
 
 <div class="row">
 	<div class="col-xs-12">
-	 	{{ source.description | safe }} 
+	 	{{ issue.description | safe }} 
 	</div>
 </div>
 

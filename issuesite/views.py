@@ -41,29 +41,105 @@ def issue(request):
     #sourcekey = ndb.Key('Source', 'cups-and-milk')
     #relation = SourceTagRel(source=sourcekey, tag=tagkey).put()
     keylist = []
-    sources = []
+    issues = []
     if 'q' in request.GET:
         tags = Tag.query(Tag.title==request.GET['q'])
         q = request.GET['q']
         for tag in tags:
-            for relation in SourceTagRel.query(SourceTagRel.tag==tag.key):
-                sources.append(relation.source.get())
-        for source in sources:
+            for relation in IssueTagRel.query(IssueTagRel.tag==tag.key):
+                issues.append(relation.issue.get())
+        for issue in issues:
             temp = []
-            temp.append(source.key.id)
-            temp.append(source.title)
-            temp.append(source.description)
+            temp.append(issue.key.id)
+            temp.append(issue.title)
+            temp.append(issue.description)
             keylist.append(temp)
     else: 
         q = ""
     #for source in sources:
     #    keylist.append(str(source.key))
-    return render(request, "sourcebasesite/source.html", {'source_dic': keylist, 'q': q})
+    return render(request, "issuesite/issue.html", {'issue_dic': keylist, 'q': q})
 
-def detail(request, sourceID, error=None):
+def detail(request, issueID, error=None):
     issueKey = ndb.Key(Issue, issueID)
     issue = issueKey.get()
     tags = []
-    for relation in SourceTagRel.query(SourceTagRel.source==source.key):
+    for relation in IssueTagRel.query(IssueTagRel.issue==issue.key):
                 tags.append(relation.tag.get())
-    return render(request, "sourcebasesite/source_detail.html", {'issue': issue, 'arguments': arguments, 'error':error})
+    return render(request, "issuesite/issue_detail.html", {'issue': issue, 'tags': tags, 'error':error})
+
+def newIssue(request):
+    post = request.POST
+    slug = slugify(post['title'])
+    issue = Issue.get_by_id(slug)
+    if issue is None:
+        issue = Issue(title=post['title'])
+        key = ndb.Key('Issue', slug)
+        issue.key = key
+        issue.put()
+        return HttpResponseRedirect(reverse('detail', args=(issue.key.id(),)))
+    else:
+        error = "A issue with the title you entered already exists. Please edit this issue instead."
+        return detail(request, slug, error)
+
+
+def editIssue(request, issueID):
+    key = ndb.Key('Issue', issueID)
+    issue = key.get()
+    tags = []
+    for relation in IssueTagRel.query(IssueTagRel.issue==issue.key):
+                tags.append(relation.tag.get().title.encode('utf-8'))
+    return render(request, "issuesite/edit_issue.html", {'issue': issue, 'tags': tags})
+
+
+def saveIssue(request, issueID):
+    key = ndb.Key('Issue', issueID)
+    issue = key.get()
+    title = request.POST['title']
+    tagNames = request.POST.getlist('taggles[]')
+    tagNamesSet = set()
+    for tagName in tagNames:
+        tagNamesSet.add(tagName)
+
+    logging.info(tagNames)
+    logging.info(tagNamesSet)
+
+    newTagNames = []
+    oldTagNames = []
+    needDelTags = []
+    relations = IssueTagRel.query(IssueTagRel.issue==issue.key)
+
+    logging.info(relations)
+
+    for relation in relations:
+        oldTagNames.append(relation.tag.get().title)
+
+    logging.info(oldTagNames)
+
+    oldTagNamesSet = set(oldTagNames)
+    for tagName in tagNames:
+        if tagName not in oldTagNamesSet:
+            newTagNames.append(tagName)
+    logging.info("New tag names:")
+    logging.info(newTagNames)
+    for tagName in oldTagNames:
+        if tagName not in tagNamesSet:
+            needDelTags.append(tagName)
+    for tagName in newTagNames:
+        tag = Tag.query(Tag.title == tagName).get()
+        if tag is None:
+            tag = Tag(title = tagName)
+            tag.put()
+        logging.info(tag.title)
+        logging.info(tag.key)
+        IssueTagRel(issue = key, tag = tag.key).put()
+    for tagName in needDelTags:
+        IssueTagRel.query(IssueTagRel.tag==Tag.query(Tag.title == tagName).get().key).get().key.delete()
+
+    description = request.POST['description']
+    issue.title = title
+    issue.description = description
+    issue.key.delete()
+    issue.key = ndb.Key(Issue, issue.slug)
+    issue.put()
+    return HttpResponseRedirect(reverse('detail', args=(issue.key.id(),)))

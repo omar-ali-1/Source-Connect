@@ -29,28 +29,28 @@ class Argument(ndb.Model):
 # Relations
 #----------
 class IssueArgumentRel(ndb.Model):
-    source = ndb.KeyProperty(kind=Issue,
+    issue = ndb.KeyProperty(kind=Issue,
                                    required=True)
-    tag = ndb.KeyProperty(kind=Argument,
+    argument = ndb.KeyProperty(kind=Argument,
                                    required=True)
     relation = ndb.TextProperty(required=True)
 
 class ArgumentSourceRel(ndb.Model):
-    source = ndb.KeyProperty(kind=Argument,
+    argument = ndb.KeyProperty(kind=Argument,
                                    required=True)
-    tag = ndb.KeyProperty(kind=Source,
+    source = ndb.KeyProperty(kind=Source,
                                    required=True)
     relation = ndb.TextProperty(required=True)
 
 class IssueTagRel(ndb.Model):
-    source = ndb.KeyProperty(kind=Issue,
+    issue = ndb.KeyProperty(kind=Issue,
                                    required=True)
     tag = ndb.KeyProperty(kind=Tag,
                                    required=True)
     relation = ndb.TextProperty()
 
 class ArgumentTagRel(ndb.Model):
-    source = ndb.KeyProperty(kind=Argument,
+    argument = ndb.KeyProperty(kind=Argument,
                                    required=True)
     tag = ndb.KeyProperty(kind=Tag,
                                    required=True)

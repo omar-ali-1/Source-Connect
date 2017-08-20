@@ -8,7 +8,7 @@
 
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
-<form action="{% url 'saveSource' source.key.id %}" method="post">
+<form action="{% url 'saveIssue' issue.key.id %}" method="post">
 
 	{% csrf_token %}
 
@@ -26,10 +26,10 @@
 	            <div class="well">
 		            <div class="row">
 		            	<div class="col-xs-10">
-			            	<h5>Topics related to this source.</h5>
+			            	<h5>Topics related to this issue.</h5>
 			           	</div>
 			        </div>
-		            <div  id="edit_source_taggle" class="textarea input clearfix example1"></div>
+		            <div  id="edit_issue_taggle" class="textarea input clearfix example1"></div>
 
 
 
@@ -47,7 +47,7 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 	<script src="{% static 'sourcebasesite/taggle.js-1.11.1/src/taggle.min.js' %}"></script>
 	<script>
-		new Taggle('edit_source_taggle', {
+		new Taggle('edit_issue_taggle', {
     tags: {{ tags|safe }}
 });
 	</script>

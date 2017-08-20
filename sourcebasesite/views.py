@@ -89,7 +89,7 @@ def newSource(request):
     source = Source.get_by_id(slug)
     if source is None:
         source = Source(title=post['title'])
-        key = ndb.Key('Source', slugify(post['title']))
+        key = ndb.Key('Source', slug)
         source.key = key
         source.put()
         return HttpResponseRedirect(reverse('detail', args=(source.key.id(),)))
