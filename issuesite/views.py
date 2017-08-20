@@ -137,13 +137,18 @@ def saveIssue(request, issueID):
         IssueTagRel(issue = key, tag = tag.key).put()
     for tagName in needDelTags:
         IssueTagRel.query(IssueTagRel.tag==Tag.query(Tag.title == tagName).get().key).get().key.delete()
-
-    description = request.POST['description']
+    post = request.POST
+    issue.description = post['description']
+    title = post['title']
+    tags = []
+    if title != issue.title:
+        tags = IssueTagRel.query(IssueTagRel.issue==issue.key)
     issue.title = title
-    issue.description = description
     issue.key.delete()
     issue.key = ndb.Key(Issue, issue.slug)
-    logging.info("issue title:")
-    logging.info(issue.title)
     issue.put()
+    for tag in tags:
+        tag.issue = issue.key
+        tag.put()
+
     return HttpResponseRedirect(reverse('issuesite:detail', args=(issue.key.id(),)))

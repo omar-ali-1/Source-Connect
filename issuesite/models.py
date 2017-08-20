@@ -34,7 +34,7 @@ class Argument(ndb.Model):
 
 # Relations
 #----------
-class ClaimArgRel(ndb.Model):
+class ClaimArgumentRel(ndb.Model):
     claim = ndb.KeyProperty(kind=Claim,
                                    required=True)
     argument = ndb.KeyProperty(kind=Argument,
