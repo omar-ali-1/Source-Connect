@@ -20,7 +20,7 @@
 		</div>
 	</div>
 	<div class='col-xs-10 col-sm-10 col-md-10 search'>
-	<form action="{% url 'source' %}" method="get">
+	<form action="{% url 'sourcebasesite:source' %}" method="get">
 		<div class="input-group">
 		  <input type="text" name="q" id="q" class="form-control" aria-label="..." value="{{ q }}">
 		  <div class="input-group-btn">
@@ -46,7 +46,7 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Cancel"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="myModalLabel">Add a new source</h4>
       </div>
-      <form action="{% url 'newSource' %}" method="post">
+      <form action="{% url 'sourcebasesite:newSource' %}" method="post">
       <div class="modal-body">
 			{% csrf_token %}
 			<div class="form-group">
@@ -74,7 +74,7 @@
 	    <div class='list-group'>
 	    {% for source in source_dic %}
 
-	        <a target="_blank" class='list-group-item list-group-item-action' href="{% url 'detail' source.0 %}">
+	        <a target="_blank" class='list-group-item list-group-item-action' href="{% url 'sourcebasesite:detail' source.0 %}">
 	        <!-- <button id='myButton' type="button" class="btn btn-primary btn-clipboard"" data-toggle="modal" data-target="#myModal">Tags</button> -->
 	        	<h3>{{ source.1 }}</h3>
 	        	<p> {{ source.2 | safe }} </p>

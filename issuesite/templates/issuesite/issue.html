@@ -20,7 +20,7 @@
 		</div>
 	</div>
 	<div class='col-xs-10 col-sm-10 col-md-10 search'>
-	<form action="{% url 'issue' %}" method="get">
+	<form action="{% url 'issuesite:issue' %}" method="get">
 		<div class="input-group">
 		  <input type="text" name="q" id="q" class="form-control" aria-label="..." value="{{ q }}">
 		  <div class="input-group-btn">
@@ -46,7 +46,7 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Cancel"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="myModalLabel">Add a new issue</h4>
       </div>
-      <form action="{% url 'newIssue' %}" method="post">
+      <form action="{% url 'issuesite:newIssue' %}" method="post">
       <div class="modal-body">
 			{% csrf_token %}
 			<div class="form-group">
@@ -74,7 +74,7 @@
 	    <div class='list-group'>
 	    {% for issue in issue_dic %}
 
-	        <a target="_blank" class='list-group-item list-group-item-action' href="{% url 'detail' issue.0 %}">
+	        <a target="_blank" class='list-group-item list-group-item-action' href="{% url 'issuesite:detail' issue.0 %}">
 	        <!-- <button id='myButton' type="button" class="btn btn-primary btn-clipboard"" data-toggle="modal" data-target="#myModal">Tags</button> -->
 	        	<h3>{{ issue.1 }}</h3>
 	        	<p> {{ issue.2 | safe }} </p>
@@ -84,7 +84,7 @@
 	    {% endfor %}
 	    </div>
 	{% else %}
-	    <p>No issuess are available.</p>
+	    <p>No issues are available.</p>
 	{% endif %}
 	</div>
 

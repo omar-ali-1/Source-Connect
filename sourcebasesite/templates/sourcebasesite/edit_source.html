@@ -8,7 +8,7 @@
 
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
-<form action="{% url 'saveSource' source.key.id %}" method="post">
+<form action="{% url 'sourcebasesite:saveSource' source.key.id %}" method="post">
 
 	{% csrf_token %}
 
@@ -68,8 +68,10 @@
 
  -->
 	<div class="form-group">
-	    <input type="hidden" name="title" id="title" value="{{ source.title }}" />
-	    
+		<div class="form-group">
+		  <label for="usr"><h3>Title:</h3></label>
+		  <input name="title" id="title" value="{{ source.title }}" class="form-control">
+		</div>
 
 	    <div class="row">
 	    	<textarea class="form-control" rows="5" name="description" id="mytextarea" >{{ source.description }}

@@ -77,7 +77,7 @@ def newIssue(request):
         key = ndb.Key('Issue', slug)
         issue.key = key
         issue.put()
-        return HttpResponseRedirect(reverse('detail', args=(issue.key.id(),)))
+        return HttpResponseRedirect(reverse('issuesite:detail', args=(issue.key.string_id(),)))
     else:
         error = "A issue with the title you entered already exists. Please edit this issue instead."
         return detail(request, slug, error)
@@ -94,6 +94,8 @@ def editIssue(request, issueID):
 
 def saveIssue(request, issueID):
     key = ndb.Key('Issue', issueID)
+    logging.info("key:")
+    logging.info(key)
     issue = key.get()
     title = request.POST['title']
     tagNames = request.POST.getlist('taggles[]')
@@ -141,5 +143,7 @@ def saveIssue(request, issueID):
     issue.description = description
     issue.key.delete()
     issue.key = ndb.Key(Issue, issue.slug)
+    logging.info("issue title:")
+    logging.info(issue.title)
     issue.put()
-    return HttpResponseRedirect(reverse('detail', args=(issue.key.id(),)))
+    return HttpResponseRedirect(reverse('issuesite:detail', args=(issue.key.id(),)))

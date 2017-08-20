@@ -92,7 +92,7 @@ def newSource(request):
         key = ndb.Key('Source', slug)
         source.key = key
         source.put()
-        return HttpResponseRedirect(reverse('detail', args=(source.key.id(),)))
+        return HttpResponseRedirect(reverse('sourcebasesite:detail', args=(source.key.id(),)))
     else:
         error = "A source with the title you entered already exists. Please edit this source instead."
         return detail(request, slug, error)
@@ -100,33 +100,32 @@ def newSource(request):
 def saveSource(request, sourceID):
     key = ndb.Key('Source', sourceID)
     source = key.get()
-    title = request.POST['title']
     tagNames = request.POST.getlist('taggles[]')
     tagNamesSet = set()
     for tagName in tagNames:
         tagNamesSet.add(tagName)
 
-    logging.info(tagNames)
-    logging.info(tagNamesSet)
+    #logging.info(tagNames)
+    #logging.info(tagNamesSet)
 
     newTagNames = []
     oldTagNames = []
     needDelTags = []
     relations = SourceTagRel.query(SourceTagRel.source==source.key)
 
-    logging.info(relations)
+    #logging.info(relations)
 
     for relation in relations:
         oldTagNames.append(relation.tag.get().title)
 
-    logging.info(oldTagNames)
+    #logging.info(oldTagNames)
 
     oldTagNamesSet = set(oldTagNames)
     for tagName in tagNames:
         if tagName not in oldTagNamesSet:
             newTagNames.append(tagName)
-    logging.info("New tag names:")
-    logging.info(newTagNames)
+    #logging.info("New tag names:")
+    #logging.info(newTagNames)
     for tagName in oldTagNames:
         if tagName not in tagNamesSet:
             needDelTags.append(tagName)
@@ -140,14 +139,21 @@ def saveSource(request, sourceID):
         SourceTagRel(source = key, tag = tag.key).put()
     for tagName in needDelTags:
         SourceTagRel.query(SourceTagRel.tag==Tag.query(Tag.title == tagName).get().key).get().key.delete()
-
-    description = request.POST['description']
+    post = request.POST
+    source.description = post['description']
+    title = post['title']
+    tags = []
+    if title != source.title:
+        tags = SourceTagRel.query(SourceTagRel.source==source.key)
     source.title = title
-    source.description = description
     source.key.delete()
     source.key = ndb.Key(Source, source.slug)
     source.put()
-    return HttpResponseRedirect(reverse('detail', args=(source.key.id(),)))
+    for tag in tags:
+        tag.source = source.key
+        tag.put()
+
+    return HttpResponseRedirect(reverse('sourcebasesite:detail', args=(source.key.id(),)))
 
 def discuss(request):
     return render(request, "sourcebasesite/discuss.html")
