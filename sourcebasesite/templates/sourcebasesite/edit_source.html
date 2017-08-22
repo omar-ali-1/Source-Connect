@@ -70,12 +70,14 @@
 	<div class="form-group">
 		<div class="form-group">
 		  <label for="usr"><h3>Title:</h3></label>
-		  <input name="title" id="title" value="{{ source.title }}" class="form-control">
+		  <h2><input name="title" id="title" value="{{ source.title }}" class="form-control"></h2>
 		</div>
 
 	    <div class="row">
-	    	<textarea class="form-control" rows="5" name="description" id="mytextarea" >{{ source.description }}
-	    	</textarea>
+	    	<div class="col-xs-12">
+	    		<textarea class="form-control" rows="5" name="description" id="mytextarea" >{{ source.description }}
+	    		</textarea>
+	    	</div>
 	    </div>
 
 	    <br /> 

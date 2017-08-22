@@ -24,7 +24,6 @@ class Claim(ndb.Model):
     """Profile -- User profile object"""
     title = ndb.StringProperty(required=True)
     details = ndb.TextProperty(required=True)
-    function = ndb.StringProperty()
 
 class Argument(ndb.Model):
     """Profile -- User profile object"""

@@ -2,24 +2,22 @@
 
 {% load static %}
 
-
-
-
 {% block content %}
+
 <div class="row">
 	<div class="col-xs-12">
 		{% if error %}
-		<h3>{{error}}</h3>
+			<h3>{{error}}</h3>
 		{% endif %}
 	</div>
-
 </div>
+
 <div class="row">
 	<div class="col-xs-12">
-		<a href="{% url 'issuesite:editIssue' issue.key.id %}" class="btn btn-primary" role="button">Edit Issue</a>
-
+		<a href="{% url 'issuesite:editIssue' issue.key.id %}" class="btn btn-primary" role="button">
+			Edit Issue
+		</a>
 		<hr>
-
 	</div>
 </div>
 
@@ -31,13 +29,18 @@
 
 <div class="row">
 	<div class="col-xs-12">
-		<h2>Arguments</h2>
+		<h2>Claims</h2>
 	</div>
 </div>
 
 <div class="row">
 	<div class="col-xs-6">
-
+	    {% for source in source_dic %}
+	        <a target="_blank" class='list-group-item list-group-item-action' href="{% url 'sourcebasesite:detail' source.0 %}">
+	        	<h3>{{ source.1 }}</h3>
+	        	<p> {{ source.2 | safe }} </p>
+	        </a>
+	    {% endfor %}
 	</div>
 	<div class="col-xs-6">
 

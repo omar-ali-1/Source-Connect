@@ -41,6 +41,7 @@ def issue(request):
     #sourcekey = ndb.Key('Source', 'cups-and-milk')
     #relation = SourceTagRel(source=sourcekey, tag=tagkey).put()
     keylist = []
+    all_issues_list = []
     issues = []
     if 'q' in request.GET:
         tags = Tag.query(Tag.title==request.GET['q'])
@@ -54,11 +55,30 @@ def issue(request):
             temp.append(issue.title)
             temp.append(issue.description)
             keylist.append(temp)
-    else: 
-        q = ""
+        if not keylist:
+            allKeyList = []
+            all_issues_list = Issue.query()
+            for issue in all_issues_list:
+                temp = []
+                temp.append(issue.key.id)
+                temp.append(issue.title)
+                temp.append(issue.description)
+                allKeyList.append(temp)
+            all_issues_list = allKeyList
+    else:
+        q = ''
+        allKeyList = []
+        all_issues_list = Issue.query()
+        for issue in all_issues_list:
+            temp = []
+            temp.append(issue.key.id)
+            temp.append(issue.title)
+            temp.append(issue.description)
+            allKeyList.append(temp)
+        all_issues_list = allKeyList
     #for source in sources:
-    #    keylist.append(str(source.key))
-    return render(request, "issuesite/issue.html", {'issue_dic': keylist, 'q': q})
+    #    requested_issues_list.append(str(source.key))
+    return render(request, "issuesite/issue.html", {'issue_list': keylist, 'all_issues_list': all_issues_list, 'q': q})
 
 def detail(request, issueID, error=None):
     issueKey = ndb.Key(Issue, issueID)
