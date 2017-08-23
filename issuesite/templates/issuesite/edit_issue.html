@@ -30,10 +30,6 @@
 			           	</div>
 			        </div>
 		            <div  id="edit_issue_taggle" class="textarea input clearfix example1"></div>
-
-
-
-		            
 	            <div class="row">
 	            	<div class="col-xs-4">
 		            	<button type="submit" class="btn btn-primary">Save</button>
@@ -84,14 +80,71 @@
 	    </div>
 
 	    <br /> 
-
-	    <div id="txtEditor">
-	    </div>
-
-	  	<button type="submit" class="btn btn-primary">Save</button>
+	    <div class="row">
+			<div class='col-xs-12 col-sm-12 col-md-12'>
+				<div class="row">
+					<div class="col-xs-12">
+						<h2>Claims</h2>
+						<hr>
+					</div>
+				</div>
+				<div class="row">
+					<div class='col-xs-12 col-sm-12 col-md-12'>
+						{% if claims %}
+						    <div class='list-group'>
+						    {% for claim in claims %}
+						        <a target="_blank" class='list-group-item list-group-item-action' href="{% url 'issuesite:claimDetail' issueID=issue.slug claimID=claim.slug %}">
+						        	<h3>{{ claim.title }}</h3>
+						        	<p> {{ claim.description | safe }} </p>
+						        </a>
+						    {% endfor %}
+						    </div>
+						{% else %}
+							<p>No claims are available.</p>
+						{% endif %}
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-12">
+						<a data-toggle="modal" data-target="#addClaimModal" href="#"><span class="btn btn-primary" aria-hidden="true">Add Claim</span></a>
+						<hr>
+					</div>
+				</div>
+			</div>
+		</div>
+	    <div class="row">
+			<div class='col-xs-12 col-sm-12 col-md-12'>
+	  			<button type="submit" class="btn btn-primary">Save</button>
+			</div>
+		</div>
 	</div>
 </form>
 
+<!-- Modal -->
+<div class="modal fade" id="addClaimModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Cancel"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Add a new issue</h4>
+      </div>
+      <form action="{% url 'issuesite:newClaim' issueID=issue.slug %}" method="post">
+      <div class="modal-body">
+			{% csrf_token %}
+			<div class="form-group">
+				<label for="title"> Choose a claim title: </label>
+    			<input type="text" class="form-control" name="claimTitle" id="claimTitle" />
+    			<input type="hidden" name="issueTitle" value=" {{issue.title}} ">
+			</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button submit" class="btn btn-primary">Continue</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
 
 
 {% endblock content %}

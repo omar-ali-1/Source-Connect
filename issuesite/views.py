@@ -102,14 +102,74 @@ def newIssue(request):
         error = "A issue with the title you entered already exists. Please edit this issue instead."
         return detail(request, slug, error)
 
+# Editing Issue
+# -------------
+def getIssueKey(issueID):
+    return ndb.Key('Issue', issueID)
+
+def getTags(issueKey):
+    '''Returns list of tag titles as strings'''
+    tags = []
+    for relation in IssueTagRel.query(IssueTagRel.issue==issueKey):
+        tags.append(relation.tag.get().title.encode('utf-8'))
+    return tags
+
+def getClaims(issueKey):
+    '''Returns list of claim objects'''
+    claims = []
+    claimQuery = IssueClaimRel.query(IssueClaimRel.issue==issueKey)
+    for relation in claimQuery:
+        claims.append(relation.claim.get())
+    return claims
+
+def getArguments(claims):
+    argumentDic = dict()
+    for claim in claims:
+        argumentQuery = ClaimArgumentRel.query(ClaimArgumentRel.claim==claim.key)
+        for relation in argumentQuery:
+            if claim.title not in argumentDic:
+                argumentDic[claim.title] = [[],[]]
+            else:
+                argument = relation.argument.get()
+                if argument.function == "FOR":
+                    argumentDic[claim.title][0].append(argument)
+                else:
+                    argumentDic[claim.title][1].append(argument)
+    return argumentDic
 
 def editIssue(request, issueID):
-    key = ndb.Key('Issue', issueID)
-    issue = key.get()
-    tags = []
-    for relation in IssueTagRel.query(IssueTagRel.issue==issue.key):
-                tags.append(relation.tag.get().title.encode('utf-8'))
-    return render(request, "issuesite/edit_issue.html", {'issue': issue, 'tags': tags})
+    issueKey = getIssueKey(issueID)
+    issue = issueKey.get()
+    tags = getTags(issueKey)
+    claims = getClaims(issueKey)
+    argumentDic = getArguments(claims)
+    return render(request, "issuesite/edit_issue.html", {'issue': issue, 'tags': tags, 'claims': claims, 'arguments': argumentDic})
+
+
+# -------------------------------------------------------------
+
+def newClaim(request, issueID):
+    post = request.POST
+    issueSlug = slugify(post['issueTitle'])
+    claimSlug = slugify(post['claimTitle'])
+    issue = Issue.get_by_id(issueSlug)
+    claim = Claim.get_by_id(claimSlug)
+    logging.info("claimID:")
+    logging.info(claimSlug)
+    if claim is None:
+        claim = Claim(title=post['claimTitle'])
+        key = ndb.Key('Claim', claimSlug)
+        claim.key = key
+        claim.put()
+        IssueClaimRel(issue = issue.key, claim = claim.key).put()
+        return HttpResponseRedirect(reverse('issuesite:claimDetail', kwargs={'claimID':claimSlug, 'issueID':issueSlug}))
+    else:
+        IssueClaimRel(issue = issue.key, claim = claim.key).put()
+        error = "A claim with the title you entered already exists. Please edit this claim instead."
+        return claimDetail(request, claimSlug, issueSlug, error)
+
+def editClaim(request):
+    pass
 
 
 def saveIssue(request, issueID):
@@ -172,3 +232,13 @@ def saveIssue(request, issueID):
         tag.put()
 
     return HttpResponseRedirect(reverse('issuesite:detail', args=(issue.key.id(),)))
+
+def claimDetail(request, claimID, issueID, error=None):
+    issue = ndb.Key(Issue, issueID).get()
+    claim = ndb.Key(Claim, claimID).get()
+    logging.info("claim:")
+    logging.info(claim)
+    tags = []
+    for relation in ClaimTagRel.query(ClaimTagRel.claim==claim.key):
+                tags.append(relation.tag.get())
+    return render(request, "issuesite/claim_detail.html", {'claim': claim,'issue': issue, 'tags': tags, 'error':error})

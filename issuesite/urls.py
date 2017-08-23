@@ -9,7 +9,12 @@ urlpatterns = [
     url(r'^/new/$', newIssue, name='newIssue'),
     url(r'^(?P<issueID>[a-zA-Z0-9-_]+)/$', detail, name='detail'),
     url(r'^(?P<issueID>[a-zA-Z0-9-_]+)/edit/$', editIssue, name='editIssue'),
-    url(r'^(?P<issueID>[a-zA-Z0-9-_]+)/save/$', saveIssue, name='saveIssue')
+    url(r'^(?P<issueID>[a-zA-Z0-9-_]+)/save/$', saveIssue, name='saveIssue'),
+    url(r'^(?P<issueID>[a-zA-Z0-9-_]+)/claim/(?P<claimID>[a-zA-Z0-9-_]+)/$', claimDetail, name='claimDetail'),
+    url(r'^(?P<issueID>[a-zA-Z0-9-_]+)/new/claim/$', newClaim, name='newClaim'),
+    url(r'^(?P<issueID>[a-zA-Z0-9-_]+)/claim/(?P<claimID>[a-zA-Z0-9-_]+)/edit/$', editClaim, name='editClaim'),
+    #url(r'^(?P<issueID>[a-zA-Z0-9-_]+)/claim/(?P<claimID>[a-zA-Z0-9-_]+)/save/$', saveClaim, name='saveClaim'),
+    #
     #url(r'^(?P<sourceID>[a-zA-Z0-9-_]+)/$', detail, name='detail'),
     #url(r'^(?P<sourceID>[a-zA-Z0-9-_]+)/edit/$', editSource, name='editSource'),
     #url(r'^(?P<sourceID>[a-zA-Z0-9-_]+)/save/$', saveSource, name='saveSource'),

@@ -16,14 +16,14 @@ class Issue(ndb.Model):
     """Profile -- User profile object"""
     title = ndb.StringProperty(required=True)
     description = ndb.TextProperty()
-    content = ndb.TextProperty()
     slug = ndb.ComputedProperty(lambda self: slugify(self.title))
 
 
 class Claim(ndb.Model):
     """Profile -- User profile object"""
     title = ndb.StringProperty(required=True)
-    details = ndb.TextProperty(required=True)
+    description = ndb.TextProperty()
+    slug = ndb.ComputedProperty(lambda self: slugify(self.title))
 
 class Argument(ndb.Model):
     """Profile -- User profile object"""
@@ -40,12 +40,19 @@ class ClaimArgumentRel(ndb.Model):
                                    required=True)
     relation = ndb.TextProperty(required=True)
 
+class ClaimTagRel(ndb.Model):
+    claim = ndb.KeyProperty(kind=Claim,
+                                   required=True)
+    tag = ndb.KeyProperty(kind=Tag,
+                                   required=True)
+    relation = ndb.TextProperty(required=True)
+
 class IssueClaimRel(ndb.Model):
     issue = ndb.KeyProperty(kind=Issue,
                                    required=True)
     claim = ndb.KeyProperty(kind=Claim,
                                    required=True)
-    relation = ndb.TextProperty(required=True)
+    relation = ndb.TextProperty()
 
 
 class IssueArgumentRel(ndb.Model):
