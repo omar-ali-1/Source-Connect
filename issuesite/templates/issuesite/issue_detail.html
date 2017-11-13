@@ -4,54 +4,64 @@
 
 {% block content %}
 
-<div class="row">
-	<div class="col-xs-12">
-		{% if error %}
-			<h3>{{error}}</h3>
-		{% endif %}
-	</div>
-</div>
+	<!-- Error Message -->
 
-<div class="row">
-	<div class="col-xs-12">
-		<a href="{% url 'issuesite:editIssue' issue.key.id %}" class="btn btn-primary" role="button">
-			Edit Issue
-		</a>
-		<hr>
+	<div class="row">
+		<div class="col-xs-12">
+			{% if error %}
+				<h3>{{error}}</h3>
+			{% endif %}
+		</div>
 	</div>
-</div>
 
-<div class="row">
-	<div class="col-xs-12">
-		<h2>{{ issue.title | safe }} </h2>
-	</div>
-</div>
+	<!-- Edit issue button -->
 
-<div class="row">
-	<div class="col-xs-12">
-		<h2>Claims</h2>
+	<div class="row">
+		<div class="col-xs-12">
+			<a href="{% url 'issuesite:editIssue' issue.key.id %}" class="btn btn-primary" role="button">
+				Edit Issue
+			</a>
+			<hr>
+		</div>
 	</div>
-</div>
 
-<div class="row">
-	<div class="col-xs-6">
-	    {% for source in source_dic %}
-	        <a target="_blank" class='list-group-item list-group-item-action' href="{% url 'sourcebasesite:detail' source.0 %}">
-	        	<h3>{{ source.1 }}</h3>
-	        	<p> {{ source.2 | safe }} </p>
-	        </a>
-	    {% endfor %}
-	</div>
-	<div class="col-xs-6">
+	<!-- Issue title -->
 
+	<div class="row">
+		<div class="col-xs-12">
+			<h2>{{ issue.title | safe }} </h2>
+		</div>
 	</div>
-</div>
 
-<div class="row">
-	<div class="col-xs-12">
-	 	{{ issue.description | safe }} 
+	<!-- Claims title -->
+
+	<div class="row">
+		<div class="col-xs-12">
+			<h2>Claims</h2>
+		</div>
 	</div>
-</div>
+
+
+
+	<div class="row">
+		<div class="col-xs-6">
+		    {% for source in source_dic %}
+		        <a target="_blank" class='list-group-item list-group-item-action' href="{% url 'sourcebasesite:detail' source.0 %}">
+		        	<h3>{{ source.1 }}</h3>
+		        	<p> {{ source.2 | safe }} </p>
+		        </a>
+		    {% endfor %}
+		</div>
+		<div class="col-xs-6">
+
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-xs-12">
+		 	{{ issue.description | safe }} 
+		</div>
+	</div>
 
         	
 
