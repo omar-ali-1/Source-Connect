@@ -148,29 +148,6 @@ def editIssue(request, issueID):
 
 # -------------------------------------------------------------
 
-def newClaim(request, issueID):
-    post = request.POST
-    issueSlug = slugify(post['issueTitle'])
-    claimSlug = slugify(post['claimTitle'])
-    issue = Issue.get_by_id(issueSlug)
-    claim = Claim.get_by_id(claimSlug)
-    logging.info("claimID:")
-    logging.info(claimSlug)
-    if claim is None:
-        claim = Claim(title=post['claimTitle'])
-        key = ndb.Key('Claim', claimSlug)
-        claim.key = key
-        claim.put()
-        IssueClaimRel(issue = issue.key, claim = claim.key).put()
-        return HttpResponseRedirect(reverse('issuesite:claimDetail', kwargs={'claimID':claimSlug, 'issueID':issueSlug}))
-    else:
-        IssueClaimRel(issue = issue.key, claim = claim.key).put()
-        error = "A claim with the title you entered already exists. Please edit this claim instead."
-        return claimDetail(request, claimSlug, issueSlug, error)
-
-def editClaim(request):
-    pass
-
 
 def saveIssue(request, issueID):
     key = ndb.Key('Issue', issueID)
@@ -233,6 +210,18 @@ def saveIssue(request, issueID):
 
     return HttpResponseRedirect(reverse('issuesite:detail', args=(issue.key.id(),)))
 
+
+# --------- Claims ----------------------------------------------------
+
+def claimDetail(request, claimID, error=None):
+    claimKey = ndb.Key(Claim, claimID)
+    claim = claimKey.get()
+    tags = []
+    for relation in ClaimTagRel.query(ClaimTagRel.claim==claim.key):
+                tags.append(relation.tag.get())
+    return render(request, "issuesite/claim_detail.html", {'claim': claim, 'tags': tags, 'error':error})
+
+
 def claimDetail(request, claimID, issueID, error=None):
     issue = ndb.Key(Issue, issueID).get()
     claim = ndb.Key(Claim, claimID).get()
@@ -242,3 +231,99 @@ def claimDetail(request, claimID, issueID, error=None):
     for relation in ClaimTagRel.query(ClaimTagRel.claim==claim.key):
                 tags.append(relation.tag.get())
     return render(request, "issuesite/claim_detail.html", {'claim': claim,'issue': issue, 'tags': tags, 'error':error})
+
+
+def newClaim(request, issueID):
+    post = request.POST
+    issueSlug = slugify(post['issueTitle'])
+    claimSlug = slugify(post['claimTitle'])
+    issue = Issue.get_by_id(issueSlug)
+    claim = Claim.get_by_id(claimSlug)
+    logging.info("claimID:")
+    logging.info(claimSlug)
+    if claim is None:
+        claim = Claim(title=post['claimTitle'])
+        key = ndb.Key('Claim', claimSlug)
+        claim.key = key
+        claim.put()
+        IssueClaimRel(issue = issue.key, claim = claim.key).put()
+        return HttpResponseRedirect(reverse('issuesite:claimDetail', kwargs={'claimID':claimSlug, 'issueID':issueSlug}))
+    else:
+        IssueClaimRel(issue = issue.key, claim = claim.key).put()
+        error = "A claim with the title you entered already exists. Please edit this claim instead."
+        return claimDetail(request, claimSlug, issueSlug, error)
+
+def editClaim(request, issueID, claimID):
+    claim = ndb.Key('Claim', claimID).get()
+    issue = ndb.Key('Issue', issueID).get()
+    tags = []
+    for relation in ClaimTagRel.query(ClaimTagRel.claim==claim.key):
+        tags.append(relation.tag.get().title.encode('utf-8'))
+    return render(request, "issuesite/edit_claim.html", {'issue': issue, 'claim': claim, 'tags': tags})
+
+def saveClaim(request, issueID, claimID):
+    key = ndb.Key('Claim', claimID)
+    logging.info("key:")
+    logging.info(key)
+    claim = key.get()
+    title = request.POST['title']
+    tagNames = request.POST.getlist('taggles[]')
+    tagNamesSet = set()
+    for tagName in tagNames:
+        tagNamesSet.add(tagName)
+
+    logging.info(tagNames)
+    logging.info(tagNamesSet)
+
+    newTagNames = []
+    oldTagNames = []
+    needDelTags = []
+    relations = ClaimTagRel.query(ClaimTagRel.claim==claim.key)
+
+    logging.info(relations)
+
+    for relation in relations:
+        oldTagNames.append(relation.tag.get().title)
+
+    logging.info(oldTagNames)
+
+    oldTagNamesSet = set(oldTagNames)
+    for tagName in tagNames:
+        if tagName not in oldTagNamesSet:
+            newTagNames.append(tagName)
+    logging.info("New tag names:")
+    logging.info(newTagNames)
+    for tagName in oldTagNames:
+        if tagName not in tagNamesSet:
+            needDelTags.append(tagName)
+    for tagName in newTagNames:
+        tag = Tag.query(Tag.title == tagName).get()
+        if tag is None:
+            tag = Tag(title = tagName)
+            tag.put()
+        logging.info(tag.title)
+        logging.info(tag.key)
+        ClaimTagRel(claim = key, tag = tag.key).put()
+    for tagName in needDelTags:
+        ClaimTagRel.query(ClaimTagRel.tag==Tag.query(Tag.title == tagName).get().key).get().key.delete()
+    post = request.POST
+    claim.description = post['description']
+    title = post['title']
+    tags = []
+    if title != claim.title:
+        tags = ClaimTagRel.query(ClaimTagRel.claim==claim.key)
+    claim.title = title
+    claim.key.delete()
+    claim.key = ndb.Key(Claim, claim.slug)
+    claim.put()
+
+    issueKey = ndb.Key('Issue', issueID)
+    relation = IssueClaimRel.query(IssueClaimRel.issue==issueKey).get()
+    relation.claim = claim.key
+    relation.put()
+
+    for tag in tags:
+        tag.claim = claim.key
+        tag.put()
+
+    return HttpResponseRedirect(reverse('issuesite:claimDetail', args=(issueID, claim.key.id(),)))
