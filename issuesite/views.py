@@ -272,12 +272,14 @@ def saveClaim(request, issueID, claimID):
     for tagName in tagNames:
         tagNamesSet.add(tagName)
 
-    logging.info(tagNames)
-    logging.info(tagNamesSet)
+    #logging.info(tagNames)
+    #logging.info(tagNamesSet)
 
     newTagNames = []
     oldTagNames = []
     needDelTags = []
+
+
     relations = ClaimTagRel.query(ClaimTagRel.claim==claim.key)
 
     logging.info(relations)
@@ -285,14 +287,14 @@ def saveClaim(request, issueID, claimID):
     for relation in relations:
         oldTagNames.append(relation.tag.get().title)
 
-    logging.info(oldTagNames)
+    #logging.info(oldTagNames)
 
     oldTagNamesSet = set(oldTagNames)
     for tagName in tagNames:
         if tagName not in oldTagNamesSet:
             newTagNames.append(tagName)
-    logging.info("New tag names:")
-    logging.info(newTagNames)
+    #logging.info("New tag names:")
+    #logging.info(newTagNames)
     for tagName in oldTagNames:
         if tagName not in tagNamesSet:
             needDelTags.append(tagName)
@@ -301,8 +303,8 @@ def saveClaim(request, issueID, claimID):
         if tag is None:
             tag = Tag(title = tagName)
             tag.put()
-        logging.info(tag.title)
-        logging.info(tag.key)
+        #logging.info(tag.title)
+        #logging.info(tag.key)
         ClaimTagRel(claim = key, tag = tag.key).put()
     for tagName in needDelTags:
         ClaimTagRel.query(ClaimTagRel.tag==Tag.query(Tag.title == tagName).get().key).get().key.delete()

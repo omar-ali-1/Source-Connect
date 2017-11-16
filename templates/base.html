@@ -18,6 +18,43 @@
     <link href="{% static 'sourcebasesite/css/style.css' %}?version=1" rel="stylesheet">
     {% block styles %}
     {% endblock styles %}
+    <script src='//cloud.tinymce.com/stable/tinymce.min.js?apiKey=1c71d4g4v5yesnh23vret31enyehv3m0jzgvcykuuiy7qclj'></script>
+    <script>
+      tinymce.init({
+        selector: 'edittitle',
+        inline: true,
+        toolbar: 'undo redo',
+        menubar: false,
+        branding: false
+      });
+      tinymce.init({
+        image_dimensions: false,
+               image_class_list: [
+                  {title: 'Responsive', value: 'img-responsive'}
+              ],
+        selector: 'textarea',
+        branding: false,
+        height: 500,
+        theme: 'modern',
+        plugins: [
+          'advlist autolink lists link image charmap print preview hr anchor pagebreak',
+          'searchreplace wordcount visualblocks visualchars code fullscreen',
+          'insertdatetime media nonbreaking save table contextmenu directionality',
+          'emoticons template paste textcolor colorpicker textpattern imagetools codesample toc'
+        ],
+        toolbar1: 'undo redo | insert | fontselect | fontsizeselect | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
+        toolbar2: 'print preview media | forecolor backcolor emoticons | codesample',
+        image_advtab: true,
+        templates: [
+          { title: 'Test template 1', content: 'Test 1' },
+          { title: 'Test template 2', content: 'Test 2' }
+        ],
+        content_css: [
+          '//fonts.googleapis.com/css?family=Lato:300,300i,400,400i',
+          '//www.tinymce.com/css/codepen.min.css'
+        ]
+      });
+    </script>
   </head>
 
   <body class="site">
@@ -74,43 +111,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="https://maxcdn.bootstrapcdn.com/js/ie10-viewport-bug-workaround.js"></script>
-    <script src='//cloud.tinymce.com/stable/tinymce.min.js?apiKey=1c71d4g4v5yesnh23vret31enyehv3m0jzgvcykuuiy7qclj'></script>
-    <script>
-      tinymce.init({
-        selector: 'edittitle',
-        inline: true,
-        toolbar: 'undo redo',
-        menubar: false,
-        branding: false
-      });
-      tinymce.init({
-        image_dimensions: false,
-               image_class_list: [
-                  {title: 'Responsive', value: 'img-responsive'}
-              ],
-        selector: 'textarea',
-        branding: false,
-        height: 500,
-        theme: 'modern',
-        plugins: [
-          'advlist autolink lists link image charmap print preview hr anchor pagebreak',
-          'searchreplace wordcount visualblocks visualchars code fullscreen',
-          'insertdatetime media nonbreaking save table contextmenu directionality',
-          'emoticons template paste textcolor colorpicker textpattern imagetools codesample toc'
-        ],
-        toolbar1: 'undo redo | insert | fontselect | fontsizeselect | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
-        toolbar2: 'print preview media | forecolor backcolor emoticons | codesample',
-        image_advtab: true,
-        templates: [
-          { title: 'Test template 1', content: 'Test 1' },
-          { title: 'Test template 2', content: 'Test 2' }
-        ],
-        content_css: [
-          '//fonts.googleapis.com/css?family=Lato:300,300i,400,400i',
-          '//www.tinymce.com/css/codepen.min.css'
-        ]
-      });
-    </script>
+    
 
   </body>
 </html>
