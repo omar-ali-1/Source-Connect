@@ -254,7 +254,7 @@ def newClaim(request, issueID):
         IssueClaimRel(issue = issue.key, claim = claim.key).put()
         return HttpResponseRedirect(reverse('issuesite:claimDetail', kwargs={'claimID':claimSlug, 'issueID':issueSlug}))
     else:
-        IssueClaimRel(issue = issue.key, claim = claim.key).put()
+        # wrong: if claim already exists, shouldn't creat relation : IssueClaimRel(issue = issue.key, claim = claim.key).put()
         error = "A claim with the title you entered already exists. Please edit this claim instead."
         return claimDetail(request, claimSlug, issueSlug, error)
 
