@@ -7,7 +7,7 @@
 	<!-- Error Message -->
 
 	<div class="row">
-		<div class="col-xs-12">
+		<div class="col-sm-12">
 			{% if error %}
 				<h3>{{error}}</h3>
 			{% endif %}
@@ -17,26 +17,47 @@
 	<!-- Edit issue button -->
 
 	<div class="row">
-		<div class="col-xs-12">
-			<a href="{% url 'issuesite:editIssue' issue.key.id %}" class="btn btn-primary" role="button">
+		<div class="col-sm-12">
+			<a href="{% url 'issuesite:editIssue' issue.key.id %}" class="btn btn-outline-success my-2 my-sm-0" role="button">
 				Edit Issue
 			</a>
-			<hr>
 		</div>
 	</div>
+	<div class="row">
+		<div class="col-sm-12">
+			<hr class="featurette-divider">
+		</div>
+	</div>
+
 
 	<!-- Issue title -->
 
 	<div class="row">
-		<div class="col-xs-12">
+		<div class="col-sm-10">
 			<h2>{{ issue.title | safe }} </h2>
 		</div>
+		<div class="col-sm-2">
+			<a href="{% url 'issuesite:editIssue' issue.key.id %}" class="btn btn-outline-success my-2 my-sm-0 float-right" role="button">
+				Edit Issue
+			</a>
+		</div>
 	</div>
+
+	<!-- Issue description -->
+
+	<div class="row">
+		<div class="col-sm-12">
+		 	{{ issue.description | safe }} 
+		</div>
+	</div>
+
+	<hr class="featurette-divider">
+
 
 	<!-- Claims title -->
 
 	<div class="row">
-		<div class="col-xs-12">
+		<div class="col-sm-12">
 			<h2>Claims</h2>
 		</div>
 	</div>
@@ -44,24 +65,25 @@
 
 
 	<div class="row">
-		<div class="col-xs-6">
-		    {% for source in source_dic %}
-		        <a target="_blank" class='list-group-item list-group-item-action' href="{% url 'sourcebasesite:detail' source.0 %}">
-		        	<h3>{{ source.1 }}</h3>
-		        	<p> {{ source.2 | safe }} </p>
+		<div class="col-sm-12">
+		    {% for claim in claims %}
+		        <a target="_blank" class='list-group-item list-group-item-action' style="display: block;" href="{% url 'issuesite:claimDetail' issueID=issue.slug claimID=claim.slug %}">
+		        	<div class='row'>
+		        		<div class="col-sm-12">
+		        			<h3>{{ claim.title }}</h3>
+		        		</div>
+		        	</div>
+		        	<div class='row'>
+		        		<div class="col-sm-12">
+		        			<p> {{ claim.description | safe }} </p>
+		        		</div>
+		        	</div>
 		        </a>
 		    {% endfor %}
 		</div>
-		<div class="col-xs-6">
-
-		</div>
 	</div>
 
-	<div class="row">
-		<div class="col-xs-12">
-		 	{{ issue.description | safe }} 
-		</div>
-	</div>
+
 
         	
 

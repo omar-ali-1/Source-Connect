@@ -84,9 +84,14 @@ def detail(request, issueID, error=None):
     issueKey = ndb.Key(Issue, issueID)
     issue = issueKey.get()
     tags = []
-    for relation in IssueTagRel.query(IssueTagRel.issue==issue.key):
-                tags.append(relation.tag.get())
-    return render(request, "issuesite/issue_detail.html", {'issue': issue, 'tags': tags, 'error':error})
+    claims = []
+    for relation in IssueTagRel.query(IssueTagRel.issue==issueKey):
+        tags.append(relation.tag.get())
+
+    for relation in IssueClaimRel.query(IssueClaimRel.issue==issueKey):
+        claims.append(relation.claim.get())
+
+    return render(request, "issuesite/issue_detail.html", {'issue': issue, 'claims': claims, 'tags': tags, 'error':error})
 
 def newIssue(request):
     post = request.POST
@@ -263,8 +268,8 @@ def editClaim(request, issueID, claimID):
 
 def saveClaim(request, issueID, claimID):
     key = ndb.Key('Claim', claimID)
-    logging.info("key:")
-    logging.info(key)
+    #logging.info("key:")
+    #logging.info(key)
     claim = key.get()
     title = request.POST['title']
     tagNames = request.POST.getlist('taggles[]')
@@ -313,14 +318,13 @@ def saveClaim(request, issueID, claimID):
     title = post['title']
     tags = []
     if title != claim.title:
-        tags = ClaimTagRel.query(ClaimTagRel.claim==claim.key)
+        tags = ClaimTagRel.query(ClaimTagRel.claim==claimKey)
     claim.title = title
-    claim.key.delete()
-    claim.key = ndb.Key(Claim, claim.slug)
-    claim.put()
-
     issueKey = ndb.Key('Issue', issueID)
-    relation = IssueClaimRel.query(IssueClaimRel.issue==issueKey).get()
+    relation = IssueClaimRel.query(IssueClaimRel.issue==issueKey, IssueClaimRel.claim==claim.key).get()
+    claim.key.delete()
+    claim.key = ndb.Key('Claim', claim.slug)
+    claim.put()
     relation.claim = claim.key
     relation.put()
 

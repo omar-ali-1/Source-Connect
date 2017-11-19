@@ -7,7 +7,7 @@
 
 {% block content %}
 <div class="row">
-	<div class="col-xs-12">
+	<div class="col-sm-12">
 		{% if error %}
 		<h3>{{error}}</h3>
 		{% endif %}
@@ -15,22 +15,22 @@
 
 </div>
 <div class="row">
-	<div class="col-xs-12">
-		<a href="{% url 'issuesite:editClaim' issueID=issue.key.id claimID=claim.key.id %}" class="btn btn-primary" role="button">Edit Claim</a>
+	<div class="col-sm-12">
+		<a href="{% url 'issuesite:editClaim' issueID=issue.key.id claimID=claim.key.id %}" class="btn btn-outline-success" role="button">Edit Claim</a>
 
 		<div class="btn-group" role="group" aria-label="...">
-			<button type="button" class="btn btn-primary" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Related Tags</button>
-			<button type="button" class="btn btn-primary">Somewhat Related Tags</button>
-			<button type="button" class="btn btn-primary">Marginally Related Tags</button>
+			<button type="button" class="btn btn-outline-success" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Related Tags</button>
+			<button type="button" class="btn btn-outline-success">Somewhat Related Tags</button>
+			<button type="button" class="btn btn-outline-success">Marginally Related Tags</button>
 		</div>
 
-		<hr>
+		<hr class="featurette-divider">
 
 	</div>
 </div>
 
 <div class="row">
-	<div class="col-xs-12">
+	<div class="col-sm-12">
 		<div class="collapse" id="collapseExample">
 		  	<div class="well">
 				{% for tag in tags %}
@@ -39,19 +39,23 @@
 					</a> | 
 				{% endfor %}
 		  	</div>
-		  <hr>
+		  
 		</div>
 	</div>
+	<hr class="featurette-divider">
 </div>
 
 <div class="row">
-	<div class="col-xs-12">
-		<h2>{{ claim.title | safe }} </h2>
+	<div class="col-sm-12">
+		<h2>Claim:&nbsp</h2>
+	</div>
+	<div class="col-sm-12">
+		<h2> {{ claim.title | safe }} </h2>
 	</div>
 </div>
 
 <div class="row">
-	<div class="col-xs-12">
+	<div class="col-sm-12">
 	 	{{ claim.description | safe }} 
 	</div>
 </div>

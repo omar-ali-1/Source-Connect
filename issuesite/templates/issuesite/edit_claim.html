@@ -13,30 +13,30 @@
 	{% csrf_token %}
 
 	<div class="row">
-		<div class="col-xs-12">
-			<a class="btn btn-primary" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+		<div class="col-sm-12">
+			<a class="btn btn-outline-success" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
 			  	Tags <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
 			</a>
-			<hr>
+			<hr class="featurette-divider">
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-xs-12">
+		<div class="col-sm-12">
 			<div class="collapse" id="collapseExample">
 	            <div class="well">
 		            <div class="row">
-		            	<div class="col-xs-10">
+		            	<div class="col-sm-10">
 			            	<h5>Topics related to this claim.</h5>
 			           	</div>
 			        </div>
 		            <div  id="edit_claim_taggle" class="textarea input clearfix example1"></div>
 	            <div class="row">
-	            	<div class="col-xs-4">
-		            	<button type="submit" class="btn btn-primary">Save</button>
+	            	<div class="col-sm-4">
+		            	<button type="submit" class="btn btn-outline-success">Save</button>
 		           	</div>
 		        </div>
 	        	</div>
-			  <hr>
+			  <hr class="featurette-divider">
 			</div>
 		</div>
 	</div>
@@ -51,8 +51,6 @@
 
 
 <!-- 
-
-
 	<script type="Javascript">
 		var edit_source_taggle = new Taggle('edit_source_taggle');
 		var tags = "{{tags}}"
@@ -61,8 +59,10 @@
 			edit_source_taggle.add(tags[i].title);
 		}
 	</script>
-
  -->
+
+
+ <!-- Title and Description Form --> 
 	<div class="form-group">
 
 		<div class="form-group">
@@ -70,51 +70,19 @@
 		  <input name="title" id="title" value="{{ claim.title }}" class="form-control">
 		</div>
 	    
-
 	    <div class="row">
-	    	<div class="col-xs-12">
+	    	<div class="col-sm-12">
 	    		<textarea class="form-control" rows="5" name="description" id="mytextarea" >{{ claim.description }}
 	    		</textarea>
 	    	</div>
 	    	
 	    </div>
 
-	    <br /> 
+	    <br />
+
 	    <div class="row">
-			<div class='col-xs-12 col-sm-12 col-md-12'>
-				<div class="row">
-					<div class="col-xs-12">
-						<h2>Claims</h2>
-						<hr>
-					</div>
-				</div>
-				<div class="row">
-					<div class='col-xs-12 col-sm-12 col-md-12'>
-						{% if claims %}
-						    <div class='list-group'>
-						    {% for claim in claims %}
-						        <a target="_blank" class='list-group-item list-group-item-action' href="{% url 'issuesite:claimDetail' claimID=claim.slug claimID=claim.slug %}">
-						        	<h3>{{ claim.title }}</h3>
-						        	<p> {{ claim.description | safe }} </p>
-						        </a>
-						    {% endfor %}
-						    </div>
-						{% else %}
-							<p>No claims are available.</p>
-						{% endif %}
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-xs-12">
-						<a data-toggle="modal" data-target="#addClaimModal" href="#"><span class="btn btn-primary" aria-hidden="true">Add Claim</span></a>
-						<hr>
-					</div>
-				</div>
-			</div>
-		</div>
-	    <div class="row">
-			<div class='col-xs-12 col-sm-12 col-md-12'>
-	  			<button type="submit" class="btn btn-primary">Save</button>
+			<div class='col-sm-12 col-sm-12 col-md-12'>
+	  			<button type="submit" class="btn btn-outline-success">Save</button>
 			</div>
 		</div>
 	</div>
