@@ -80,7 +80,7 @@ def issue(request):
     #    requested_issues_list.append(str(source.key))
     return render(request, "issuesite/issue.html", {'issue_list': keylist, 'all_issues_list': all_issues_list, 'q': q})
 
-def detail(request, issueID, error=None):
+def issueDetail(request, issueID, error=None):
     issueKey = ndb.Key(Issue, issueID)
     issue = issueKey.get()
     tags = []
@@ -102,10 +102,10 @@ def newIssue(request):
         key = ndb.Key('Issue', slug)
         issue.key = key
         issue.put()
-        return HttpResponseRedirect(reverse('issuesite:detail', args=(issue.key.string_id(),)))
+        return HttpResponseRedirect(reverse('issuesite:issueDetail', args=(issue.key.string_id(),)))
     else:
         error = "A issue with the title you entered already exists. Please edit this issue instead."
-        return detail(request, slug, error)
+        return issueDetail(request, slug, error)
 
 # Editing Issue
 # -------------
@@ -213,11 +213,11 @@ def saveIssue(request, issueID):
         tag.issue = issue.key
         tag.put()
 
-    return HttpResponseRedirect(reverse('issuesite:detail', args=(issue.key.id(),)))
+    return HttpResponseRedirect(reverse('issuesite:issueDetail', args=(issue.key.id(),)))
 
 
 # --------- Claims ----------------------------------------------------
-
+'''
 def claimDetail(request, claimID, error=None):
     claimKey = ndb.Key(Claim, claimID)
     claim = claimKey.get()
@@ -225,7 +225,7 @@ def claimDetail(request, claimID, error=None):
     for relation in ClaimTagRel.query(ClaimTagRel.claim==claim.key):
                 tags.append(relation.tag.get())
     return render(request, "issuesite/claim_detail.html", {'claim': claim, 'tags': tags, 'error':error})
-
+'''
 
 def claimDetail(request, claimID, issueID, error=None):
     issue = ndb.Key(Issue, issueID).get()

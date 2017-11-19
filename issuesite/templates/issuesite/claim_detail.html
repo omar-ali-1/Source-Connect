@@ -12,16 +12,30 @@
 		<h3>{{error}}</h3>
 		{% endif %}
 	</div>
-
 </div>
+
+
 <div class="row">
 	<div class="col-sm-12">
-		<a href="{% url 'issuesite:editClaim' issueID=issue.key.id claimID=claim.key.id %}" class="btn btn-outline-success" role="button">Edit Claim</a>
+			<ol class="breadcrumb" style="background: transparent;">
+			  <li class="breadcrumb-item"><a href="{% url 'issuesite:issueDetail' issueID=issue.key.id %}""> {{issue.title|truncatechars:70}} </a></li>
+			  <li class="breadcrumb-item active">{{claim.title|truncatechars:70}}</li>
+			</ol>
+
+		<hr class="featurette-divider">
+
+	</div>
+</div>
+
+
+<div class="row">
+	<div class="col-sm-12">
+		<a href="{% url 'issuesite:editClaim' issueID=issue.key.id claimID=claim.key.id %}" class="btn btn-outline-primary" role="button">Edit Claim</a>
 
 		<div class="btn-group" role="group" aria-label="...">
-			<button type="button" class="btn btn-outline-success" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Related Tags</button>
-			<button type="button" class="btn btn-outline-success">Somewhat Related Tags</button>
-			<button type="button" class="btn btn-outline-success">Marginally Related Tags</button>
+			<button type="button" class="btn btn-outline-primary" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Related Tags</button>
+			<button type="button" class="btn btn-outline-primary">Somewhat Related Tags</button>
+			<button type="button" class="btn btn-outline-primary">Marginally Related Tags</button>
 		</div>
 
 		<hr class="featurette-divider">

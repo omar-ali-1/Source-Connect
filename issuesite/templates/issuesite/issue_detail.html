@@ -18,7 +18,7 @@
 
 	<div class="row">
 		<div class="col-sm-12">
-			<a href="{% url 'issuesite:editIssue' issue.key.id %}" class="btn btn-outline-success my-2 my-sm-0" role="button">
+			<a href="{% url 'issuesite:editIssue' issue.key.id %}" class="btn btn-outline-primary my-2 my-sm-0" role="button">
 				Edit Issue
 			</a>
 		</div>
@@ -34,10 +34,10 @@
 
 	<div class="row">
 		<div class="col-sm-10">
-			<h2>{{ issue.title | safe }} </h2>
+			<h2>{{ issue.title | safe }} </h2> <!-- don't truncate characters -->
 		</div>
 		<div class="col-sm-2">
-			<a href="{% url 'issuesite:editIssue' issue.key.id %}" class="btn btn-outline-success my-2 my-sm-0 float-right" role="button">
+			<a href="{% url 'issuesite:editIssue' issue.key.id %}" class="btn btn-outline-primary my-2 my-sm-0 float-right" role="button">
 				Edit Issue
 			</a>
 		</div>
@@ -47,7 +47,7 @@
 
 	<div class="row">
 		<div class="col-sm-12">
-		 	{{ issue.description | safe }} 
+		 	{{ issue.description | safe }}  <!-- don't truncate characters -->
 		</div>
 	</div>
 
@@ -70,12 +70,12 @@
 		        <a target="_blank" class='list-group-item list-group-item-action' style="display: block;" href="{% url 'issuesite:claimDetail' issueID=issue.slug claimID=claim.slug %}">
 		        	<div class='row'>
 		        		<div class="col-sm-12">
-		        			<h3>{{ claim.title }}</h3>
+		        			<h3>{{ claim.title | truncatechars:100}}</h3>
 		        		</div>
 		        	</div>
 		        	<div class='row'>
 		        		<div class="col-sm-12">
-		        			<p> {{ claim.description | safe }} </p>
+		        			<p> {{ claim.description | safe | truncatechars:300}} </p>
 		        		</div>
 		        	</div>
 		        </a>

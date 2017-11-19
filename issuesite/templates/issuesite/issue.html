@@ -12,7 +12,7 @@
 <div class='row'>
 	<div class='col-xs-2 col-sm-1 col-md-2'>
 		<div class="btn-group">
-		  <button type="button" class="btn btn-outline-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		  <button type="button" class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 		    More <span class="caret"></span>
 		  </button>
 		  <ul class="dropdown-menu">
@@ -30,7 +30,7 @@
 		  <input type="text" name="q" id="q" class="form-control" aria-label="..." value="{{ q }}">
 		  <div class="input-group-btn">
 		    <!-- Button and dropdown menu -->
-		    <button type="button submit" class="btn btn-outline-success">Search</button>
+		    <button type="button submit" class="btn btn-outline-primary">Search</button>
 		    
 		  </div>
 		</div>
@@ -60,7 +60,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button submit" class="btn btn-success">Continue</button>
+        <button type="button submit" class="btn btn-primary">Continue</button>
       </div>
       </form>
     </div>
@@ -77,16 +77,16 @@
 	{% if issue_list %}
 	    <div class='list-group'>
 	    {% for issue in issue_list %}
-	        <a target="_blank" class='list-group-item list-group-item-action' style="display: block" href="{% url 'issuesite:detail' issue.0 %}">
-	        <!-- <button id='myButton' type="button" class="btn btn-success btn-clipboard"" data-toggle="modal" data-target="#myModal">Tags</button> -->
+	        <a target="_blank" class='list-group-item list-group-item-action' style="display: block" href="{% url 'issuesite:issueDetail' issue.0 %}">
+	        <!-- <button id='myButton' type="button" class="btn btn-primary btn-clipboard"" data-toggle="modal" data-target="#myModal">Tags</button> -->
 	        	<div class='row'>
 	        		<div class="col-sm-12">
-	        			<h3>{{ issue.1 }}</h3>
+	        			<h3>{{ issue.1 | truncatechars:100}}</h3>
 	        		</div>
 	        	</div>
 	        	<div class='row'>
 	        		<div class="col-sm-12">
-	        			<p> {{ issue.2 | safe }} </p>
+	        			<p> {{ issue.2 | safe | truncatechars:300}} </p>
 	        		</div>
 	        	</div>
 	        </a>
@@ -94,16 +94,16 @@
 	    </div>
 	{% elif all_issues_list %}
 	    {% for issue in all_issues_list %}
-	        <a target="_blank" class='list-group-item list-group-item-action' style="display: block" href="{% url 'issuesite:detail' issue.0 %}">
-	        <!-- <button id='myButton' type="button" class="btn btn-success btn-clipboard"" data-toggle="modal" data-target="#myModal">Tags</button> -->
+	        <a target="_blank" class='list-group-item list-group-item-action' style="display: block" href="{% url 'issuesite:issueDetail' issue.0 %}">
+	        <!-- <button id='myButton' type="button" class="btn btn-primary btn-clipboard"" data-toggle="modal" data-target="#myModal">Tags</button> -->
 	        	<div class='row'>
 	        		<div class="col-sm-12">
-	        			<h3>{{ issue.1 }}</h3>
+	        			<h3>{{ issue.1 | truncatechars:100}}</h3>
 	        		</div>
 	        	</div>
 	        	<div class='row'>
 	        		<div class="col-sm-12">
-	        			<p> {{ issue.2 | safe }} </p>
+	        			<p> {{ issue.2 | safe | truncatechars:300}} </p>
 	        		</div>
 	        	</div>
 	        </a>
@@ -165,7 +165,7 @@
 			  <div class="card-block">
 			    <h4 class="card-title">Card title</h4>
 			    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-			    <a href="#" class="btn btn-success">Go somewhere</a>
+			    <a href="#" class="btn btn-primary">Go somewhere</a>
 			  </div>
 			</div>
 		</div>
@@ -175,7 +175,7 @@
 			  <div class="card-block">
 			    <h4 class="card-title">Card title</h4>
 			    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-			    <a href="#" class="btn btn-success">Go somewhere</a>
+			    <a href="#" class="btn btn-primary">Go somewhere</a>
 			  </div>
 			</div>
 
