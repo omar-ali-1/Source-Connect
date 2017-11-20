@@ -88,3 +88,12 @@
         	
 
 {% endblock content %}
+
+{% block scripts %}
+	<script>
+		var menuid = "navbar-issues";
+		$(function() {
+		    $('#' + menuid).addClass("active");
+		});
+	</script>
+{% endblock scripts %}

@@ -68,15 +68,15 @@
 
         <div class="collapse navbar-collapse" id="navbarsExampleDefault">
           
-            <ul class="navbar-nav mr-auto mx-auto">
-              <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-              <li class="nav-item"><a class="nav-link" href="/issues/">Issues</a></li>
-              <li class="nav-item"><a class="nav-link" href="/source/">Source</a></li>
-              <li class="nav-item"><a class="nav-link" href="/discuss/">Discuss</a></li>  
-              <li class="nav-item"><a class="nav-link" href="/read/">Read</a></li>
-              <li class="nav-item"><a class="nav-link" href="/act/">Act</a></li>  
-              <li class="nav-item"><a class="nav-link" href="/about/">About</a></li>    
-              <li class="nav-item"><a class="nav-link" href="/contact/">Contact</a></li>
+            <ul class="navbar-nav mr-auto mx-auto" style="font-size: 1rem">
+              <li class="nav-item" id="navbar-home"><a class="nav-link" href="/">Home</a></li>
+              <li class="nav-item" id="navbar-issues"><a class="nav-link" href="/issues/">Issues</a></li>
+              <li class="nav-item" id="navbar-source"><a class="nav-link" href="/source/">Source</a></li>
+              <li class="nav-item" id="navbar-discuss"><a class="nav-link" href="/discuss/">Discuss</a></li>  
+              <li class="nav-item" id="navbar-read"><a class="nav-link" href="/read/">Read</a></li>
+              <li class="nav-item" id="navbar-act"><a class="nav-link" href="/act/">Act</a></li>  
+              <li class="nav-item" id="navbar-about"><a class="nav-link" href="/about/">About</a></li>    
+              <li class="nav-item" id="navbar-contact"><a class="nav-link" href="/contact/">Contact</a></li>
             </ul>
           
           <form class="form-inline my-2 my-lg-0">
@@ -96,7 +96,7 @@
       </div><!-- /.container -->
     </main>
 
-    <footer style="font-size: 2.5vw">
+    <footer style="font-size: 1vw">
       <div class="container">
         <hr class="featurette-divider">
         <p class="pull-right"><a href="#">Back to top</a></p>
@@ -113,7 +113,9 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="https://maxcdn.bootstrapcdn.com/js/ie10-viewport-bug-workaround.js"></script>
-    
+
+    {% block scripts %}
+    {% endblock scripts %}
 
   </body>
 </html>

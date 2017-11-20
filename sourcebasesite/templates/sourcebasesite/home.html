@@ -134,4 +134,10 @@
 {% endblock content %}
 
 {% block scripts %}
+  <script>
+    var menuid = "navbar-home";
+    $(function() {
+        $('#' + menuid).addClass("active");
+    });
+  </script>
 {% endblock scripts %}

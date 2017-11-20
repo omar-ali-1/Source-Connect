@@ -21,3 +21,12 @@
 
      
 {% endblock marketing %}
+
+{% block scripts %}
+  <script>
+    var menuid = "navbar-discuss";
+    $(function() {
+        $('#' + menuid).addClass("active");
+    });
+  </script>
+{% endblock scripts %}

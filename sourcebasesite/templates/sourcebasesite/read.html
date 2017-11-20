@@ -32,3 +32,12 @@ new Taggle('example1');
 
 </script>
 {% endblock content %}
+
+{% block scripts %}
+	<script>
+		var menuid = "navbar-read";
+		$(function() {
+		    $('#' + menuid).addClass("active");
+		});
+	</script>
+{% endblock scripts %}

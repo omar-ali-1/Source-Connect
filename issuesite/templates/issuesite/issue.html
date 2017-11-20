@@ -4,151 +4,152 @@
 
 
 {% block content %}
-
-
-
-
-
-<div class='row'>
-	<div class='col-xs-2 col-sm-1 col-md-2'>
-		<div class="btn-group">
-		  <button type="button" class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-		    More
-		  </button>
-		  <div class="dropdown-menu">
-		    <a class="dropdown-item" data-toggle="modal" data-target="#addIssueModal" href="#"><span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span> Add Issue</a>
-		    <!-- <div class="dropdown-divider"></div> 
-		    <a class="dropdown-item" href="#">Separated link</a> -->
-		  </div>
-		</div>
-	</div>
-	<div class='col-xs-10 col-sm-10 col-md-10 search'>
-	<form action="{% url 'issuesite:issue' %}" method="get">
-		<div class="input-group">
-		  <input type="text" name="q" id="q" class="form-control" aria-label="..." value="{{ q }}">
-		  <div class="input-group-btn">
-		    <!-- Button and dropdown menu -->
-		    <button type="button submit" class="btn btn-outline-primary">Search</button>
-		    
-		  </div>
-		</div>
-	</form>
-	</div>
-	<div class='col-xs-0 col-sm-1 col-md-2'></div>
-</div>
-
-
-
-
-<!-- Modal -->
-<div class="modal fade" id="addIssueModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Cancel"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Add a new issue</h4>
-      </div>
-      <form action="{% url 'issuesite:newIssue' %}" method="post">
-      <div class="modal-body">
-			{% csrf_token %}
-			<div class="form-group">
-				<label for="title"> Choose a question/title: </label>
-    			<input type="text" class="form-control" name="title" id="title" />
+	<div class='row'>
+		<div class='col-xs-2 col-sm-1 col-md-2'>
+			<div class="btn-group">
+			  <button type="button" class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			    More
+			  </button>
+			  <div class="dropdown-menu">
+			    <a class="dropdown-item" data-toggle="modal" data-target="#addIssueModal" href="#"><span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span> Add Issue</a>
+			    <!-- <div class="dropdown-divider"></div> 
+			    <a class="dropdown-item" href="#">Separated link</a> -->
+			  </div>
 			</div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline-info" data-dismiss="modal">Close</button>
-        <button type="button submit" class="btn btn-outline-primary">Continue</button>
-      </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-
-<hr class="featurette-divider">
-
-<div class='row'>
-	<div class='col-xs-0 col-sm-0 col-md-1'></div>
-
-	<div class='col-xs-12 col-sm-12 col-md-10'>
-	{% if issue_list %}
-	    <div class='list-group'>
-	    {% for issue in issue_list %}
-	        <a target="_blank" class='list-group-item list-group-item-action' style="display: block" href="{% url 'issuesite:issueDetail' issue.0 %}">
-	        <!-- <button id='myButton' type="button" class="btn btn-primary btn-clipboard"" data-toggle="modal" data-target="#myModal">Tags</button> -->
-	        	<div class='row'>
-	        		<div class="col-sm-12">
-	        			<h3>{{ issue.1 | truncatechars:100}}</h3>
-	        		</div>
-	        	</div>
-	        	<div class='row'>
-	        		<div class="col-sm-12">
-	        			<p> {{ issue.2 | safe | truncatechars:300}} </p>
-	        		</div>
-	        	</div>
-	        </a>
-	    {% endfor %}
-	    </div>
-	{% elif all_issues_list %}
-	    {% for issue in all_issues_list %}
-	        <a target="_blank" class='list-group-item list-group-item-action' style="display: block" href="{% url 'issuesite:issueDetail' issue.0 %}">
-	        <!-- <button id='myButton' type="button" class="btn btn-primary btn-clipboard"" data-toggle="modal" data-target="#myModal">Tags</button> -->
-	        	<div class='row'>
-	        		<div class="col-sm-12">
-	        			<h3>{{ issue.1 | truncatechars:100}}</h3>
-	        		</div>
-	        	</div>
-	        	<div class='row'>
-	        		<div class="col-sm-12">
-	        			<p> {{ issue.2 | safe | truncatechars:300}} </p>
-	        		</div>
-	        	</div>
-	        </a>
-	    {% endfor %}
-	{% else %}
-	    <p>No issues are available.</p>
-	{% endif %}
+		</div>
+		<div class='col-xs-10 col-sm-10 col-md-10 search'>
+		<form action="{% url 'issuesite:issue' %}" method="get">
+			<div class="input-group">
+			  <input type="text" name="q" id="q" class="form-control" aria-label="..." value="{{ q }}">
+			  <div class="input-group-btn">
+			    <!-- Button and dropdown menu -->
+			    <button type="button submit" class="btn btn-outline-primary">Search</button>
+			    
+			  </div>
+			</div>
+		</form>
+		</div>
+		<div class='col-xs-0 col-sm-1 col-md-2'></div>
 	</div>
 
-	<div class='col-xs-0 col-sm-0 col-md-1'></div>
-</div>
-<div class='row'>
-<div class='col-lg-6'>
-<nav aria-label="...">
-  <ul class="pagination">
-    <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-    <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
-    ...
-  </ul>
-</nav>
-</div>
-</div>
-	<!-- </div> /.row -->
+
+
+
+	<!-- Modal -->
+	<div class="modal fade" id="addIssueModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Cancel"><span aria-hidden="true">&times;</span></button>
+	        <h4 class="modal-title" id="myModalLabel">Add a new issue</h4>
+	      </div>
+	      <form action="{% url 'issuesite:newIssue' %}" method="post">
+	      <div class="modal-body">
+				{% csrf_token %}
+				<div class="form-group">
+					<label for="title"> Choose a question/title: </label>
+	    			<input type="text" class="form-control" name="title" id="title" />
+				</div>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-outline-info" data-dismiss="modal">Close</button>
+	        <button type="button submit" class="btn btn-outline-primary">Continue</button>
+	      </div>
+	      </form>
+	    </div>
+	  </div>
+	</div>
+
+
+	<hr class="featurette-divider">
+
+	<div class='row'>
+		<div class='col-xs-0 col-sm-0 col-md-1'></div>
+
+		<div class='col-xs-12 col-sm-12 col-md-10'>
+		{% if issue_list %}
+		    <div class='list-group'>
+		    {% for issue in issue_list %}
+		        <a target="_blank" class='list-group-item list-group-item-action' style="display: block" href="{% url 'issuesite:issueDetail' issue.0 %}">
+		        <!-- <button id='myButton' type="button" class="btn btn-primary btn-clipboard"" data-toggle="modal" data-target="#myModal">Tags</button> -->
+		        	<div class='row'>
+		        		<div class="col-sm-12">
+		        			<h3>{{ issue.1 | truncatechars:100}}</h3>
+		        		</div>
+		        	</div>
+		        	<div class='row'>
+		        		<div class="col-sm-12">
+		        			<p> {{ issue.2 | safe | truncatechars:300}} </p>
+		        		</div>
+		        	</div>
+		        </a>
+		    {% endfor %}
+		    </div>
+		{% elif all_issues_list %}
+		    {% for issue in all_issues_list %}
+		        <a target="_blank" class='list-group-item list-group-item-action' style="display: block" href="{% url 'issuesite:issueDetail' issue.0 %}">
+		        <!-- <button id='myButton' type="button" class="btn btn-primary btn-clipboard"" data-toggle="modal" data-target="#myModal">Tags</button> -->
+		        	<div class='row'>
+		        		<div class="col-sm-12">
+		        			<h3>{{ issue.1 | truncatechars:100}}</h3>
+		        		</div>
+		        	</div>
+		        	<div class='row'>
+		        		<div class="col-sm-12">
+		        			<p> {{ issue.2 | safe | truncatechars:300}} </p>
+		        		</div>
+		        	</div>
+		        </a>
+		    {% endfor %}
+		{% else %}
+		    <p>No issues are available.</p>
+		{% endif %}
+		</div>
+
+		<div class='col-xs-0 col-sm-0 col-md-1'></div>
+	</div>
+	<div class='row'>
+	<div class='col-lg-6'>
+	<nav aria-label="...">
+	  <ul class="pagination">
+	    <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+	    <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
+	    ...
+	  </ul>
+	</nav>
+	</div>
+	</div>
+		<!-- </div> /.row -->
 {% endblock content %}
 
 {% block scripts %}
-<script id="dropdown" language="text">
-<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
-<ul class="dropdown-menu">
-  <li><a href="#">Action</a></li>
-  <li><a href="#">Another action</a></li>
-  <li><a href="#">Something else here</a></li>
-  <li role="separator" class="divider"></li>
-  <li class="dropdown-header">Nav header</li>
-  <li><a href="#">Separated link</a></li>
-  <li><a href="#">One more separated link</a></li>
-</ul>
-</script>
-<!-- <script type="text/javascript">
-	console.log("removed");
-	$('.list-group-item .list-group .list-group-item-action a button').on("click", "#myButton", function(e){
-        e.stopPropagation();
-        alert('button'); //only when button clicked
-    });
-</script> -->
-<script src="{% static 'sourcebasesite/js/source_page_script.js' %}"></script>
+	<script id="dropdown" language="text">
+	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+	<ul class="dropdown-menu">
+	  <li><a href="#">Action</a></li>
+	  <li><a href="#">Another action</a></li>
+	  <li><a href="#">Something else here</a></li>
+	  <li role="separator" class="divider"></li>
+	  <li class="dropdown-header">Nav header</li>
+	  <li><a href="#">Separated link</a></li>
+	  <li><a href="#">One more separated link</a></li>
+	</ul>
+	</script>
+	<!-- <script type="text/javascript">
+		console.log("removed");
+		$('.list-group-item .list-group .list-group-item-action a button').on("click", "#myButton", function(e){
+	        e.stopPropagation();
+	        alert('button'); //only when button clicked
+	    });
+	</script> -->
+	<script src="{% static 'sourcebasesite/js/source_page_script.js' %}"></script>
 
+	<script>
+		var menuid = "navbar-issues";
+		$(function() {
+		    $('#' + menuid).addClass("active");
+		});
+	</script>
 
 {% endblock scripts %}
 

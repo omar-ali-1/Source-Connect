@@ -59,3 +59,12 @@
         	
 
 {% endblock content %}
+
+{% block scripts %}
+	<script>
+		var menuid = "navbar-source";
+		$(function() {
+		    $('#' + menuid).addClass("active");
+		});
+	</script>
+{% endblock scripts %}

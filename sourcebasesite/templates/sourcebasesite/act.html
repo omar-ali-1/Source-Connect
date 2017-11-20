@@ -41,3 +41,12 @@
 
      
 {% endblock marketing %}
+
+{% block scripts %}
+  <script>
+    var menuid = "navbar-act";
+    $(function() {
+        $('#' + menuid).addClass("active");
+    });
+  </script>
+{% endblock scripts %}

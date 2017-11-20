@@ -130,6 +130,12 @@
 </script> -->
 <script src="{% static 'sourcebasesite/js/source_page_script.js' %}"></script>
 
+	<script>
+		var menuid = "navbar-source";
+		$(function() {
+		    $('#' + menuid).addClass("active");
+		});
+	</script>
 
 {% endblock scripts %}
 
