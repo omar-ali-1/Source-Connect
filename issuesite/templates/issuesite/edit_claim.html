@@ -89,6 +89,127 @@
 </form>
 
 
+<!-- Arguments -->
+
+{% if arguments_for_list or arguments_against_list %}
+
+<div class="row">
+	<div class="col-sm-12">
+	 	<h2 class="section text-center"> Arguments </h2>
+	</div>
+	<div class="col-sm-1">
+		<a data-toggle="modal" data-target="#addArgumentModal" href="#"><span class="btn btn-outline-primary" aria-hidden="true">Add Argument</span></a>
+	</div>
+</div>
+<div class="row">
+	<div class="col-sm-12 col-md-6">
+	 	<h3 class="text-center">For</h3>
+	</div>
+	<div class="col-sm-12 col-md-6">
+	 	<h3 class="text-center">Against</h3>
+	</div>
+</div>
+<div class="row">
+	<div class="col-sm-12 col-md-6">
+	    <div class='list-group'>
+	    {% for argument in arguments_for_list %}
+	        <a target="_blank" class='list-group-item list-group-item-action' style="display: block" href="{% url 'issuesite:argumentDetail' issueID=issue.key.id claimID=claim.key.id argumentID=argument.key.id %}">
+	        <!-- <button id='myButton' type="button" class="btn btn-primary btn-clipboard"" data-toggle="modal" data-target="#myModal">Tags</button> -->
+	        	<div class='row'>
+	        		<div class="col-sm-12">
+	        			<h3>{{ argument.title | truncatechars:100}}</h3>
+	        		</div>
+	        	</div>
+	        	<div class='row'>
+	        		<div class="col-sm-12">
+	        			<p> {{ argument.description | safe | truncatechars:300}} </p>
+	        		</div>
+	        	</div>
+	        </a>
+	    {% endfor %}
+	    </div>
+	</div>
+	<div class="col-sm-12 col-md-6">
+	    <div class='list-group'>
+	    {% for argument in arguments_against_list %}
+	        <a target="_blank" class='list-group-item list-group-item-action' style="display: block" href="{% url 'issuesite:argumentDetail' issueID=issue.key.id claimID=claim.key.id argumentID=argument.key.id %}">
+	        <!-- <button id='myButton' type="button" class="btn btn-primary btn-clipboard"" data-toggle="modal" data-target="#myModal">Tags</button> -->
+	        	<div class='row'>
+	        		<div class="col-sm-12">
+	        			<h3>{{ argument.title | truncatechars:100}}</h3>
+	        		</div>
+	        	</div>
+	        	<div class='row'>
+	        		<div class="col-sm-12">
+	        			<p> {{ argument.description | safe | truncatechars:300}} </p>
+	        		</div>
+	        	</div>
+	        </a>
+	    {% endfor %}
+	    </div>
+	</div>
+</div>
+
+{% else %}
+
+<div class="row">
+	<div class="col-sm-12">
+	 	<h2 class="section text-center"> Arguments </h2>
+	</div>
+	<div class="col-sm-1">
+		<a data-toggle="modal" data-target="#addArgumentModal" href="#"><span class="btn btn-outline-primary" aria-hidden="true">Add Argument</span></a>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-sm-12">
+	 	<p>There are currently no arguments for or against this claim. Please add some arguments.</p>
+	</div>
+</div>
+
+
+{% endif %}	
+
+
+
+
+<!-- Add Argument Modal -->
+<div class="modal fade" id="addArgumentModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Cancel"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Add a new argument.</h4>
+      </div>
+      <form action="{% url 'issuesite:newArgument' issueID=issue.slug claimID=claim.slug %}" method="post">
+      <div class="modal-body">
+			{% csrf_token %}
+			<div class="form-group">
+				<label for="title"> Choose an argument title: </label>
+    			<input type="text" class="form-control" name="argumentTitle" id="argumentTitle" required>
+    			<label for="title"> Choose an argument type: </label>
+    			<label class="custom-control custom-radio">
+				  <input id="for_radio" name="radio" type="radio" class="custom-control-input" value="FOR" required>
+				  <span class="custom-control-indicator"></span>
+				  <span class="custom-control-description">For claim</span>
+				</label>
+				<label class="custom-control custom-radio">
+				  <input id="against_radio" name="radio" type="radio" class="custom-control-input" value="AGAINST" required>
+				  <span class="custom-control-indicator"></span>
+				  <span class="custom-control-description">Against claim</span>
+				</label>
+    			<input type="hidden" name="issueTitle" value=" {{issue.title}} ">
+    			<input type="hidden" name="claimTitle" value=" {{claim.title}} ">
+			</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-outline-primary">Continue</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
 
 
 {% endblock content %}
@@ -98,6 +219,17 @@
 		var menuid = "navbar-issues";
 		$(function() {
 		    $('#' + menuid).addClass("active");
+		});
+	</script>
+
+	<script>
+		$('#submit').click( function (e) {
+		    if($("#my_group .active").val() === undefined) {
+		        
+		        e.preventDefault();
+		        window.alert('please select an option');
+		    }
+		    
 		});
 	</script>
 {% endblock scripts %}

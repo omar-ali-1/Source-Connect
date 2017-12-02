@@ -235,7 +235,18 @@ def claimDetail(request, claimID, issueID, error=None):
     tags = []
     for relation in ClaimTagRel.query(ClaimTagRel.claim==claim.key):
                 tags.append(relation.tag.get())
-    return render(request, "issuesite/claim_detail.html", {'claim': claim,'issue': issue, 'tags': tags, 'error':error})
+    arguments_for_list = []
+    arguments_against_list = []
+    for relation in ClaimArgumentRel.query(ClaimArgumentRel.claim==claim.key):
+        argument = relation.argument.get()
+        if argument.function == "FOR":
+            arguments_for_list.append(argument)
+        elif argument.function == "AGAINST":
+            arguments_against_list.append(argument)
+        else:
+            raise ValueError('Claim argument funciton was neither for nor against.')
+    return render(request, "issuesite/claim_detail.html", {'claim': claim,'issue': issue, 'tags': tags,
+        'arguments_for_list': arguments_for_list, 'arguments_against_list': arguments_against_list, 'error':error})
 
 
 def newClaim(request, issueID):
@@ -264,7 +275,18 @@ def editClaim(request, issueID, claimID):
     tags = []
     for relation in ClaimTagRel.query(ClaimTagRel.claim==claim.key):
         tags.append(relation.tag.get().title.encode('utf-8'))
-    return render(request, "issuesite/edit_claim.html", {'issue': issue, 'claim': claim, 'tags': tags})
+    arguments_for_list = []
+    arguments_against_list = []
+    for relation in ClaimArgumentRel.query(ClaimArgumentRel.claim==claim.key):
+        argument = relation.argument.get()
+        if argument.function == "FOR":
+            arguments_for_list.append(argument)
+        elif argument.function == "AGAINST":
+            arguments_against_list.append(argument)
+        else:
+            raise ValueError('Claim argument funciton was neither for nor against.')
+    return render(request, "issuesite/edit_claim.html", {'issue': issue, 'claim': claim, 'tags': tags, 
+        'arguments_for_list': arguments_for_list, 'arguments_against_list': arguments_against_list,})
 
 def saveClaim(request, issueID, claimID):
     key = ndb.Key('Claim', claimID)
@@ -333,3 +355,118 @@ def saveClaim(request, issueID, claimID):
         tag.put()
 
     return HttpResponseRedirect(reverse('issuesite:claimDetail', args=(issueID, claim.key.id(),)))
+
+# --------- Arguments ----------------------------------------------------
+
+def argumentDetail(request, claimID, issueID, argumentID, error=None):
+    issue = ndb.Key(Issue, issueID).get()
+    claim = ndb.Key(Claim, claimID).get()
+    argument = ndb.Key(Argument, argumentID).get()
+    tags = []
+    for relation in ClaimTagRel.query(ClaimTagRel.claim==claim.key):
+                tags.append(relation.tag.get())
+
+    arguments_for_list = []
+    arguments_against_list = []
+    for relation in ClaimArgumentRel.query(ClaimArgumentRel.claim==claim.key, ClaimArgumentRel.argument==argument.key):
+        pass
+    return render(request, "issuesite/argument_detail.html", {'claim': claim,'issue': issue, 'argument': argument, 'tags': tags, 'error':error})
+
+
+def newArgument(request, claimID, issueID):
+    post = request.POST
+    issueSlug = slugify(post['issueTitle'])
+    claimSlug = slugify(post['claimTitle'])
+    argumentSlug = slugify(post['argumentTitle'])
+    issue = Issue.get_by_id(issueSlug)
+    claim = Claim.get_by_id(claimSlug)
+    argument = Argument.get_by_id(argumentSlug)
+    if argument is None:
+        argument = Argument(title=post['argumentTitle'])
+        key = ndb.Key('Argument', argumentSlug)
+        argument.key = key
+        argument.function = post['radio']
+        argument.put()
+        ClaimArgumentRel(claim = claim.key, argument = argument.key, relation = post['radio']).put()
+        return HttpResponseRedirect(reverse('issuesite:argumentDetail', kwargs={'claimID':claimSlug, 'issueID':issueSlug, 'argumentID': argumentSlug}))
+    else:
+        # wrong: if claim already exists, shouldn't creat relation : IssueClaimRel(issue = issue.key, claim = claim.key).put()
+        error = "A claim with the title you entered already exists. Please edit this claim instead."
+        return argumentDetail(request, claimSlug, issueSlug, argumentSlug, error)
+
+def editArgument(request, issueID, claimID, argumentID):
+    claim = ndb.Key('Claim', claimID).get()
+    issue = ndb.Key('Issue', issueID).get()
+    argument = ndb.Key('Argument', argumentID).get()
+    tags = []
+    for relation in ArgumentTagRel.query(ArgumentTagRel.argument==argument.key):
+        tags.append(relation.tag.get().title.encode('utf-8'))
+    return render(request, "issuesite/edit_argument.html", {'issue': issue, 'claim': claim, 'argument': argument, 'tags': tags})
+
+def saveArgument(request, issueID, claimID, argumentID):
+    key = ndb.Key('Argument', argumentID)
+    #logging.info("key:")
+    #logging.info(key)
+    argument = key.get()
+    title = request.POST['title']
+    tagNames = request.POST.getlist('taggles[]')
+    tagNamesSet = set()
+    for tagName in tagNames:
+        tagNamesSet.add(tagName)
+
+    #logging.info(tagNames)
+    #logging.info(tagNamesSet)
+
+    newTagNames = []
+    oldTagNames = []
+    needDelTags = []
+
+
+    relations = ArgumentTagRel.query(ArgumentTagRel.argument==argument.key)
+
+    logging.info(relations)
+
+    for relation in relations:
+        oldTagNames.append(relation.tag.get().title)
+
+    #logging.info(oldTagNames)
+
+    oldTagNamesSet = set(oldTagNames)
+    for tagName in tagNames:
+        if tagName not in oldTagNamesSet:
+            newTagNames.append(tagName)
+    #logging.info("New tag names:")
+    #logging.info(newTagNames)
+    for tagName in oldTagNames:
+        if tagName not in tagNamesSet:
+            needDelTags.append(tagName)
+    for tagName in newTagNames:
+        tag = Tag.query(Tag.title == tagName).get()
+        if tag is None:
+            tag = Tag(title = tagName)
+            tag.put()
+        #logging.info(tag.title)
+        #logging.info(tag.key)
+        ArgumentTagRel(argument = key, tag = tag.key).put()
+    for tagName in needDelTags:
+        ArgumentTagRel.query(ArgumentTagRel.tag==Tag.query(Tag.title == tagName).get().key).get().key.delete()
+    post = request.POST
+    argument.description = post['description']
+    title = post['title']
+    tags = []
+    if title != argument.title:
+        tags = ArgumentTagRel.query(ArgumentTagRel.argument==argument.key)
+    argument.title = title
+    claimKey = ndb.Key('Claim', claimID)
+    relation = ClaimArgumentRel.query(ClaimArgumentRel.claim==claimKey, ClaimArgumentRel.argument==argument.key).get()
+    argument.key.delete()
+    argument.key = ndb.Key('Argument', slugify(argument.title))
+    argument.put()
+    relation.argument = argument.key
+    relation.put()
+
+    for tag in tags:
+        tag.argument = argument.key
+        tag.put()
+
+    return HttpResponseRedirect(reverse('issuesite:argumentDetail', args=(issueID, claimID, argument.key.id(),)))

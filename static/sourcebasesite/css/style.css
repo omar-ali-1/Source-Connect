@@ -536,3 +536,7 @@ hr {
   background-color:#FFFF00;
   height: 1px;
 }
+
+h2.section {
+  text-decoration: underline;
+}

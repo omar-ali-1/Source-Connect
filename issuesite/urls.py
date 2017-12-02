@@ -13,7 +13,11 @@ urlpatterns = [
     url(r'^(?P<issueID>[a-zA-Z0-9-_]+)/claim/(?P<claimID>[a-zA-Z0-9-_]+)/$', claimDetail, name='claimDetail'),
     url(r'^(?P<issueID>[a-zA-Z0-9-_]+)/new/claim/$', newClaim, name='newClaim'),
     url(r'^(?P<issueID>[a-zA-Z0-9-_]+)/claim/(?P<claimID>[a-zA-Z0-9-_]+)/edit/$', editClaim, name='editClaim'),
-    url(r'^(?P<issueID>[a-zA-Z0-9-_]+)/claim/(?P<claimID>[a-zA-Z0-9-_]+)/save/$', saveClaim, name='saveClaim')
+    url(r'^(?P<issueID>[a-zA-Z0-9-_]+)/claim/(?P<claimID>[a-zA-Z0-9-_]+)/save/$', saveClaim, name='saveClaim'),
+    url(r'^(?P<issueID>[a-zA-Z0-9-_]+)/claim/(?P<claimID>[a-zA-Z0-9-_]+)/argument/(?P<argumentID>[a-zA-Z0-9-_]+)/$', argumentDetail, name='argumentDetail'),
+    url(r'^(?P<issueID>[a-zA-Z0-9-_]+)/claim/(?P<claimID>[a-zA-Z0-9-_]+)/new/argument/$', newArgument, name='newArgument'),
+    url(r'^(?P<issueID>[a-zA-Z0-9-_]+)/claim/(?P<claimID>[a-zA-Z0-9-_]+)/argument/(?P<argumentID>[a-zA-Z0-9-_]+)/edit/$', editArgument, name='editArgument'),
+    url(r'^(?P<issueID>[a-zA-Z0-9-_]+)/claim/(?P<claimID>[a-zA-Z0-9-_]+)/argument/(?P<argumentID>[a-zA-Z0-9-_]+)/save/$', saveArgument, name='saveArgument'),
     #url(r'^(?P<issueID>[a-zA-Z0-9-_]+)/claim/(?P<claimID>[a-zA-Z0-9-_]+)/save/$', saveClaim, name='saveClaim'),
     #
     #url(r'^(?P<sourceID>[a-zA-Z0-9-_]+)/$', detail, name='detail'),

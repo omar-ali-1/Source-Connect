@@ -36,3 +36,7 @@ button.btn.btn-default.leftbutton {
     border-top-left-radius: 4px;
     border-bottom-left-radius: 4px;
 }
+
+h2 h3 {
+  text-decoration: underline;
+}
