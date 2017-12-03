@@ -16,6 +16,7 @@
     <link href="http://netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
     <link href=https://maxcdn.bootstrapcdn.com/css/ie10-viewport-bug-workaround.css rel="stylesheet">
     <link href="{% static 'sourcebasesite/css/style.css' %}?version=1" rel="stylesheet">
+    <link href="carousel.css" rel="stylesheet">
     {% block styles %}
     {% endblock styles %}
     <script src='//cloud.tinymce.com/stable/tinymce.min.js?apiKey=1c71d4g4v5yesnh23vret31enyehv3m0jzgvcykuuiy7qclj'></script>
@@ -85,11 +86,12 @@
           </form>
         </div>
       </nav>
+      {% block carousel %}
+      {% endblock carousel %}
     </header>
 
     <main class="site-content">
-      {% block carousel %}
-      {% endblock carousel %}
+
       <div class="container">
         {% block content %}
         {% endblock content %}
