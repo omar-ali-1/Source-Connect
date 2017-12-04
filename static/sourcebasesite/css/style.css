@@ -600,10 +600,6 @@ h2.section {
 /* Featurettes
 ------------------------- */
 
-.featurette-divider {
-  margin: 5rem 0; /* Space out the Bootstrap <hr> more */
-}
-
 /* Thin out the marketing headings */
 .featurette-heading {
   font-weight: 300;
