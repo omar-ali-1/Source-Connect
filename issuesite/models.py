@@ -26,7 +26,7 @@ class Claim(ndb.Model):
     slug = ndb.ComputedProperty(lambda self: slugify(self.title))
 
 class Argument(ndb.Model):
-    """Profile -- User profile object"""
+    """function is either "FOR" or "AGAINST" """
     title = ndb.StringProperty(required=True)
     description = ndb.TextProperty()
     function = ndb.StringProperty()

@@ -42,7 +42,7 @@ def get_search_issues_tasklet(tagTitle, cursor):
     tag = Tag.query(Tag.title==tagTitle)
 '''
 #-------------------------------
-def _fetch_all_issues(request, cursor_url_safe=None, results_per_page=10):
+def _fetch_all_issues(request, cursor_url_safe=None, results_per_page=7):
     if cursor_url_safe:
         cursor = Cursor(urlsafe=cursor_url_safe)
         issue_list, next_cursor, there_is_next = Issue.query().order(Issue.title).fetch_page_async(
@@ -67,7 +67,8 @@ def _fetch_all_issues(request, cursor_url_safe=None, results_per_page=10):
         enable_next = 'disabled'
     if not there_is_previous:
         enable_previous = 'disabled'
-    next_cursor = next_cursor.urlsafe()
+    if next_cursor:
+        next_cursor = next_cursor.urlsafe()
     return render(request, "issuesite/issue.html", {'issue_list': issue_list, 
         'next_cursor': next_cursor, 'previous_cursor': previous_cursor, 'enable_previous': enable_previous, 'enable_next': enable_next})
 
@@ -80,6 +81,8 @@ def _fetch_tagged_issues(request, q, cursor_url_safe=None):
 
 issue_list = Issue.query().fetch_async().get_result()
 def issue(request):
+    # _delete_data()
+    _create_data()
     get_dic = request.GET
     if ('q' in get_dic and len(get_dic['q']) == 0) or 'q' not in get_dic:
         if 'cursor' in get_dic:
@@ -90,6 +93,61 @@ def issue(request):
     else:
         q = get_dic['q']
         return _fetch_tagged_issues(request, q)
+
+def _delete_data():
+    ndb.delete_multi(
+    Issue.query().fetch(keys_only=True))
+    ndb.delete_multi(
+    Argument.query().fetch(keys_only=True))
+    ndb.delete_multi(
+    Claim.query().fetch(keys_only=True))
+    ndb.delete_multi(
+    IssueClaimRel.query().fetch(keys_only=True))
+    ndb.delete_multi(
+    ClaimArgumentRel.query().fetch(keys_only=True))
+
+def _create_data():
+    import random, string
+    def randomword(length):
+        letters = string.ascii_lowercase
+        return ''.join(random.choice(letters) for i in range(length))
+    issue_count = 35
+    claim_count = 3
+    argument_count = 4
+    for i in xrange(issue_count):
+        title_length = random.randint(6, 14)
+        title = string.join([randomword(random.randint(4,8)) for i in xrange(title_length)])
+        desc_length = random.randint(600, 1000)
+        description = string.join([randomword(random.randint(4,8)) for i in xrange(desc_length)])
+        issue = Issue(title=title, description=description)
+        key = ndb.Key('Issue', slugify(title))
+        issue.key = key
+        issue.put()
+        for j in xrange(claim_count):
+            title_length = random.randint(6, 14)
+            title = string.join([randomword(random.randint(4,8)) for i in xrange(title_length)])
+            desc_length = random.randint(600, 1000)
+            description = string.join([randomword(random.randint(4,8)) for i in xrange(desc_length)])
+            claim = Claim(title=title, description=description)
+            key = ndb.Key('Claim', slugify(title))
+            claim.key = key
+            claim.put()
+            IssueClaimRel(issue = issue.key, claim = claim.key).put()
+            for k in xrange(argument_count):
+                title_length = random.randint(6, 14)
+                title = string.join([randomword(random.randint(4,8)) for i in xrange(title_length)])
+                desc_length = random.randint(600, 900)
+                description = string.join([randomword(random.randint(4,8)) for i in xrange(desc_length)])
+                if k < argument_count/2:
+                    func = 'FOR'
+                else:
+                    func = 'AGAINST'
+                argument = Argument(title=title, description=description)
+                key = ndb.Key('Argument', slugify(title))
+                argument.key = key
+                argument.put()
+                ClaimArgumentRel(claim=claim.key, argument=argument.key, relation=func).put()
+
 
 #-------------------------------
 
@@ -225,7 +283,7 @@ def saveIssue(request, issueID):
     for tag in tags:
         tag.issue = issue.key
         tag.put()
-
+# TODO: claims disappear when issue title is changed. Fix it.
     return HttpResponseRedirect(reverse('issuesite:issueDetail', args=(issue.key.id(),)))
 
 
@@ -243,8 +301,8 @@ def claimDetail(request, claimID, error=None):
 def claimDetail(request, claimID, issueID, error=None):
     issue = ndb.Key(Issue, issueID).get()
     claim = ndb.Key(Claim, claimID).get()
-    logging.info("claim:")
-    logging.info(claim)
+    #logging.info("claim:")
+    #logging.info(claim)
     tags = []
     for relation in ClaimTagRel.query(ClaimTagRel.claim==claim.key):
                 tags.append(relation.tag.get())
@@ -252,9 +310,9 @@ def claimDetail(request, claimID, issueID, error=None):
     arguments_against_list = []
     for relation in ClaimArgumentRel.query(ClaimArgumentRel.claim==claim.key):
         argument = relation.argument.get()
-        if argument.function == "FOR":
+        if relation.relation == "FOR":
             arguments_for_list.append(argument)
-        elif argument.function == "AGAINST":
+        elif relation.relation == "AGAINST":
             arguments_against_list.append(argument)
         else:
             raise ValueError('Claim argument funciton was neither for nor against.')
@@ -268,8 +326,8 @@ def newClaim(request, issueID):
     claimSlug = slugify(post['claimTitle'])
     issue = Issue.get_by_id(issueSlug)
     claim = Claim.get_by_id(claimSlug)
-    logging.info("claimID:")
-    logging.info(claimSlug)
+    #logging.info("claimID:")
+    #logging.info(claimSlug)
     if claim is None:
         claim = Claim(title=post['claimTitle'])
         key = ndb.Key('Claim', claimSlug)
