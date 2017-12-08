@@ -42,6 +42,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'google.appengine.ext.appstats.recording.AppStatsDjangoMiddleware',
     'google.appengine.ext.ndb.django_middleware.NdbDjangoMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

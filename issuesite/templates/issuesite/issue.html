@@ -70,37 +70,31 @@
 		{% if issue_list %}
 		    <div class='list-group'>
 		    {% for issue in issue_list %}
-		        <a target="_blank" class='list-group-item list-group-item-action' style="display: block" href="{% url 'issuesite:issueDetail' issue.0 %}">
+		        <a target="_blank" class='list-group-item list-group-item-action' style="display: block" href="{% url 'issuesite:issueDetail' issue.key.id %}">
 		        <!-- <button id='myButton' type="button" class="btn btn-primary btn-clipboard"" data-toggle="modal" data-target="#myModal">Tags</button> -->
 		        	<div class='row'>
 		        		<div class="col-sm-12">
-		        			<h3>{{ issue.1 | truncatechars:100}}</h3>
+		        			<h3>{{ issue.title | truncatechars:100}}</h3>
 		        		</div>
 		        	</div>
 		        	<div class='row'>
 		        		<div class="col-sm-12">
-		        			<p> {{ issue.2 | safe | truncatechars:300}} </p>
+		        			<p> {{ issue.description | safe | truncatechars:300}} </p>
 		        		</div>
 		        	</div>
 		        </a>
 		    {% endfor %}
 		    </div>
-		{% elif all_issues_list %}
-		    {% for issue in all_issues_list %}
-		        <a target="_blank" class='list-group-item list-group-item-action' style="display: block" href="{% url 'issuesite:issueDetail' issue.0 %}">
-		        <!-- <button id='myButton' type="button" class="btn btn-primary btn-clipboard"" data-toggle="modal" data-target="#myModal">Tags</button> -->
-		        	<div class='row'>
-		        		<div class="col-sm-12">
-		        			<h3>{{ issue.1 | truncatechars:100}}</h3>
-		        		</div>
-		        	</div>
-		        	<div class='row'>
-		        		<div class="col-sm-12">
-		        			<p> {{ issue.2 | safe | truncatechars:300}} </p>
-		        		</div>
-		        	</div>
-		        </a>
-		    {% endfor %}
+		<div class='row'>
+			<div class='col-lg-6'>
+				<nav aria-label="Page navigation example">
+				  <ul class="pagination">
+				    <li class="page-item {{enable_previous}}"><a class="page-link" href="{% url 'issuesite:issue' %}?cursor={{previous_cursor}}">Previous</a></li>
+				    <li class="page-item {{enable_next}} "><a class="page-link" href="{% url 'issuesite:issue' %}?cursor={{next_cursor}}">Next</a></li>
+				  </ul>
+				</nav>
+			</div>
+		</div>
 		{% else %}
 		    <p>No issues are available.</p>
 		{% endif %}
@@ -108,17 +102,7 @@
 
 		<div class='col-sm-0 col-sm-0 col-md-1'></div>
 	</div>
-	<div class='row'>
-	<div class='col-lg-6'>
-	<nav aria-label="...">
-	  <ul class="pagination">
-	    <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-	    <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
-	    ...
-	  </ul>
-	</nav>
-	</div>
-	</div>
+
 		<!-- </div> /.row -->
 {% endblock content %}
 

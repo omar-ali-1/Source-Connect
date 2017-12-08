@@ -13,6 +13,7 @@ from google.appengine.ext import webapp
 from google.appengine.ext import ndb
 from models import *
 from google.appengine.ext.webapp.util import run_wsgi_app
+from google.appengine.datastore.datastore_query import Cursor
 
 from django.template.defaultfilters import slugify
 from ast import literal_eval
@@ -28,57 +29,69 @@ providers = {
     'MyOpenID' : 'myopenid.com'
     # add more here
 }
+'''
+@ndb.tasklet
+def get_search_issues_tasklet(tagTitle, cursor):
+    ISSUES_PER_PAGE = 10
+    relations_future = IssueTagRel.query(IssueTagRel.tag == tagTitle.key).fetch_async()
+    cursor = Cursor(urlsafe=cursor)
+    relations = relations_future.get_result()
+    
+    issues, next_cursor, more = Issue.query().fetch_page(
+        ISSUES_PER_PAGE, start_cursor=cursor)
+    tag = Tag.query(Tag.title==tagTitle)
+'''
+#-------------------------------
+def _fetch_all_issues(request, cursor_url_safe=None, results_per_page=10):
+    if cursor_url_safe:
+        cursor = Cursor(urlsafe=cursor_url_safe)
+        issue_list, next_cursor, there_is_next = Issue.query().order(Issue.title).fetch_page_async(
+            results_per_page, start_cursor=cursor).get_result()
+        issue_list_previous, previous_cursor, there_is_previous = Issue.query().order(-Issue.title).fetch_page_async(
+            results_per_page, start_cursor=cursor).get_result()
+        dummy, dummy_cursor, there_is_previous = Issue.query().order(-Issue.title).fetch_page(
+            1, start_cursor=cursor)
 
-def issue(request):
-    #newsource = Source(title="some New Test Source", description='this is description')
-    #newsource.put()
-    #newsource.key = ndb.Key(Source, newsource.slug)
-    #newsource.slug = slugify(newsource.title)
-    #key = newsource.put()
-    #newtag = Tag(title="new tag")
-    #newtag.put()
-    #tagkey = ndb.Key('Tag', 5785905063264256)
-    #sourcekey = ndb.Key('Source', 'cups-and-milk')
-    #relation = SourceTagRel(source=sourcekey, tag=tagkey).put()
-    keylist = []
-    all_issues_list = []
-    issues = []
-    if 'q' in request.GET:
-        tags = Tag.query(Tag.title==request.GET['q'])
-        q = request.GET['q']
-        for tag in tags:
-            for relation in IssueTagRel.query(IssueTagRel.tag==tag.key):
-                issues.append(relation.issue.get())
-        for issue in issues:
-            temp = []
-            temp.append(issue.key.id)
-            temp.append(issue.title)
-            temp.append(issue.description)
-            keylist.append(temp)
-        if not keylist:
-            allKeyList = []
-            all_issues_list = Issue.query()
-            for issue in all_issues_list:
-                temp = []
-                temp.append(issue.key.id)
-                temp.append(issue.title)
-                temp.append(issue.description)
-                allKeyList.append(temp)
-            all_issues_list = allKeyList
+        if there_is_previous:
+            previous_cursor = previous_cursor.urlsafe()
+        else:
+            previous_cursor = ''
     else:
-        q = ''
-        allKeyList = []
-        all_issues_list = Issue.query()
-        for issue in all_issues_list:
-            temp = []
-            temp.append(issue.key.id)
-            temp.append(issue.title)
-            temp.append(issue.description)
-            allKeyList.append(temp)
-        all_issues_list = allKeyList
-    #for source in sources:
-    #    requested_issues_list.append(str(source.key))
-    return render(request, "issuesite/issue.html", {'issue_list': keylist, 'all_issues_list': all_issues_list, 'q': q})
+        issue_list, next_cursor, there_is_next = Issue.query().order(Issue.title).fetch_page_async(
+            results_per_page).get_result()
+        there_is_previous = False
+        previous_cursor = ''
+    enable_next = ''
+    enable_previous = ''
+    if not there_is_next:
+        enable_next = 'disabled'
+    if not there_is_previous:
+        enable_previous = 'disabled'
+    next_cursor = next_cursor.urlsafe()
+    return render(request, "issuesite/issue.html", {'issue_list': issue_list, 
+        'next_cursor': next_cursor, 'previous_cursor': previous_cursor, 'enable_previous': enable_previous, 'enable_next': enable_next})
+
+def _fetch_tagged_issues(request, q, cursor_url_safe=None):
+    tag_title_list = q.split()
+    tag_key_list = [ndb.Key("Tag", slugify(tag_title)) for tag_title in tag_title_list]
+    issue_tag_relation_list = IssueTagRel.query(IssueTagRel.tag.IN(tag_key_list)).fetch_async().get_result()
+    issue_list = [relation.issue.get() for relation in issue_tag_relation_list]
+    return render(request, "issuesite/issue.html", {'issue_list': issue_list, 'q': q})
+
+issue_list = Issue.query().fetch_async().get_result()
+def issue(request):
+    get_dic = request.GET
+    if ('q' in get_dic and len(get_dic['q']) == 0) or 'q' not in get_dic:
+        if 'cursor' in get_dic:
+            return _fetch_all_issues(request, cursor_url_safe=get_dic['cursor'])
+        else:
+            return _fetch_all_issues(request)
+
+    else:
+        q = get_dic['q']
+        return _fetch_tagged_issues(request, q)
+
+#-------------------------------
 
 def issueDetail(request, issueID, error=None):
     issueKey = ndb.Key(Issue, issueID)
