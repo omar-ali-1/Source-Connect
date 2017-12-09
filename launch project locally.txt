@@ -1,1 +1,13 @@
+Local launch:
+
 python "C:\Program Files (x86)\Google\google_appengine\dev_appserver.py" "app.yaml"
+
+------------------------------------------------
+
+Network Launch:
+
+python "C:\Program Files (x86)\Google\google_appengine\dev_appserver.py" "app.yaml" --host=0.0.0.0
+
+then use computer's IP to access from other devices connected to same network: IP:port ==> example: 192.168.0.1:8080
+
+-------------------------------------------------

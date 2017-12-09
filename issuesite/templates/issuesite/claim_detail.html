@@ -2,7 +2,9 @@
 
 {% load static %}
 
-
+{% block styles %}
+<link href="{% static 'issuesite/css/hierarchy_styles.css' %}?version=1" rel="stylesheet">
+{% endblock styles %}
 
 
 {% block content %}
@@ -15,18 +17,17 @@
 </div>
 
 
+<!-- https://bootsnipp.com/snippets/2Gq5 -->
 <div class="row">
 	<div class="col-sm-12">
-			<ol class="breadcrumb" style="background: transparent;">
-			  <li class="breadcrumb-item"><a href="{% url 'issuesite:issueDetail' issueID=issue.key.id %}""> {{issue.title|truncatechars:70}} </a></li>
-			  <li class="breadcrumb-item active">{{claim.title|truncatechars:70}}</li>
-			</ol>
-
+    <div id="bc1" class="myBreadcrumb">
+        <a href="#" class="active"><i class="fa fa-home fa-2x"></i></a>
+    	<a href="{% url 'issuesite:issueDetail' issueID=issue.key.id %}"><div>{{issue.title|truncatechars:70}}</div></a>
+    	<a href="#"><div>{{claim.title|truncatechars:70}}</div></a>
+    </div>
 		<hr class="featurette-divider">
-
 	</div>
 </div>
-
 
 <div class="row">
 	<div class="col-sm-12">
@@ -75,6 +76,7 @@
 </div>
 
 <!-- Arguments -->
+
 
 {% if arguments_for_list or arguments_against_list %}
 

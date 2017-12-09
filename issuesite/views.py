@@ -82,7 +82,7 @@ def _fetch_tagged_issues(request, q, cursor_url_safe=None):
 issue_list = Issue.query().fetch_async().get_result()
 def issue(request):
     # _delete_data()
-    _create_data()
+    # _create_data()
     get_dic = request.GET
     if ('q' in get_dic and len(get_dic['q']) == 0) or 'q' not in get_dic:
         if 'cursor' in get_dic:
@@ -156,8 +156,7 @@ def issueDetail(request, issueID, error=None):
     issue = issueKey.get()
     tags = []
     claims = []
-    for relation in IssueTagRel.query(IssueTagRel.issue==issueKey):
-        tags.append(relation.tag.get())
+    tags = _get_tags(issueKey)
 
     for relation in IssueClaimRel.query(IssueClaimRel.issue==issueKey):
         claims.append(relation.claim.get())
@@ -183,7 +182,7 @@ def newIssue(request):
 def getIssueKey(issueID):
     return ndb.Key('Issue', issueID)
 
-def getTags(issueKey):
+def _get_tags(issueKey):
     '''Returns list of tag titles as strings'''
     tags = []
     for relation in IssueTagRel.query(IssueTagRel.issue==issueKey):
@@ -216,47 +215,33 @@ def getArguments(claims):
 def editIssue(request, issueID):
     issueKey = getIssueKey(issueID)
     issue = issueKey.get()
-    tags = getTags(issueKey)
+    tags = _get_tags(issueKey)
     claims = getClaims(issueKey)
     argumentDic = getArguments(claims)
     return render(request, "issuesite/edit_issue.html", {'issue': issue, 'tags': tags, 'claims': claims, 'arguments': argumentDic})
 
 
 # -------------------------------------------------------------
-
-
-def saveIssue(request, issueID):
-    key = ndb.Key('Issue', issueID)
-    logging.info("key:")
-    logging.info(key)
-    issue = key.get()
-    title = request.POST['title']
-    tagNames = request.POST.getlist('taggles[]')
+def _update_issue_tags(issue, received_tags):
+    tagNames = received_tags
     tagNamesSet = set()
     for tagName in tagNames:
         tagNamesSet.add(tagName)
-
-    logging.info(tagNames)
-    logging.info(tagNamesSet)
 
     newTagNames = []
     oldTagNames = []
     needDelTags = []
     relations = IssueTagRel.query(IssueTagRel.issue==issue.key)
 
-    logging.info(relations)
-
     for relation in relations:
         oldTagNames.append(relation.tag.get().title)
 
-    logging.info(oldTagNames)
+    #logging.info(oldTagNames)
 
     oldTagNamesSet = set(oldTagNames)
     for tagName in tagNames:
         if tagName not in oldTagNamesSet:
             newTagNames.append(tagName)
-    logging.info("New tag names:")
-    logging.info(newTagNames)
     for tagName in oldTagNames:
         if tagName not in tagNamesSet:
             needDelTags.append(tagName)
@@ -265,24 +250,41 @@ def saveIssue(request, issueID):
         if tag is None:
             tag = Tag(title = tagName)
             tag.put()
-        logging.info(tag.title)
-        logging.info(tag.key)
-        IssueTagRel(issue = key, tag = tag.key).put()
+        IssueTagRel(issue = issue.key, tag = tag.key).put()
     for tagName in needDelTags:
         IssueTagRel.query(IssueTagRel.tag==Tag.query(Tag.title == tagName).get().key).get().key.delete()
+
+def _migrate_issue_tags(issue, relations):
+    for relation in relations:
+        relation.issue = issue.key
+        relation.put()
+
+def saveIssue(request, issueID):
     post = request.POST
+    issue = ndb.Key('Issue', issueID).get()
+    received_tags = post.getlist('taggles[]')
+
+    # Update the current issue's tags.
+    _update_issue_tags(issue, received_tags)
+
     issue.description = post['description']
     title = post['title']
-    tags = []
-    if title != issue.title:
-        tags = IssueTagRel.query(IssueTagRel.issue==issue.key)
+
+    # If there is a change in the title, we need to change the issue's key, and therefore
+    # we need to update the issue key property in the IssueTagRelations in the Datastore.
+    migrate_issue_tags = title != issue.title
+    if migrate_issue_tags:
+        issue_tag_relations = IssueTagRel.query(IssueTagRel.issue==issue.key)
+    
+
+    # Create new issue with updated title, delete old issue key, put new issue key.
     issue.title = title
     issue.key.delete()
     issue.key = ndb.Key(Issue, issue.slug)
     issue.put()
-    for tag in tags:
-        tag.issue = issue.key
-        tag.put()
+
+    if migrate_issue_tags:
+        _migrate_issue_tags(issue, issue_tag_relations)
 # TODO: claims disappear when issue title is changed. Fix it.
     return HttpResponseRedirect(reverse('issuesite:issueDetail', args=(issue.key.id(),)))
 

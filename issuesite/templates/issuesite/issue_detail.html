@@ -15,6 +15,39 @@
 	</div>
 
 
+	<div class="row">
+		<div class="col-sm-12">
+			<a class="btn btn-outline-primary" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+			  	Tags <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+			</a>
+			<hr class="featurette-divider">
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="collapse" id="collapseExample">
+	            <div class="well">
+		            <div class="row">
+		            	<div class="col-sm-10">
+			            	<h5>Topics related to this issue.</h5>
+			           	</div>
+			        </div>
+		            <div  id="issue_detail_taggle" class="textarea input clearfix example1"></div>
+	        	</div>
+			  <hr class="featurette-divider">
+			</div>
+		</div>
+	</div>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script src="{% static 'sourcebasesite/taggle.js-1.11.1/src/taggle.min.js' %}"></script>
+	<script>
+		new Taggle('issue_detail_taggle', {
+    tags: {{ tags|safe }}
+});
+	</script>
+
+
+
 	<!-- Issue title -->
 	<div class="row">
 		<div class="col-sm-12">
