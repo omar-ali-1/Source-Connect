@@ -4,6 +4,11 @@ python "C:\Program Files (x86)\Google\google_appengine\dev_appserver.py" "app.ya
 
 ------------------------------------------------
 
+
+"C:\Users\OmarAli\AppData\Local\Google\Cloud SDK\google-cloud-sdk\bin\dev_appserver.py" "app.yaml"
+
+------------------------------------------------
+
 Network Launch:
 
 python "C:\Program Files (x86)\Google\google_appengine\dev_appserver.py" "app.yaml" --host=0.0.0.0

@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
+    <meta name="google-signin-client_id" content="1018666741394-fkb3lat9j0oceaor95lbcshittfrorp4.apps.googleusercontent.com">
     <link rel="icon" href="../../favicon.ico">
 
     <title>Sourcebase</title>
@@ -15,11 +16,13 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" rel="stylesheet">
     <link href="http://netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
     <link href=https://maxcdn.bootstrapcdn.com/css/ie10-viewport-bug-workaround.css rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.firebase.com/libs/firepad/1.4.0/firepad.css" />
     <link href="{% static 'sourcebasesite/css/style.css' %}?version=1" rel="stylesheet">
-    <link href="carousel.css" rel="stylesheet">
     {% block styles %}
     {% endblock styles %}
-    <script src='//cloud.tinymce.com/stable/tinymce.min.js?apiKey=1c71d4g4v5yesnh23vret31enyehv3m0jzgvcykuuiy7qclj'></script>
+    <script src="{% static 'sourcebasesite/js/tinymce/tinymce.js' %}"></script>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script type="text/javascript"></script>
     <script>
       tinymce.init({
         selector: 'edittitle',
@@ -33,10 +36,9 @@
                image_class_list: [
                   {title: 'Responsive', value: 'img-responsive'}
               ],
-        selector: 'textarea',
+        selector: '#edit_issue_textarea',
         branding: false,
         height: 500,
-        theme: 'modern',
         plugins: [
           'advlist autolink lists link image charmap print preview hr anchor pagebreak',
           'searchreplace wordcount visualblocks visualchars code fullscreen',
@@ -61,15 +63,15 @@
   <body class="site">
 
     <header>
-      <nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse fixed-top">
-        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+<nav class="navbar navbar-inverse bg-inverse navbar-toggleable-md fixed-top">
+      <div class="container">
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarsExampleContainer" aria-controls="navbarsExampleContainer" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <a class="navbar-brand" href="#">Sourcebase</a>
 
-        <div class="collapse navbar-collapse" id="navbarsExampleDefault">
-          
-            <ul class="navbar-nav mr-auto mx-auto" style="font-size: 1rem">
+        <div class="collapse navbar-collapse" id="navbarsExampleContainer">
+          <ul class="navbar-nav mr-auto">
               <li class="nav-item" id="navbar-home"><a class="nav-link" href="/">Home</a></li>
               <li class="nav-item" id="navbar-issues"><a class="nav-link" href="/issues/">Issues</a></li>
               <li class="nav-item" id="navbar-source"><a class="nav-link" href="/source/">Source</a></li>
@@ -78,18 +80,18 @@
               <li class="nav-item" id="navbar-act"><a class="nav-link" href="/act/">Act</a></li>  
               <li class="nav-item" id="navbar-about"><a class="nav-link" href="/about/">About</a></li>    
               <li class="nav-item" id="navbar-contact"><a class="nav-link" href="/contact/">Contact</a></li>
-            </ul>
-          
-          <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="text" placeholder="Search">
-            <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Search</button>
+          </ul>
+          <form class="form-inline my-2 my-md-0">
+            <div class=" my-2 my-sm-0 g-signin2" data-onsuccess="onSignIn"></div>
           </form>
         </div>
-      </nav>
+      </div>
+    </nav>
+
       {% block carousel %}
       {% endblock carousel %}
     </header>
-
+  
     <main class="site-content">
 
       <div class="container">
@@ -98,17 +100,74 @@
       </div><!-- /.container -->
     </main>
 
-    <footer style="font-size: 1vw">
-      <div class="container">
-        <hr class="featurette-divider">
+    <footer class="footer--dark">
+      <div class="container footer-container-1">
+        <div class="row">
+          <a class="pull-right" href="/" onclick="signOut();">Sign out</a>
+        </div>
+
+<script>
+  function signOut() {
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+      console.log('User signed out.');
+    });
+  }
+</script>
+      </div>
+      <div class="container footer-container-2">
         <p class="pull-right"><a href="#">Back to top</a></p>
         <p>&copy; 2017 Sourcebase &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
       </div>
     </footer>
 
+
+
+
+<script src="https://www.gstatic.com/firebasejs/3.3.0/firebase.js"></script>
+<!-- CodeMirror -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.17.0/codemirror.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.17.0/codemirror.css" />
+
+<!-- Firepad -->
+
+<script src="https://cdn.firebase.com/libs/firepad/1.4.0/firepad.min.js"></script>
+
+
+<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyCXLkQ2natcA5XKjOwEt2htv5xgw7uz5KM",
+    authDomain: "sourcebase-a547d.firebaseapp.com",
+    databaseURL: "https://sourcebase-a547d.firebaseio.com",
+    projectId: "sourcebase-a547d",
+    storageBucket: "sourcebase-a547d.appspot.com",
+    messagingSenderId: "1018666741394"
+
+  };
+  firebase.initializeApp(config);
+
+    // Get Firebase Database reference.
+  var firepadRef = firebase.database().ref();
+  console.log(firepadRef);
+
+  // Create CodeMirror (with lineWrapping on).
+  var codeMirror = CodeMirror(document.getElementById('firepad'), { lineWrapping: true });
+
+  // Create Firepad (with rich text toolbar and shortcuts enabled).
+  var firepad = Firepad.fromCodeMirror(firepadRef, codeMirror, {
+    richTextShortcuts: true,
+    richTextToolbar: true,
+    defaultText: 'Hello, World!'
+  });
+</script>
+
+
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
+
+
     <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
     <script>window.jQuery || document.write('<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"><\/script>')</script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
@@ -118,6 +177,44 @@
 
     {% block scripts %}
     {% endblock scripts %}
+<script type="text/javascript">
+  // using jQuery
+  function getCookie(name) {
+      var cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+          var cookies = document.cookie.split(';');
+          for (var i = 0; i < cookies.length; i++) {
+              var cookie = jQuery.trim(cookies[i]);
+              // Does this cookie string begin with the name we want?
+              if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+              }
+          }
+      }
+      return cookieValue;
+  }
+  var csrftoken = getCookie('csrftoken');
+  function onSignIn(googleUser) {
+    var profile = googleUser.getBasicProfile();
+    console.log('ID: ' + profile.getId());
+    console.log('Full Name: ' + profile.getName());
+    console.log('Given Name: ' + profile.getGivenName());
+    console.log('Family Name: ' + profile.getFamilyName());
+    console.log('Image URL: ' + profile.getImageUrl());
+    console.log('Email: ' + profile.getEmail());
+    var id_token = googleUser.getAuthResponse().id_token;
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/tokensignin/');
+    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onload = function() {
+      console.log('Signed in as: ' + xhr.responseText);
+    };
+    xhr.send('idtoken=' + id_token + '&'+ 'csrftoken=' + csrftoken);
+  }
+</script>
+
 
   </body>
 </html>

@@ -1,9 +1,14 @@
 {% extends 'base.html' %}
-
+{% load staticfiles %}
     {% block styles %}
 
-<link href="static/sourcebasesite/css/home_style.css" rel="stylesheet">
-<link href="carousel.css" rel="stylesheet">
+    <!-- 
+      <link href="static/sourcebasesite/css/home_style.css" rel="stylesheet">
+      <link href="{% static 'sourcebasesite/css/carousel.css' %}?version=1" rel="stylesheet">
+    -->
+
+
+
     {% endblock styles %}
 
 {% block carousel %}

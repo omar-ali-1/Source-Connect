@@ -254,39 +254,41 @@ def _update_issue_tags(issue, received_tags):
     for tagName in needDelTags:
         IssueTagRel.query(IssueTagRel.tag==Tag.query(Tag.title == tagName).get().key).get().key.delete()
 
-def _migrate_issue_tags(issue, relations):
+def _migrate_related_entities(issue_key, relations):
     for relation in relations:
-        relation.issue = issue.key
+        relation.issue = issue_key
         relation.put()
+
 
 def saveIssue(request, issueID):
     post = request.POST
-    issue = ndb.Key('Issue', issueID).get()
+    issue_key = ndb.Key('Issue', issueID)
+    issue = issue_key.get()
     received_tags = post.getlist('taggles[]')
 
     # Update the current issue's tags.
     _update_issue_tags(issue, received_tags)
 
+    received_title = post['title']
     issue.description = post['description']
-    title = post['title']
-
-    # If there is a change in the title, we need to change the issue's key, and therefore
-    # we need to update the issue key property in the IssueTagRelations in the Datastore.
-    migrate_issue_tags = title != issue.title
-    if migrate_issue_tags:
-        issue_tag_relations = IssueTagRel.query(IssueTagRel.issue==issue.key)
     
 
-    # Create new issue with updated title, delete old issue key, put new issue key.
-    issue.title = title
-    issue.key.delete()
-    issue.key = ndb.Key(Issue, issue.slug)
-    issue.put()
+    ''' If there is a change in the title, we need to change the issue's key, since the key is 
+     based on the ID, which is the issue's slug; and therefore we need to update the issue 
+     key property in the IssueTagRels and IssueClaimRels in the Datastore. '''
+    if received_title != issue.title:
+        issue_tag_relations = IssueTagRel.query(IssueTagRel.issue==issue_key)
+        issue_claim_relations = IssueClaimRel.query(IssueClaimRel.issue==issue_key)
+        issue_key.delete()
+        issue.key = issue_key = ndb.Key(Issue, slugify(received_title))
+        issue.title = received_title
+        issue.put()
+        _migrate_related_entities(issue_key, issue_tag_relations)
+        _migrate_related_entities(issue_key, issue_claim_relations)
+        
 
-    if migrate_issue_tags:
-        _migrate_issue_tags(issue, issue_tag_relations)
 # TODO: claims disappear when issue title is changed. Fix it.
-    return HttpResponseRedirect(reverse('issuesite:issueDetail', args=(issue.key.id(),)))
+    return HttpResponseRedirect(reverse('issuesite:issueDetail', args=(issue_key.id(),)))
 
 
 # --------- Claims ----------------------------------------------------

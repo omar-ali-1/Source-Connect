@@ -18,7 +18,25 @@ from django.template.defaultfilters import slugify
 from ast import literal_eval
 import logging
 
-# Create your views here.
+# request urls and get the response, and be able to manipulate it, etc.
+import urllib, urllib2
+
+# json.loads() and json.dumps() loads and dumps a json string, taking it from
+# valid json string to python dic object, and vice versa, respectively, with
+# dumps() doing the appropriate escaping for us.
+import json
+
+# google oauth2 verification
+
+from google.oauth2 import id_token
+from google.auth.transport import requests
+import requests_toolbelt.adapters.appengine
+
+# Use the App Engine Requests adapter. This makes sure that Requests uses
+# URLFetch.
+requests_toolbelt.adapters.appengine.monkeypatch()
+
+
 
 providers = {
     'Google'   : 'https://www.google.com/accounts/o8/id',
@@ -31,6 +49,31 @@ providers = {
 
 def home(request):
     return render(request, "sourcebasesite/home.html")
+
+def signIn(request):
+    token = request.POST['idtoken']
+    CLIENT_ID = "1018666741394-fkb3lat9j0oceaor95lbcshittfrorp4.apps.googleusercontent.com"
+    try:
+        idinfo = id_token.verify_oauth2_token(token, requests.Request(), CLIENT_ID)
+
+        # Or, if multiple clients access the backend server:
+        # idinfo = id_token.verify_oauth2_token(token, requests.Request())
+        # if idinfo['aud'] not in [CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]:
+        #     raise ValueError('Could not verify audience.')
+
+        if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
+            raise ValueError('Wrong issuer.')
+
+        # If auth request is from a G Suite domain:
+        # if idinfo['hd'] != GSUITE_DOMAIN_NAME:
+        #     raise ValueError('Wrong hosted domain.')
+
+        # ID token is valid. Get the user's Google Account ID from the decoded token.
+        userid = idinfo['sub']
+    except ValueError:
+        # Invalid token
+        pass
+    return HttpResponse("umar alee")  
 
 def source(request):
     #newsource = Source(title="some New Test Source", description='this is description')

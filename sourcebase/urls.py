@@ -33,5 +33,6 @@ urlpatterns = [
     url(r'^source/', include('sourcebasesite.urls', namespace='sourcebasesite')),
     #url(r'^source/', source, name='source'),
     url(r'^issues/', include('issuesite.urls', namespace='issuesite')),
-    url(r'^admin/', admin.site.urls)
+    url(r'^admin/', admin.site.urls),
+    url(r'^tokensignin/', signIn, name='signIn')
 ]

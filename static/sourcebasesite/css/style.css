@@ -3,11 +3,14 @@
 /* Padding below the footer and lighter body text */
 
 body {
-  padding-bottom: 40px;
+  padding-bottom: 0;
   padding-top: 85px; 
   color: #5a5a5a;
+  background-color: #f1f3f4;
 }
-
+.bg-inverse {
+    background-color: #1c2229f5!important;
+}
 
 /* CUSTOMIZE THE NAVBAR
 -------------------------------------------------- */
@@ -205,8 +208,7 @@ body {
   margin-bottom: 5px; }
 
 .taggle_list .taggle {
-  margin-right: 8px;
-  background: #E2E1DF;
+  margin-right: 12px;
   padding: 5px 10px;
   border-radius: 3px;
   position: relative;
@@ -223,11 +225,11 @@ body {
 .taggle_list .taggle .close {
   font-size: 1.1rem;
   position: absolute;
-  top: 5px;
-  right: 3px;
+  top: .15rem;
+  right: .1rem;
   text-decoration: none;
-  padding-left: 2px;
-  padding-top: 3px;
+  padding-left: 0;
+  padding-top: 0;
   line-height: 0.5;
   color: #ccc;
   color: rgba(0, 0, 0, 0.2);
@@ -236,6 +238,10 @@ body {
   border: 0;
   background: none;
   cursor: pointer; }
+
+li:hover .close {
+  color: #990033;
+}
 
 .taggle_list .taggle:hover {
   padding: 5px;
@@ -283,7 +289,7 @@ textarea.input,
   border: 0;
   background: #FDFDFD;
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2), 0 1px 1px rgba(255, 255, 255, 0.7);
-  min-height: 60px;
+  min-height: 80px;
   padding: 8px;
   border-radius: 3px;
   color: #555;
@@ -444,6 +450,8 @@ textarea.input {
     font-size: 0.8rem;
     padding: 5px;
     padding-left: 20px; }
+
+
     .custom.delicious .taggle .close {
       color: #aaa;
       font-size: 0.9rem;
@@ -517,7 +525,6 @@ footer {
 /* footer fix */
 
 ul {
-  -webkit-margin-before: 1em; 
   -webkit-margin-after: 1em;
   -webkit-margin-start: 0px;
   -webkit-margin-end: 0px;
@@ -628,4 +635,166 @@ h2.section {
   .featurette-heading {
     margin-top: 7rem;
   }
+}
+
+
+.footer--dark {
+    color: #fff;
+    background-color: #1c2229;
+}
+
+.footer-container-1 {
+    border-bottom: 1px solid #e6e9eb;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: rgb(230, 233, 235);
+    max-width: 90%;
+    margin: auto;
+}
+
+.footer-container-2 {
+    max-width: 90%;
+    margin: auto;
+}
+
+ul.taggle_list {
+    -webkit-margin-before: 0;
+    -webkit-margin-after: 0;
+}
+/*
+[id*="taggle"], .example1, .textarea.example1 {
+    min-height: 80px;
+}
+*/
+
+.title {
+    padding: 15px;
+}
+
+.float-left {
+  float: left;
+}
+
+li a {
+    display: block;
+    color: #000;
+    padding: 8px 16px;
+    text-decoration: none;
+}
+
+li.active {
+    background-color: #3b7fad70;
+    color: white;
+}
+
+li:hover:not(.active) {
+    background-color: #76b5e070;
+}
+li:hover:not(.active) a.nav-link{
+    color: #7158FF;
+}
+
+
+nav.navbar.navbar-toggleable-md.navbar-inverse.bg-inverse.fixed-top {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.navbar-inverse .navbar-nav .nav-link {
+    color: rgb(255, 255, 255);
+}
+
+li.nav-item {
+    text-align: center;
+}
+
+/*
+TODO: fix background color change on hover for li that are not in nav;
+*/
+
+.navbar-inverse .navbar-nav .nav-link:focus, .navbar-inverse .navbar-nav .nav-link:hover {
+    color: black;
+}
+
+
+li:hover:not(.active) a.nav-link{
+    color: black;
+}
+
+
+.navbar-toggler-right {
+    top: .3rem;
+}
+
+.navbar-brand {
+    padding-top: .6rem;
+    padding-bottom: .6rem;
+}
+
+.nav-link {
+    display: block;
+    padding: .76em 1em;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #3b7fad;
+    border-color: #3b7fad;
+}
+
+footer {
+  font-size: 0.4rem;
+}
+
+@media (min-width: 992px) {
+  footer {
+    font-size: 1rem;
+  }
+}
+
+.form-control:focus {
+    color: #464a4c;
+    background-color: #fff;
+    border-color: #3b7fad; 
+    outline: 0;
+    outline-color: initial;
+    outline-style: initial;
+    outline-width: 0px;
+}
+
+
+.dropdown-item:hover {
+    color: #1d1e1f;
+    text-decoration: none;
+    text-decoration-line: none;
+    text-decoration-style: initial;
+    text-decoration-color: initial;
+    background-color: #76b5e0;
+}
+
+li.taggle {
+    background-color: #3b69ad;
+    border-color: #3b69ad;
+}
+
+
+.firepad {
+  width: auto;
+  height: 800px;
+  background-color: #f62; /* dark orange background */
+}
+
+.firepad .CodeMirror {
+    position: static;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    height: 400px;
+}
+
+@media (min-width: 992px)
+.navbar-toggleable-md .navbar-nav .nav-link {
+    padding-right: 20%;
+    padding-left: 20%;
 }
