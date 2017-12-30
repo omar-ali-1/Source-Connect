@@ -35,7 +35,7 @@ import requests_toolbelt.adapters.appengine
 # Use the App Engine Requests adapter. This makes sure that Requests uses
 # URLFetch.
 requests_toolbelt.adapters.appengine.monkeypatch()
-
+from issuesite.models import *
 
 
 providers = {
@@ -46,6 +46,65 @@ providers = {
     'MyOpenID' : 'myopenid.com'
     # add more here
 }
+
+def admin(request):
+    return render(request, "sourcebasesite/admin.html")
+
+def createEntities(request):
+    import random, string
+    def randomword(length):
+        letters = string.ascii_lowercase
+        return ''.join(random.choice(letters) for i in range(length))
+    issue_count = 35
+    claim_count = 3
+    argument_count = 4
+    for i in xrange(issue_count):
+        title_length = random.randint(6, 14)
+        title = string.join([randomword(random.randint(4,8)) for i in xrange(title_length)])
+        desc_length = random.randint(600, 1000)
+        description = string.join([randomword(random.randint(4,8)) for i in xrange(desc_length)])
+        issue = Issue(title=title, description=description)
+        key = ndb.Key('Issue', slugify(title))
+        issue.key = key
+        issue.put()
+        for j in xrange(claim_count):
+            title_length = random.randint(6, 14)
+            title = string.join([randomword(random.randint(4,8)) for i in xrange(title_length)])
+            desc_length = random.randint(600, 1000)
+            description = string.join([randomword(random.randint(4,8)) for i in xrange(desc_length)])
+            claim = Claim(title=title, description=description)
+            key = ndb.Key('Claim', slugify(title))
+            claim.key = key
+            claim.put()
+            IssueClaimRel(issue = issue.key, claim = claim.key).put()
+            for k in xrange(argument_count):
+                title_length = random.randint(6, 14)
+                title = string.join([randomword(random.randint(4,8)) for i in xrange(title_length)])
+                desc_length = random.randint(600, 900)
+                description = string.join([randomword(random.randint(4,8)) for i in xrange(desc_length)])
+                if k < argument_count/2:
+                    func = 'FOR'
+                else:
+                    func = 'AGAINST'
+                argument = Argument(title=title, description=description)
+                key = ndb.Key('Argument', slugify(title))
+                argument.key = key
+                argument.put()
+                ClaimArgumentRel(claim=claim.key, argument=argument.key, relation=func).put()
+    return HttpResponse("Entities have been created. <a href='/issues/'>Issues</a>")
+
+def deleteEntities(request)  :
+    ndb.delete_multi(
+    Issue.query().fetch(keys_only=True))
+    ndb.delete_multi(
+    Argument.query().fetch(keys_only=True))
+    ndb.delete_multi(
+    Claim.query().fetch(keys_only=True))
+    ndb.delete_multi(
+    IssueClaimRel.query().fetch(keys_only=True))
+    ndb.delete_multi(
+    ClaimArgumentRel.query().fetch(keys_only=True))
+    return HttpResponse("Entities have been deleted. <a href='/issues/'>Issues</a>")
 
 def home(request):
     return render(request, "sourcebasesite/home.html")

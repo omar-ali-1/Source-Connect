@@ -359,7 +359,6 @@ textarea.input {
   color: #8a8a8a;
   cursor: pointer; }
   .ui-menu .ui-menu-item a:hover {
-    color: #fff;
     background: #990033; }
 
 .ui-state-hover,
@@ -683,13 +682,13 @@ li a {
 }
 
 li.active {
-    background-color: #3b7fad70;
+    background-color: #468846;
     color: white;
+    border-bottom-style: solid;
+    border-bottom-color: #73db73;
 }
 
-li:hover:not(.active) {
-    background-color: #76b5e070;
-}
+
 li:hover:not(.active) a.nav-link{
     color: #7158FF;
 }
@@ -706,19 +705,36 @@ nav.navbar.navbar-toggleable-md.navbar-inverse.bg-inverse.fixed-top {
 
 li.nav-item {
     text-align: center;
+  }
+
+li.nav-item:not(.active) {
+    text-align: center;
+    border-bottom-style: solid;
+    border-bottom-color: transparent;
+}
+
+li:hover:not(.active) {
+  background-color: black;
+  border-bottom-style: solid;
+  border-bottom-color: #76b5e070;
+}
+
+li.nav-item {
+    min-width: 8vw;
 }
 
 /*
 TODO: fix background color change on hover for li that are not in nav;
 */
 
-.navbar-inverse .navbar-nav .nav-link:focus, .navbar-inverse .navbar-nav .nav-link:hover {
-    color: black;
-}
 
 
 li:hover:not(.active) a.nav-link{
     color: black;
+}
+
+link:hover {
+  background-color: black;
 }
 
 
@@ -738,8 +754,12 @@ li:hover:not(.active) a.nav-link{
 
 .btn-primary {
     color: #fff;
+    background-color: #5cb85c;
+    border-color: #5cb85c;
+    /*
     background-color: #3b7fad;
     border-color: #3b7fad;
+    */
 }
 
 footer {

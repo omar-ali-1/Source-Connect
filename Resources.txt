@@ -1,2 +1,5 @@
 Google Web design and other guidelines:
 https://developers.google.com/web/fundamentals/design-and-ux/
+
+Off-canvas nav:
+http://www.jasny.net/bootstrap/javascript/#offcanvas
