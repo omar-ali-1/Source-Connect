@@ -6,6 +6,13 @@ from google.appengine.ext import ndb
 
 from django.template.defaultfilters import slugify
 
+
+class User(ndb.Model):
+    firstName = ndb.StringProperty(required=True)
+    lastName = ndb.StringProperty()
+    email = ndb.StringProperty(required=True)
+    picture = ndb.StringProperty()
+
 class Source(ndb.Model):
     """Profile -- User profile object"""
     title = ndb.StringProperty(required=True)

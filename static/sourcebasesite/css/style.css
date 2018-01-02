@@ -7,9 +7,10 @@ body {
   padding-top: 85px; 
   color: #5a5a5a;
   background-color: #f1f3f4;
+  font-family: 'Linux Libertine','Georgia','Times',serif;
 }
 .bg-inverse {
-    background-color: #1c2229f5!important;
+    background-color: #222629f5!important;
 }
 
 /* CUSTOMIZE THE NAVBAR
@@ -499,7 +500,7 @@ ul.taggle_list {
     vertical-align: top;
 }
 
-/* footer fix */
+/*  fix */
 /*
 this solution was replaced with use of container class to get footer to have same width as page content
 footer {
@@ -637,24 +638,7 @@ h2.section {
 }
 
 
-.footer--dark {
-    color: #fff;
-    background-color: #1c2229;
-}
 
-.footer-container-1 {
-    border-bottom: 1px solid #e6e9eb;
-    border-bottom-width: 1px;
-    border-bottom-style: solid;
-    border-bottom-color: rgb(230, 233, 235);
-    max-width: 90%;
-    margin: auto;
-}
-
-.footer-container-2 {
-    max-width: 90%;
-    margin: auto;
-}
 
 ul.taggle_list {
     -webkit-margin-before: 0;
@@ -689,9 +673,6 @@ li.active {
 }
 
 
-li:hover:not(.active) a.nav-link{
-    color: #7158FF;
-}
 
 
 nav.navbar.navbar-toggleable-md.navbar-inverse.bg-inverse.fixed-top {
@@ -713,7 +694,7 @@ li.nav-item:not(.active) {
     border-bottom-color: transparent;
 }
 
-li:hover:not(.active) {
+li.nav-item:hover:not(.active) {
   background-color: black;
   border-bottom-style: solid;
   border-bottom-color: #76b5e070;
@@ -729,9 +710,7 @@ TODO: fix background color change on hover for li that are not in nav;
 
 
 
-li:hover:not(.active) a.nav-link{
-    color: black;
-}
+
 
 link:hover {
   background-color: black;
@@ -762,15 +741,6 @@ link:hover {
     */
 }
 
-footer {
-  font-size: 0.4rem;
-}
-
-@media (min-width: 992px) {
-  footer {
-    font-size: 1rem;
-  }
-}
 
 .form-control:focus {
     color: #464a4c;
@@ -818,3 +788,50 @@ li.taggle {
     padding-right: 20%;
     padding-left: 20%;
 }
+
+.dropdown-menu {
+    right: 0;
+    left: auto;
+}
+
+.btn-success {
+    color: #fff;
+    background-color: #5cb85c;
+    border-color: #292c2f;
+    border-top-color: rgb(41, 44, 47);
+    border-right-color: rgb(41, 44, 47);
+    border-bottom-color: rgb(41, 44, 47);
+    border-left-color: rgb(41, 44, 47);
+}
+
+.btn-success:hover {
+    color: #fff;
+    background-color: #449d44;
+    border-color: #292c2f;
+    border-top-color: rgb(41, 44, 47);
+    border-right-color: rgb(41, 44, 47);
+    border-bottom-color: rgb(41, 44, 47);
+    border-left-color: rgb(41, 44, 47);
+}
+
+.form-control.search {
+  border: 1px solid rgb(41, 44, 47);
+  border-radius: 0;
+}
+
+.btn.search-more {
+  border-radius: 0;
+}
+
+/* Google sign in button styles */
+.abcRioButtonContentWrapper {
+    border-width: 2px;
+    border-style: solid;
+    border-color: #2c6f2c;
+}
+
+.abcRioButton.abcRioButtonLightBlue {
+    margin: auto;
+}
+
+/* End Google sign in button styles */

@@ -18,6 +18,7 @@
     <link href=https://maxcdn.bootstrapcdn.com/css/ie10-viewport-bug-workaround.css rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.firebase.com/libs/firepad/1.4.0/firepad.css" />
     <link href="{% static 'sourcebasesite/css/style.css' %}?version=1" rel="stylesheet">
+    <link href="{% static 'sourcebasesite/css/footer2.css' %}?version=1" rel="stylesheet">
     {% block styles %}
     {% endblock styles %}
     <script src="{% static 'sourcebasesite/js/tinymce/tinymce.js' %}"></script>
@@ -82,9 +83,7 @@
               <li class="nav-item" id="navbar-about"><a class="nav-link" href="/about/">About</a></li>    
               <li class="nav-item" id="navbar-contact"><a class="nav-link" href="/contact/">Contact</a></li>
           </ul>
-          <form class="form-inline my-2 my-md-0">
-            <div class=" my-2 my-sm-0 g-signin2" data-onsuccess="onSignIn"></div>
-          </form>
+            <div class="form-inline my-2 my-md-0 my-2 my-sm-0 g-signin2" data-onsuccess="onSignIn"></div>
         </div>
     </nav>
 
@@ -100,27 +99,71 @@
       </div><!-- /.container -->
     </main>
 
-    <footer class="footer--dark">
-      <div class="container footer-container-1">
-        <div class="row">
-          <a class="pull-right" href="/" onclick="signOut();">Sign out</a>
+
+
+    <footer class="footer-distributed">
+
+      <div class="footer-left">
+
+        <h3>Source<span>base</span></h3>
+
+        <p class="footer-links">
+          <a href="#">Home</a>
+          ·
+          <a href="#">Blog</a>
+          ·
+          <a href="#">Pricing</a>
+          ·
+          <a href="#">About</a>
+          ·
+          <a href="#">Faq</a>
+          ·
+          <a href="#">Contact</a>
+          ·
+          <a href="#" onclick="signOut();">Sign Out</a>
+        </p>
+
+        <p class="footer-company-name">Omar Ali &copy; 2017</p>
+      </div>
+
+      <div class="footer-center">
+
+        <div>
+          <i class="fa fa-map-marker"></i>
+          <p><span>21 Revolution Street</span> Paris, France</p>
         </div>
 
-<script>
-  function signOut() {
-    var auth2 = gapi.auth2.getAuthInstance();
-    auth2.signOut().then(function () {
-      console.log('User signed out.');
-    });
-  }
-</script>
-      </div>
-      <div class="container footer-container-2">
-        <p class="pull-right"><a href="#">Back to top</a></p>
-        <p>&copy; 2017 Sourcebase &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
-      </div>
-    </footer>
+        <div>
+          <i class="fa fa-phone"></i>
+          <p>+1 555 123456</p>
+        </div>
 
+        <div>
+          <i class="fa fa-envelope"></i>
+          <p><a href="mailto:support@sourcebase.com">support@sourcebase.com</a></p>
+        </div>
+
+      </div>
+
+      <div class="footer-right">
+
+        <p class="footer-company-about">
+          <span>About the company</span>
+          Lorem ipsum dolor sit amet, consectateur adispicing elit. Fusce euismod convallis velit, eu auctor lacus vehicula sit amet.
+        </p>
+
+        <div class="footer-icons">
+
+          <a href="#"><i class="fa fa-facebook"></i></a>
+          <a href="#"><i class="fa fa-twitter"></i></a>
+          <a href="#"><i class="fa fa-linkedin"></i></a>
+          <a href="#"><i class="fa fa-github"></i></a>
+
+        </div>
+
+      </div>
+
+    </footer>
 
 
 
@@ -133,6 +176,14 @@
 
 <script src="https://cdn.firebase.com/libs/firepad/1.4.0/firepad.min.js"></script>
 
+<script>
+  function signOut() {
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+      console.log('User signed out.');
+    });
+  }
+</script>
 
 <script>
   // Initialize Firebase

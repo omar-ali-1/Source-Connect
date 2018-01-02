@@ -8,13 +8,13 @@
 		<div class="col-sm-12">
 			<form action="{% url 'issuesite:issue' %}" method="get">
 				<div class="input-group">
-				  <input type="text" name="q" id="q" class="form-control" aria-label="..." value="{{ q }}" placeholder="Search issues">
+				  <input type="text" name="q" id="q" class="form-control search" aria-label="..." value="{{ q }}" placeholder="Search issues">
 				  <div class="input-group-btn">
 				    <!-- Button and dropdown menu -->
 				    
 					<div class="btn-group">
 					  <button type="button submit" class="btn btn-success">Search</button>
-					  <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					  <button type="button" class="btn search-more btn-success dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					    <span class="sr-only">Toggle Dropdown</span>
 					  </button>
 					  <div class="dropdown-menu">
