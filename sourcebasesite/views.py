@@ -111,7 +111,7 @@ def home(request):
 
 def signIn(request):
     token = request.POST['idtoken']
-    CLIENT_ID = "1018666741394-fkb3lat9j0oceaor95lbcshittfrorp4.apps.googleusercontent.com"
+    CLIENT_ID = "1018666741394-1jtidvl576osjq6k10uijghd9qu7j38v.apps.googleusercontent.com"
     try:
         idinfo = id_token.verify_oauth2_token(token, requests.Request(), CLIENT_ID)
 

@@ -7,14 +7,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <meta name="google-signin-client_id" content="1018666741394-fkb3lat9j0oceaor95lbcshittfrorp4.apps.googleusercontent.com">
+    <meta name="google-signin-client_id" content="1018666741394-1jtidvl576osjq6k10uijghd9qu7j38v.apps.googleusercontent.com">
     <link rel="icon" href="../../favicon.ico">
 
     <title>Sourcebase</title>
 
     <!-- Bootstrap core CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" rel="stylesheet">
-    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
     <link href=https://maxcdn.bootstrapcdn.com/css/ie10-viewport-bug-workaround.css rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.firebase.com/libs/firepad/1.4.0/firepad.css" />
     <link href="{% static 'sourcebasesite/css/style.css' %}?version=1" rel="stylesheet">
@@ -120,7 +120,7 @@
           ·
           <a href="#">Contact</a>
           ·
-          <a href="#" onclick="signOut();">Sign Out</a>
+          <a href="/" onclick="signOut();">Sign Out</a>
         </p>
 
         <p class="footer-company-name">Omar Ali &copy; 2017</p>
@@ -176,14 +176,6 @@
 
 <script src="https://cdn.firebase.com/libs/firepad/1.4.0/firepad.min.js"></script>
 
-<script>
-  function signOut() {
-    var auth2 = gapi.auth2.getAuthInstance();
-    auth2.signOut().then(function () {
-      console.log('User signed out.');
-    });
-  }
-</script>
 
 <script>
   // Initialize Firebase
@@ -200,7 +192,7 @@
 
     // Get Firebase Database reference.
   var firepadRef = firebase.database().ref();
-  console.log(firepadRef);
+  // console.log(firepadRef);
 
   // Create CodeMirror (with lineWrapping on).
   var codeMirror = CodeMirror(document.getElementById('firepad'), { lineWrapping: true });
@@ -254,6 +246,16 @@
     console.log('Family Name: ' + profile.getFamilyName());
     console.log('Image URL: ' + profile.getImageUrl());
     console.log('Email: ' + profile.getEmail());
+    google_img = $( ".abcRioButtonIcon" ).html();
+    $( ".abcRioButtonIcon" ).empty();
+    img = document.createElement('img');
+    img.src = profile.getImageUrl();
+    img.classList.add('user-img');
+    $( ".abcRioButtonIcon" ).append(img);
+    $( ".abcRioButtonIcon" ).removeAttr('style');
+    $( ".abcRioButtonIcon" ).addClass('signed-in');
+
+
     var id_token = googleUser.getAuthResponse().id_token;
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '/tokensignin/');
@@ -263,6 +265,16 @@
       console.log('Signed in as: ' + xhr.responseText);
     };
     xhr.send('idtoken=' + id_token + '&'+ 'csrftoken=' + csrftoken);
+  }
+
+    function signOut() {
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+      console.log('User signed out.');
+    $( ".abcRioButtonIcon" ).removeClass('signed-in');
+    $( ".abcRioButtonIcon" ).html(google_img);
+    $( ".abcRioButtonIcon" ).css('padding', '8px');
+    });
   }
 </script>
 
