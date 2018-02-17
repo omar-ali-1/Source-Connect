@@ -20,16 +20,24 @@
 	</div>
 
 
+	<!-- Issue title -->
+
 	<div class="row">
-		<div class="col-sm-12">
-			<a class="btn btn-outline-primary" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-			  	Tags <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
-			</a>
-			<hr class="featurette-divider">
+		<div class="col-sm-9">
+			<h2>  Issue  </h2> <!-- don't truncate characters -->
+		</div>
+		<div class="col-sm-3">
+			<div class="btn-group issue" role="group">
+				<a class="btn btn-outline-success float-right" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+				  	Tags <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+				</a>
+				<a href="{% url 'issuesite:editIssue' issue.key.id %}" class="btn btn-outline-success my-2 my-sm-0 float-right" role="button">
+					Edit Issue
+				</a>
+			</div>
 		</div>
 	</div>
-
-
+	<hr class="featurette-divider">
 	<div class="row">
 		<div class="col-sm-12">
 			<div class="collapse" id="collapseExample">
@@ -49,26 +57,12 @@
 	<script src="{% static 'sourcebasesite/taggle.js-1.11.1/src/taggle.min.js' %}"></script>
 	<script>
 		new Taggle('issue_detail_taggle', {
-    tags: {{ tags|safe }}
-});
+    		tags: {{ tags|safe }}
+			});
 	</script>
-
-
-
-	<!-- Issue title -->
 	<div class="row">
 		<div class="col-sm-12">
-		 	<h2 class="section text-center"> Issue </h2>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-sm-10">
 			<h2>{{ issue.title | safe }} </h2> <!-- don't truncate characters -->
-		</div>
-		<div class="col-sm-2">
-			<a href="{% url 'issuesite:editIssue' issue.key.id %}" class="btn btn-outline-primary my-2 my-sm-0 float-right" role="button">
-				Edit Issue
-			</a>
 		</div>
 	</div>
 

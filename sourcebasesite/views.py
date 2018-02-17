@@ -38,6 +38,14 @@ requests_toolbelt.adapters.appengine.monkeypatch()
 from issuesite.models import *
 
 
+
+from google.appengine.ext import ndb
+import google.auth.transport.requests
+import google.oauth2.id_token
+import requests_toolbelt.adapters.appengine
+requests_toolbelt.adapters.appengine.monkeypatch()
+HTTP_REQUEST = google.auth.transport.requests.Request()
+
 providers = {
     'Google'   : 'https://www.google.com/accounts/o8/id',
     'Yahoo'    : 'yahoo.com',
@@ -109,7 +117,79 @@ def deleteEntities(request)  :
 def home(request):
     return render(request, "sourcebasesite/home.html")
 
+
+
+def userProfile(request):
+    return render(request, "sourcebasesite/user_profile.html")
+
+def fetchProfile(request):
+    
+    #print "i am here"
+    # print request
+    id_token = request.META['HTTP_AUTHORIZATION'].split(' ').pop()
+    print id_token
+    claims = google.oauth2.id_token.verify_firebase_token(
+        id_token, HTTP_REQUEST)
+    if not claims:
+        return 'Unauthorized', 401
+
+    profile = query_database(claims['sub'], claims)
+
+
+    return HttpResponse(json.dumps(profile))
+
+def query_database(user_id, claims):
+    """Fetches all notes associated with user_id.
+
+    Notes are ordered them by date created, with most recent note added
+    first.
+    """
+    #ancestor_key = ndb.Key(Note, user_id)
+    user = User.query(User.userID==user_id).fetch()
+
+    if not user:
+        bio = "Hello my name is whatever! Hello my name is whatever! Hello my name is whatever! \
+        Hello my name is whatever! Hello my name is whatever! Hello my name is whatever! Hello my name is whatever!"
+        try:
+            claims['email']
+            user = User(firstName = claims['name'], userID = claims['sub'], email = claims['email'], bio = bio)
+        except:
+            user = User(firstName = claims['name'], userID = claims['sub'], bio = bio)
+        user.put()
+    else:
+        user = user[0]
+    #notes = query.fetch()
+
+    user_data = []
+    user_data.append({
+        'name': user.firstName,
+        'bio': user.bio
+        })
+    '''
+    for note in notes:
+        note_messages.append({
+            'friendly_id': note.friendly_id,
+            'message': note.message,
+            'created': note.created
+        })
+    '''
+    return user_data
+
+
+
+
+
 def signIn(request):
+    # Verify Firebase auth.
+    id_token = request.headers['Authorization'].split(' ').pop()
+    claims = google.oauth2.id_token.verify_firebase_token(
+        id_token, HTTP_REQUEST)
+    if not claims:
+        return 'Unauthorized', 401
+    else:
+        return HttpResponse("Welcome, " + claims['sub'] + "!")
+
+        '''
     token = request.POST['idtoken']
     CLIENT_ID = "1018666741394-1jtidvl576osjq6k10uijghd9qu7j38v.apps.googleusercontent.com"
     try:
@@ -132,8 +212,19 @@ def signIn(request):
     except ValueError:
         # Invalid token
         pass
-    return HttpResponse("umar alee")  
-
+    if "getBio" in request.POST:
+        user = User.query(User.userID==userid).fetch()
+        if user:
+            bio = user.bio
+            return HttpResponse(bio)
+        else:
+            user = User(firstName = idinfo['name'], userID = userid, email = idinfo['email'])
+            user.put()
+            bio = user.bio
+            return HttpResponse(bio)
+    else:
+        return HttpResponse(userid)  
+    '''
 def source(request):
     #newsource = Source(title="some New Test Source", description='this is description')
     #newsource.put()

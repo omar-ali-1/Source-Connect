@@ -5,12 +5,14 @@
 body {
   padding-bottom: 0;
   padding-top: 85px; 
+  padding-right: 0 !important;
+  overflow: auto !important;
   color: #5a5a5a;
   background-color: #f1f3f4;
   font-family: 'Linux Libertine','Georgia','Times',serif;
 }
 .bg-inverse {
-    background-color: #222629f5!important;
+    background-color: #212427d1!important;
 }
 
 /* CUSTOMIZE THE NAVBAR
@@ -722,8 +724,8 @@ link:hover {
 }
 
 .navbar-brand {
-    padding-top: .6rem;
-    padding-bottom: .6rem;
+    padding-top: .32rem;
+    padding-bottom: .32rem;
 }
 
 .nav-link {
@@ -850,3 +852,25 @@ img.user-img {
     max-width: 100%;
     max-height: 100%;
 }
+
+
+/* nav list align center */
+ul.navbar-nav.mr-auto {
+  margin-left: auto;
+}
+
+
+.navbar {
+    padding: .5rem 3.1250rem;
+}
+
+a.list-group-item.list-group-item-action {
+    box-shadow: 0 1px 6px rgba(32, 33, 36, 0.28);
+    margin: 0.5rem 0;
+    border-radius: 0.5rem;
+}
+
+li.page-item.disabled, li.page-item {
+    box-shadow: 0 1px 6px rgba(32, 33, 36, 0.28);
+}
+

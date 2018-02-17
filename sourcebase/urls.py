@@ -36,6 +36,9 @@ urlpatterns = [
     url(r'^admin/', admin, name='admin'),
     url(r'^tokensignin/', signIn, name='signIn'),
     url(r'^createEntities/', createEntities, name='createEntities'),
-    url(r'^deleteEntities/', deleteEntities, name='deleteEntities')
+    url(r'^deleteEntities/', deleteEntities, name='deleteEntities'),
+    url(r'^me/', userProfile, name='userProfile'),
+    url(r'^fetchProfile/', fetchProfile, name='fetchProfile')
+
 
 ]

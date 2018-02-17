@@ -7,7 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <meta name="google-signin-client_id" content="1018666741394-1jtidvl576osjq6k10uijghd9qu7j38v.apps.googleusercontent.com">
     <link rel="icon" href="../../favicon.ico">
 
     <title>Sourcebase</title>
@@ -19,6 +18,7 @@
     <link rel="stylesheet" href="https://cdn.firebase.com/libs/firepad/1.4.0/firepad.css" />
     <link href="{% static 'sourcebasesite/css/style.css' %}?version=1" rel="stylesheet">
     <link href="{% static 'sourcebasesite/css/footer2.css' %}?version=1" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet">
     {% block styles %}
     {% endblock styles %}
     <script src="{% static 'sourcebasesite/js/tinymce/tinymce.js' %}"></script>
@@ -70,20 +70,31 @@
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarsExampleContainer" aria-controls="navbarsExampleContainer" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-        <a class="navbar-brand" href="#">Sourcebase</a>
+        <a class="navbar-brand" href="#">Source<span>base</span></a>
 
         <div class="collapse navbar-collapse" id="navbarsExampleContainer">
           <ul class="navbar-nav mr-auto">
               <li class="nav-item" id="navbar-home"><a class="nav-link" href="/">Home</a></li>
               <li class="nav-item" id="navbar-issues"><a class="nav-link" href="/issues/">Issues</a></li>
               <li class="nav-item" id="navbar-source"><a class="nav-link" href="/source/">Source</a></li>
-              <li class="nav-item" id="navbar-discuss"><a class="nav-link" href="/discuss/">Discuss</a></li>  
+              <li class="nav-item" id="navbar-discuss"><a class="nav-link" href="/discuss/">Discuss</a></li>
               <li class="nav-item" id="navbar-read"><a class="nav-link" href="/read/">Read</a></li>
               <li class="nav-item" id="navbar-act"><a class="nav-link" href="/act/">Act</a></li>  
               <li class="nav-item" id="navbar-about"><a class="nav-link" href="/about/">About</a></li>    
               <li class="nav-item" id="navbar-contact"><a class="nav-link" href="/contact/">Contact</a></li>
+              <li class="nav-item" id="navbar-signIn"><a class="nav-link" data-toggle="modal" data-target="#signInModal" href="#"><span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span> Sign In</a></li>
+              <div class="btn-group" id="signed-in-dropdown">
+                <button type="button" class="btn search-more btn-success dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <div class="dropdown-menu">
+                  <a class="dropdown-item" href="/me/"><span class="glyphicon glyphicon-duplicate" aria-hidden="true"></span> My Profile</a>
+                  <!-- <div class="dropdown-divider"></div> -->
+                  <!-- <a class="dropdown-item" href="#">Separated link</a> -->
+                </div>
+              </div>
+
           </ul>
-            <div class="form-inline my-2 my-md-0 my-2 my-sm-0 g-signin2" data-onsuccess="onSignIn"></div>
         </div>
     </nav>
 
@@ -98,6 +109,21 @@
         {% endblock content %}
       </div><!-- /.container -->
     </main>
+
+
+  <!-- SignIn Modal -->
+  <div class="modal fade" id="signInModal" tabindex="-1" role="dialog" aria-labelledby="SignIn">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Cancel"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Please Sign In</h4>
+        </div>
+        <div id="firebaseui-auth-container"></div>
+      </div>
+    </div>
+  </div>
+  <!-- end Modal -->
 
 
 
@@ -167,43 +193,6 @@
 
 
 
-<script src="https://www.gstatic.com/firebasejs/3.3.0/firebase.js"></script>
-<!-- CodeMirror -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.17.0/codemirror.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.17.0/codemirror.css" />
-
-<!-- Firepad -->
-
-<script src="https://cdn.firebase.com/libs/firepad/1.4.0/firepad.min.js"></script>
-
-
-<script>
-  // Initialize Firebase
-  var config = {
-    apiKey: "AIzaSyCXLkQ2natcA5XKjOwEt2htv5xgw7uz5KM",
-    authDomain: "sourcebase-a547d.firebaseapp.com",
-    databaseURL: "https://sourcebase-a547d.firebaseio.com",
-    projectId: "sourcebase-a547d",
-    storageBucket: "sourcebase-a547d.appspot.com",
-    messagingSenderId: "1018666741394"
-
-  };
-  firebase.initializeApp(config);
-
-    // Get Firebase Database reference.
-  var firepadRef = firebase.database().ref();
-  // console.log(firepadRef);
-
-  // Create CodeMirror (with lineWrapping on).
-  var codeMirror = CodeMirror(document.getElementById('firepad'), { lineWrapping: true });
-
-  // Create Firepad (with rich text toolbar and shortcuts enabled).
-  var firepad = Firepad.fromCodeMirror(firepadRef, codeMirror, {
-    richTextShortcuts: true,
-    richTextToolbar: true,
-    defaultText: 'Hello, World!'
-  });
-</script>
 
 
     <!-- Bootstrap core JavaScript
@@ -211,73 +200,217 @@
     <!-- Placed at the end of the document so the pages load faster -->
 
 
-    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script>window.jQuery || document.write('<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"><\/script>')</script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="https://maxcdn.bootstrapcdn.com/js/ie10-viewport-bug-workaround.js"></script>
 
-    {% block scripts %}
-    {% endblock scripts %}
+
 <script type="text/javascript">
   // using jQuery
-  function getCookie(name) {
-      var cookieValue = null;
-      if (document.cookie && document.cookie !== '') {
-          var cookies = document.cookie.split(';');
-          for (var i = 0; i < cookies.length; i++) {
-              var cookie = jQuery.trim(cookies[i]);
-              // Does this cookie string begin with the name we want?
-              if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                  break;
-              }
-          }
-      }
-      return cookieValue;
-  }
-  var csrftoken = getCookie('csrftoken');
-  function onSignIn(googleUser) {
-    var profile = googleUser.getBasicProfile();
-    console.log('ID: ' + profile.getId());
-    console.log('Full Name: ' + profile.getName());
-    console.log('Given Name: ' + profile.getGivenName());
-    console.log('Family Name: ' + profile.getFamilyName());
-    console.log('Image URL: ' + profile.getImageUrl());
-    console.log('Email: ' + profile.getEmail());
-    google_img = $( ".abcRioButtonIcon" ).html();
-    $( ".abcRioButtonIcon" ).empty();
-    img = document.createElement('img');
-    img.src = profile.getImageUrl();
-    img.classList.add('user-img');
-    $( ".abcRioButtonIcon" ).append(img);
-    $( ".abcRioButtonIcon" ).removeAttr('style');
-    $( ".abcRioButtonIcon" ).addClass('signed-in');
-
-
-    var id_token = googleUser.getAuthResponse().id_token;
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/tokensignin/');
-    xhr.setRequestHeader("X-CSRFToken", csrftoken);
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    xhr.onload = function() {
-      console.log('Signed in as: ' + xhr.responseText);
-    };
-    xhr.send('idtoken=' + id_token + '&'+ 'csrftoken=' + csrftoken);
-  }
-
-    function signOut() {
-    var auth2 = gapi.auth2.getAuthInstance();
-    auth2.signOut().then(function () {
-      console.log('User signed out.');
-    $( ".abcRioButtonIcon" ).removeClass('signed-in');
-    $( ".abcRioButtonIcon" ).html(google_img);
-    $( ".abcRioButtonIcon" ).css('padding', '8px');
-    });
-  }
 </script>
 
 
+
+  <script src="https://www.gstatic.com/firebasejs/4.9.1/firebase.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/ui/live/1.0/firebase-ui-auth.js"></script>
+  <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/live/1.0/firebase-ui-auth.css">
+  <script>
+
+  // This is the host for the backend.
+  // TODO: When running Firenotes locally, set to http://localhost:8081. Before
+  // deploying the application to a live production environment, change to
+  // https://backend-dot-<PROJECT_ID>.appspot.com as specified in the
+  // backend's app.yaml file.
+  var backendHostUrl = 'http://localhost:8080';
+
+  // Initialize Firebase
+  // TODO: Replace with your project's customized code snippet
+  var config = {
+    apiKey: "AIzaSyCXLkQ2natcA5XKjOwEt2htv5xgw7uz5KM",
+    authDomain: "sourcebase-a547d.firebaseapp.com",
+    databaseURL: "https://sourcebase-a547d.firebaseio.com",
+    projectId: "sourcebase-a547d",
+    storageBucket: "sourcebase-a547d.appspot.com",
+    messagingSenderId: "1018666741394"
+  };
+
+  // This is passed into the backend to authenticate the user.
+  var userIdToken = null;
+
+  // Firebase log-in
+  function configureFirebaseLogin() {
+
+    firebase.initializeApp(config);
+    console.log("configurefirebaselogin");
+    console.log(firebase);
+
+    // [START onAuthStateChanged]
+    firebase.auth().onAuthStateChanged(function(user) {
+      if (user) {
+        $('#navbar-signIn').hide();
+        $('#signed-in-dropdown').show();
+
+        //$('#logged-out').hide();
+
+        
+        var name = user.displayName;
+
+        /* If the provider gives a display name, use the name for the
+        personal welcome message. Otherwise, use the user's email. */
+        var welcomeName = name ? name : user.email;
+
+        user.getIdToken().then(function(idToken) {
+          userIdToken = idToken;
+
+          //$('#user').text(welcomeName);
+          //$('#logged-in').show();
+
+        });
+
+      } else {
+        $('#navbar-signIn').show();
+        $('#signed-in-dropdown').hide();
+
+
+        //$('#logged-in').hide();
+        //$('#logged-out').show();
+
+      }
+    // [END onAuthStateChanged]
+
+    });
+
+  }
+
+  // [START configureFirebaseLoginWidget]
+  // Firebase log-in widget
+  function configureFirebaseLoginWidget() {
+    var uiConfig = {
+      callbacks: {
+        signInSuccess: function(currentUser, credential, redirectUrl) {
+          // User successfully signed in.
+          // Return type determines whether we continue the redirect automatically
+          // or whether we leave that to developer to handle.
+          return true;
+        },
+        uiShown: function() {
+          // The widget is rendered.
+          // Hide the loader.
+        }
+      },
+      // Will use popup for IDP Providers sign-in flow instead of the default, redirect.
+      signInFlow: 'popup',
+      signInSuccessUrl: '/',
+      signInOptions: [
+        // Leave the lines as is for the providers you want to offer your users.
+        {
+          provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+          scopes: [
+            'https://www.googleapis.com/auth/plus.login'
+          ],
+          customParameters: {
+            // Forces account selection even when one account
+            // is available.
+            prompt: 'select_account'
+          }
+        },
+        {
+          provider: firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+          scopes: [
+            'public_profile',
+            'email',
+            'user_likes',
+            'user_friends'
+          ],
+          customParameters: {
+            // Forces password re-entry.
+            auth_type: 'reauthenticate'
+          }
+        },
+        firebase.auth.TwitterAuthProvider.PROVIDER_ID,
+        firebase.auth.GithubAuthProvider.PROVIDER_ID,
+        // firebase.auth.EmailAuthProvider.PROVIDER_ID,
+        // firebase.auth.PhoneAuthProvider.PROVIDER_ID
+      ],
+      // Terms of service url.
+      tosUrl: '<your-tos-url>'
+    };
+
+    var ui = new firebaseui.auth.AuthUI(firebase.auth());
+    ui.start('#firebaseui-auth-container', uiConfig);
+  }
+  // [END configureFirebaseLoginWidget]
+
+  // [START fetchNotes]
+  // Fetch notes from the backend.
+  function fetchNotes() {
+    $.ajax(backendHostUrl + '/tokensignin', {
+      /* Set header for the XMLHttpRequest to get data from the web server
+      associated with userIdToken */
+      headers: {
+        'Authorization': 'Bearer ' + userIdToken
+      }
+    }).then(function(data){
+      $('#notes-container').empty();
+      // Iterate over user data to display user's notes from database.
+        $('#notes-container').append(data);
+
+    });
+  }
+  // [END fetchNotes]
+
+  // [START signOutBtn]
+  // Sign out a user
+  var signOutBtn =$('#sign-out');
+  signOutBtn.click(function(event) {
+    event.preventDefault();
+
+    firebase.auth().signOut().then(function() {
+      console.log("Sign out successful");
+    }, function(error) {
+      console.log(error);
+    });
+  });
+  // [END signOutBtn]
+
+  // [START saveNoteBtn]
+  // Save a note to the backend
+  var saveNoteBtn = $('#add-note');
+  saveNoteBtn.click(function(event) {
+    event.preventDefault();
+
+    var noteField = $('#note-content');
+    var note = noteField.val();
+    noteField.val("");
+
+    /* Send note data to backend, storing in database with existing data
+    associated with userIdToken */
+    $.ajax(backendHostUrl + '/notes', {
+      headers: {
+        'Authorization': 'Bearer ' + userIdToken
+      },
+      method: 'POST',
+      data: JSON.stringify({'message': note}),
+      contentType : 'application/json'
+    }).then(function(){
+      // Refresh notebook display.
+      fetchNotes();
+    });
+
+  });
+  // [END saveNoteBtn]
+
+  configureFirebaseLogin();
+  configureFirebaseLoginWidget();
+
+
+  </script>
+    {% block scripts %}
+    {% endblock scripts %}
   </body>
 </html>

@@ -19,6 +19,7 @@ from django.template.defaultfilters import slugify
 from ast import literal_eval
 import logging
 
+
 # Create your views here.
 
 providers = {
@@ -157,6 +158,8 @@ def issueDetail(request, issueID, error=None):
     tags = []
     claims = []
     tags = _get_tags(issueKey)
+    logging.info("description:")
+    logging.info(issue.description)
 
     for relation in IssueClaimRel.query(IssueClaimRel.issue==issueKey):
         claims.append(relation.claim.get())
@@ -271,6 +274,7 @@ def saveIssue(request, issueID):
 
     received_title = post['title']
     issue.description = post['description']
+    issue.put()
     
 
     ''' If there is a change in the title, we need to change the issue's key, since the key is 
@@ -368,6 +372,7 @@ def saveClaim(request, issueID, claimID):
     #logging.info("key:")
     #logging.info(key)
     claim = key.get()
+    claimKey = claim.key
     title = request.POST['title']
     tagNames = request.POST.getlist('taggles[]')
     tagNamesSet = set()
@@ -382,7 +387,7 @@ def saveClaim(request, issueID, claimID):
     needDelTags = []
 
 
-    relations = ClaimTagRel.query(ClaimTagRel.claim==claim.key)
+    relations = ClaimTagRel.query(ClaimTagRel.claim==claimKey)
 
     logging.info(relations)
 
@@ -418,18 +423,18 @@ def saveClaim(request, issueID, claimID):
         tags = ClaimTagRel.query(ClaimTagRel.claim==claimKey)
     claim.title = title
     issueKey = ndb.Key('Issue', issueID)
-    relation = IssueClaimRel.query(IssueClaimRel.issue==issueKey, IssueClaimRel.claim==claim.key).get()
-    claim.key.delete()
-    claim.key = ndb.Key('Claim', claim.slug)
+    relation = IssueClaimRel.query(IssueClaimRel.issue==issueKey, IssueClaimRel.claim==claimKey).get()
+    claimKey.delete()
+    claimKey = ndb.Key('Claim', claim.slug)
     claim.put()
-    relation.claim = claim.key
+    relation.claim = claimKey
     relation.put()
 
     for tag in tags:
-        tag.claim = claim.key
+        tag.claim = claimKey
         tag.put()
 
-    return HttpResponseRedirect(reverse('issuesite:claimDetail', args=(issueID, claim.key.id(),)))
+    return HttpResponseRedirect(reverse('issuesite:claimDetail', args=(issueID, claimKey.id(),)))
 
 # --------- Arguments ----------------------------------------------------
 

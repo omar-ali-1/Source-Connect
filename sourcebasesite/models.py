@@ -10,7 +10,9 @@ from django.template.defaultfilters import slugify
 class User(ndb.Model):
     firstName = ndb.StringProperty(required=True)
     lastName = ndb.StringProperty()
-    email = ndb.StringProperty(required=True)
+    email = ndb.StringProperty()
+    userID = ndb.StringProperty(required=True)
+    bio = ndb.StringProperty()
     picture = ndb.StringProperty()
 
 class Source(ndb.Model):
