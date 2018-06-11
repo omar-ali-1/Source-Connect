@@ -16,6 +16,7 @@ class Issue(ndb.Model):
     """Profile -- User profile object"""
     title = ndb.StringProperty(required=True)
     description = ndb.TextProperty()
+    author = ndb.TextProperty(repeated=True)
     slug = ndb.ComputedProperty(lambda self: slugify(self.title))
 
 

@@ -118,9 +118,45 @@ def home(request):
     return render(request, "sourcebasesite/home.html")
 
 
+def verifyOrCreateUser(request):
+    id_token = request.META['HTTP_AUTHORIZATION'].split(' ').pop()
+    print id_token
+    claims = google.oauth2.id_token.verify_firebase_token(
+        id_token, HTTP_REQUEST)
+    if not claims:
+        return 'Unauthorized', 401
 
-def userProfile(request):
-    return render(request, "sourcebasesite/user_profile.html")
+    user = User.query(User.userID==claims['sub']).fetch()
+    print claims
+    if user:
+        return HttpResponse(json.dumps({'status':'success'}))
+    else:
+        bio = "Your bio goes here."
+        try:
+            claims['email']
+            #TODO: fix first last name issue here
+            user = User(firstName = claims['name'], userID = claims['sub'], email = claims['email'], bio = bio)
+        except:
+            user = User(firstName = claims['name'], userID = claims['sub'], bio = bio)
+        if 'picture' in claims:
+            user.picture = claims['picture']
+        user.put()
+    return HttpResponse(json.dumps({'status':'success'}))
+
+def userProfile(request, userID):
+    user = _getUserObject(userID)
+    error = None
+    if not user:
+        error = "Sorry, this user does not exist!"
+    return render(request, "sourcebasesite/user_profile.html", {'user': user, 'error':error})
+
+def _getUserObject(userID):
+    user = User.query(User.userID==userID).fetch()
+    if user:
+        return user[0]
+    else:
+        return None
+
 
 def fetchProfile(request):
     
@@ -146,8 +182,10 @@ def query_database(user_id, claims):
     """
     #ancestor_key = ndb.Key(Note, user_id)
     user = User.query(User.userID==user_id).fetch()
-
-    if not user:
+    
+    if user:
+        user = user[0]
+    else:
         bio = "Hello my name is whatever! Hello my name is whatever! Hello my name is whatever! \
         Hello my name is whatever! Hello my name is whatever! Hello my name is whatever! Hello my name is whatever!"
         try:
@@ -156,8 +194,7 @@ def query_database(user_id, claims):
         except:
             user = User(firstName = claims['name'], userID = claims['sub'], bio = bio)
         user.put()
-    else:
-        user = user[0]
+
     #notes = query.fetch()
 
     user_data = []
@@ -225,58 +262,63 @@ def signIn(request):
     else:
         return HttpResponse(userid)  
     '''
-def source(request):
-    #newsource = Source(title="some New Test Source", description='this is description')
-    #newsource.put()
-    #newsource.key = ndb.Key(Source, newsource.slug)
-    #newsource.slug = slugify(newsource.title)
-    #key = newsource.put()
-    #newtag = Tag(title="new tag")
-    #newtag.put()
-    #tagkey = ndb.Key('Tag', 5785905063264256)
-    #sourcekey = ndb.Key('Source', 'cups-and-milk')
-    #relation = SourceTagRel(source=sourcekey, tag=tagkey).put()
-    keylist = []
-    all_sources_list = []
-    sources = []
-    if 'q' in request.GET:
-        tags = Tag.query(Tag.title==request.GET['q'])
-        q = request.GET['q']
-        for tag in tags:
-            for relation in SourceTagRel.query(SourceTagRel.tag==tag.key):
-                sources.append(relation.source.get())
-        for source in sources:
-            temp = []
-            temp.append(source.key.id)
-            temp.append(source.title)
-            temp.append(source.description)
-            keylist.append(temp)
-        if not keylist:
-            allKeyList = []
-            all_sources_list = Source.query()
-            for source in all_sources_list:
-                temp = []
-                temp.append(source.key.id)
-                temp.append(source.title)
-                temp.append(source.description)
-                allKeyList.append(temp)
-            all_sources_list = allKeyList
-    else:
-        q = ''
-        allKeyList = []
-        all_sources_list = Source.query()
-        for source in all_sources_list:
-            temp = []
-            temp.append(source.key.id)
-            temp.append(source.title)
-            temp.append(source.description)
-            allKeyList.append(temp)
-        all_sources_list = allKeyList
-    #for source in sources:
-    #    requested_issues_list.append(str(source.key))
-    return render(request, "sourcebasesite/source.html", {'source_list': keylist, 'all_sources_list': all_sources_list, 'q': q})
 
-def detail(request, sourceID, error=None):
+
+
+def _fetch_all_sources(request, cursor_url_safe=None, results_per_page=7):
+    if cursor_url_safe:
+        cursor = Cursor(urlsafe=cursor_url_safe)
+        source_list, next_cursor, there_is_next = Source.query().order(Source.title).fetch_page_async(
+            results_per_page, start_cursor=cursor).get_result()
+        source_list_previous, previous_cursor, there_is_previous = Source.query().order(-Source.title).fetch_page_async(
+            results_per_page, start_cursor=cursor).get_result()
+        dummy, dummy_cursor, there_is_previous = Source.query().order(-Source.title).fetch_page(
+            1, start_cursor=cursor)
+
+        if there_is_previous:
+            previous_cursor = previous_cursor.urlsafe()
+        else:
+            previous_cursor = ''
+    else:
+        source_list, next_cursor, there_is_next =Source.query().order(Source.title).fetch_page_async(
+            results_per_page).get_result()
+        there_is_previous = False
+        previous_cursor = ''
+    enable_next = ''
+    enable_previous = ''
+    if not there_is_next:
+        enable_next = 'disabled'
+    if not there_is_previous:
+        enable_previous = 'disabled'
+    if next_cursor:
+        next_cursor = next_cursor.urlsafe()
+    return render(request, "sourcebasesite/sources.html", {'source_list': source_list, 
+        'next_cursor': next_cursor, 'previous_cursor': previous_cursor, 'enable_previous': enable_previous, 'enable_next': enable_next})
+
+def _fetch_tagged_sources(request, q, cursor_url_safe=None):
+    tag_title_list = q.split()
+    tag_key_list = [ndb.Key("Tag", slugify(tag_title)) for tag_title in tag_title_list]
+    source_tag_relation_list = SourceTagRel.query(SourceTagRel.tag.IN(tag_key_list)).fetch_async().get_result()
+    source_list = [relation.source.get() for relation in source_tag_relation_list]
+    return render(request, "sourcebasesite/sources.html", {'source_list': source_list, 'q': q})
+
+source_list = Source.query().fetch_async().get_result()
+def source(request):
+    # _delete_data()
+    # _create_data()
+    get_dic = request.GET
+    if ('q' in get_dic and len(get_dic['q']) == 0) or 'q' not in get_dic:
+        if 'cursor' in get_dic:
+            return _fetch_all_sources(request, cursor_url_safe=get_dic['cursor'])
+        else:
+            return _fetch_all_sources(request)
+
+    else:
+        q = get_dic['q']
+        return _fetch_tagged_sources(request, q)
+
+
+def sourceDetail(request, sourceID, error=None):
     sourceKey = ndb.Key(Source, sourceID)
     source = sourceKey.get()
     tags = []
@@ -296,7 +338,9 @@ def editSource(request, sourceID):
                 tags.append(relation.tag.get().title.encode('utf-8'))
     return render(request, "sourcebasesite/edit_source.html", {'source': source, 'tags': tags})
 
+'''
 def newSource(request):
+
     post = request.POST
     slug = slugify(post['title'])
     source = Source.get_by_id(slug)
@@ -308,7 +352,31 @@ def newSource(request):
         return HttpResponseRedirect(reverse('sourcebasesite:detail', args=(source.key.id(),)))
     else:
         error = "A source with the title you entered already exists. Please edit this source instead."
-        return detail(request, slug, error)
+        return detail(request, slug, error)'''
+
+def newSource(request):
+    try:
+        # logging.info("======== We are here in newIssue================")
+        id_token = request.META['HTTP_AUTHORIZATION'].split(' ').pop()
+        claims = google.oauth2.id_token.verify_firebase_token(
+            id_token, HTTP_REQUEST)
+        if not claims:
+            return 'Unauthorized', 401
+        # logging.info(claims)
+        # user = User.query(User.userID==claims['sub']).fetch()
+
+        post = request.POST
+        slug = slugify(post['title'])
+        source = Source.get_by_id(slug)
+        if source is None:
+            source = Source(title=post['title'], description=post['description'], author=[claims['name'], claims['email'], claims['sub']])
+            source.key = ndb.Key('Source', slug)
+            source.put()
+            return HttpResponse(json.dumps({'status':'success', 'link': slug}))
+        else:
+            return HttpResponse(json.dumps({'status':'exists', 'link': slug}))
+    except Exception as e:
+        logging.info(e)
 
 def saveSource(request, sourceID):
     key = ndb.Key('Source', sourceID)

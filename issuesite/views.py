@@ -18,7 +18,27 @@ from google.appengine.datastore.datastore_query import Cursor
 from django.template.defaultfilters import slugify
 from ast import literal_eval
 import logging
+import json
 
+# google oauth2 verification
+
+from google.oauth2 import id_token
+from google.auth.transport import requests
+import requests_toolbelt.adapters.appengine
+
+# Use the App Engine Requests adapter. This makes sure that Requests uses
+# URLFetch.
+requests_toolbelt.adapters.appengine.monkeypatch()
+from issuesite.models import *
+
+
+
+from google.appengine.ext import ndb
+import google.auth.transport.requests
+import google.oauth2.id_token
+import requests_toolbelt.adapters.appengine
+requests_toolbelt.adapters.appengine.monkeypatch()
+HTTP_REQUEST = google.auth.transport.requests.Request()
 
 # Create your views here.
 
@@ -85,11 +105,11 @@ def issue(request):
     # _delete_data()
     # _create_data()
     get_dic = request.GET
+    cursor_url_safe = None
     if ('q' in get_dic and len(get_dic['q']) == 0) or 'q' not in get_dic:
         if 'cursor' in get_dic:
-            return _fetch_all_issues(request, cursor_url_safe=get_dic['cursor'])
-        else:
-            return _fetch_all_issues(request)
+            cursor_url_safe=get_dic['cursor']
+        return _fetch_all_issues(request, cursor_url_safe)
 
     else:
         q = get_dic['q']
@@ -158,8 +178,8 @@ def issueDetail(request, issueID, error=None):
     tags = []
     claims = []
     tags = _get_tags(issueKey)
-    logging.info("description:")
-    logging.info(issue.description)
+    #logging.info("description:")
+    #logging.info(issue.description)
 
     for relation in IssueClaimRel.query(IssueClaimRel.issue==issueKey):
         claims.append(relation.claim.get())
@@ -167,6 +187,7 @@ def issueDetail(request, issueID, error=None):
     return render(request, "issuesite/issue_detail.html", {'issue': issue, 'claims': claims, 'tags': tags, 'error':error})
 
 def newIssue(request):
+    '''
     post = request.POST
     slug = slugify(post['title'])
     issue = Issue.get_by_id(slug)
@@ -179,6 +200,30 @@ def newIssue(request):
     else:
         error = "A issue with the title you entered already exists. Please edit this issue instead."
         return issueDetail(request, slug, error)
+'''
+    try:
+        # logging.info("======== We are here in newIssue================")
+        id_token = request.META['HTTP_AUTHORIZATION'].split(' ').pop()
+        claims = google.oauth2.id_token.verify_firebase_token(
+            id_token, HTTP_REQUEST)
+        if not claims:
+            return 'Unauthorized', 401
+        # logging.info(claims)
+        # user = User.query(User.userID==claims['sub']).fetch()
+
+        post = request.POST
+        slug = slugify(post['title'])
+        issue = Issue.get_by_id(slug)
+        if issue is None:
+            issue = Issue(title=post['title'], description=post['description'], author=[claims['name'], claims['email'], claims['sub']])
+            issue.key = ndb.Key('Issue', slug)
+            issue.put()
+            return HttpResponse(json.dumps({'status':'success', 'link': slug}))
+        else:
+            return HttpResponse(json.dumps({'status':'exists', 'link': slug}))
+    except Exception as e:
+        logging.info(e)
+
 
 # Editing Issue
 # -------------

@@ -12,17 +12,16 @@ class User(ndb.Model):
     lastName = ndb.StringProperty()
     email = ndb.StringProperty()
     userID = ndb.StringProperty(required=True)
-    bio = ndb.StringProperty()
+    bio = ndb.TextProperty()
     picture = ndb.StringProperty()
 
 class Source(ndb.Model):
     """Profile -- User profile object"""
     title = ndb.StringProperty(required=True)
     description = ndb.TextProperty()
-    content = ndb.TextProperty()
+    author = ndb.TextProperty(repeated=True)
     slug = ndb.ComputedProperty(lambda self: slugify(self.title))
     #id = ndb.ComputedProperty(lambda self: self.slug)
-
 # Create your models here.
 class Tag(ndb.Model):
     """Profile -- User profile object"""

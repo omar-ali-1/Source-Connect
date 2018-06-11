@@ -65,7 +65,12 @@
 			<h2>{{ issue.title | safe }} </h2> <!-- don't truncate characters -->
 		</div>
 	</div>
-
+	<div class="row">
+		<div class="col-sm-12">
+			<h6>Created by <a target="_blank" href="/users/{{ issue.author.2 | safe }}">{{ issue.author.0 | safe }}</a>. </h6> <!-- don't truncate characters -->
+		</div>
+	</div>
+	<br>
 	<!-- Issue description -->
 
 	<div class="row">

@@ -6,7 +6,7 @@ app_name = 'sourcebasesite'
 # TODO: redirect urls that don't match anything to home (/source/)
 urlpatterns = [
     url(r'^$', source, name='source'),
-    url(r'^(?P<sourceID>[a-zA-Z0-9-_]+)/$', detail, name='detail'),
+    url(r'^(?P<sourceID>[a-zA-Z0-9-_]+)/$', sourceDetail, name='sourceDetail'),
     url(r'^(?P<sourceID>[a-zA-Z0-9-_]+)/edit/$', editSource, name='editSource'),
     url(r'^(?P<sourceID>[a-zA-Z0-9-_]+)/save/$', saveSource, name='saveSource'),
     url(r'^/new/$', newSource, name='newSource')
