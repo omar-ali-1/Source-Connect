@@ -207,27 +207,28 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"><\/script>')</script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+    <script async src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!--<script async>window.jQuery || document.write('<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"><\/script>')</script>-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+    <script async src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="https://maxcdn.bootstrapcdn.com/js/ie10-viewport-bug-workaround.js"></script>
+    <script async src="https://maxcdn.bootstrapcdn.com/js/ie10-viewport-bug-workaround.js"></script>
 
 
     <!-- Firebase JavaScript and CSS
     ================================================== -->
-    <script src="https://www.gstatic.com/firebasejs/4.9.1/firebase.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/ui/live/1.0/firebase-ui-auth.js"></script>
+    <script async src="https://www.gstatic.com/firebasejs/4.9.1/firebase.js"></script>
+    <script async src="https://www.gstatic.com/firebasejs/4.9.0/firebase-app.js"></script>
+    <script async src="https://www.gstatic.com/firebasejs/4.9.0/firebase-auth.js"></script>
+    <script async src="https://www.gstatic.com/firebasejs/ui/live/1.0/firebase-ui-auth.js"></script>
     <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/live/1.0/firebase-ui-auth.css">
 
 
     <!-- Custom JavaScript and CSS
     ================================================== -->
     <link href="{% static 'sourcebasesite/css/style.css' %}?version=1" rel="stylesheet">
-    <script type="text/javascript" src="{% static 'issuesite/js/base.js' %}"></script>
+    <script async type="text/javascript" src="{% static 'issuesite/js/base.js' %}"></script>
 
     {% block scripts %}
     {% endblock scripts %}

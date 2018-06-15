@@ -13,7 +13,7 @@
 
 
 <!-- <link href="{% static 'issuesite/css/loader.css' %}?version=1" rel="stylesheet"> -->
-<script src="{% static 'issuesite/js/loader.js' %}"></script>
+<script async src="{% static 'issuesite/js/loader.js' %}"></script>
 	<div class='row'>
 		<div class='col-sm-0 col-sm-0 col-md-1'></div>
 			<div class='col-sm-12 col-sm-12 col-md-10'> 
@@ -162,9 +162,9 @@
 	        alert('button'); //only when button clicked
 	    });
 	</script> -->
-	<script src="{% static 'sourcebasesite/js/source_page_script.js' %}"></script>
+	<script async src="{% static 'sourcebasesite/js/source_page_script.js' %}"></script>
 
-	<script>
+	<script async>
 		var menuid = "navbar-issues";
 		$(function() {
 		    $('#' + menuid).addClass("active");
@@ -240,7 +240,7 @@ $( "#new-issue-form" ).on( "submit", function( event ) {
 });
 	</script>
 
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script async src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <!--<script src="https://www.prefixy.io/prefixy.js"></script>-->
 <script src="{% static 'issuesite/js/prefixy.min.js' %}"></script>
 <script>

@@ -953,8 +953,5 @@ h4.modal-title {
 }
 
 .modal-dialog {
-    position: relative;
-    width: auto;
-    margin: 10px;
     margin-top: 4rem;
 }
