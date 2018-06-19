@@ -8,7 +8,7 @@ python "C:\Program Files (x86)\Google\google_appengine\dev_appserver.py" "app.ya
 ------------------------------------------------
 Cloud SDK:
 
-"C:\Users\OmarAli\AppData\Local\Google\Cloud SDK\google-cloud-sdk\bin\dev_appserver.py" "app.yaml"
+python "C:\Users\OmarAli\AppData\Local\Google\Cloud SDK\google-cloud-sdk\bin\dev_appserver.py" "app.yaml"
 
 python "C:\Users\omara\AppData\Local\Google\Cloud SDK\google-cloud-sdk\bin\dev_appserver.py" "app.yaml"
 

@@ -687,11 +687,11 @@ nav.navbar.navbar-toggleable-md.navbar-inverse.bg-inverse.fixed-top {
 }
 
 li.nav-item {
-    text-align: center;
+    text-align: left;
   }
 
 li.nav-item:not(.active) {
-    text-align: center;
+    text-align: left;
     border-bottom-style: solid;
     border-bottom-color: transparent;
 }
@@ -859,10 +859,11 @@ ul.navbar-nav.mr-auto {
   margin-left: auto;
 }
 
-
+/*
 .navbar {
     padding: .5rem 3.1250rem;
 }
+*/
 
 a.list-group-item.list-group-item-action {
     box-shadow: 0 1px 6px rgba(32, 33, 36, 0.28);
