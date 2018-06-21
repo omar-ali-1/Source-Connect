@@ -981,7 +981,7 @@ h4.modal-title {
 input#title {
     border-radius: 0;
     /* size: 100px; */
-    font-size: 1.5rem;
+    /* font-size: 1.5rem; */
     color: #4c6c87;
     font-family: caecilia, times, serif;
     -webkit-font-smoothing: antialiased;

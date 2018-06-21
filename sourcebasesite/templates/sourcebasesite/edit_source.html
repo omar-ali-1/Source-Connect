@@ -87,7 +87,9 @@
 		});
 	</script>
 
-
+<!-- TODO handle url changes when title is changed. link with old title should redirect to new link with new 
+	title. but old title should become open to be a title for different source. so use title in url but include
+	random non-repeating numbers as well to make url unique.-->
 
 <!-- 
 
@@ -105,13 +107,26 @@
 	<div class="form-group">
 
 		<div class="row">
-			<div class="col-sm-12 title">
-				<input name="title" id="title" value="{{ source.title }}" class="form-control" autocomplete="off">
-			</div>
+			<div class="col-sm-12">
+				<div class="input-group" id="input-issue">
+					<input name="title" id="title" value="{{ source.title }}" class="form-control" autocomplete="off">
+					<div class="input-group-btn">
+					<!-- Button and dropdown menu -->
 
+					<div class="btn-group">
+						<button class="btn btn-success" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+							<i class="fas fa-tags fa-sm"></i>
+						</button>
+						<button type="submit" class="btn btn-success">
+							<i class="far fa-save"></i>
+						</button>
+					</div>
+					</div>
+				</div>
+			</div>
 		</div>
 	    
-
+		<br>
 		<div id="firepad"></div>
 
 	    <div class="row">
