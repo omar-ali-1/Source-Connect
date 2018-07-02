@@ -991,3 +991,30 @@ input#title {
   input#title {
       font-size: 3rem;
 }
+
+.btn-outline-secondary {
+    color: #7b7777;
+    background-image: none;
+    background-color: transparent;
+    border-color: #7b7777;
+    border-top-color: rgb(123, 119, 119);
+    border-right-color: rgb(123, 119, 119);
+    border-bottom-color: rgb(123, 119, 119);
+    border-left-color: rgb(123, 119, 119);
+}
+
+.btn-outline-secondary:hover {
+    color: #fff;
+    background-color: #7b7777;
+    border-color: #7b7777;
+    border-top-color: rgb(123, 119, 119);
+    border-right-color: rgb(123, 119, 119);
+    border-bottom-color: rgb(123, 119, 119);
+    border-left-color: rgb(123, 119, 119);
+}
+.btn:focus, .btn:hover {
+    text-decoration: none;
+    text-decoration-line: none;
+    text-decoration-style: initial;
+    text-decoration-color: initial;
+}
