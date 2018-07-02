@@ -25,7 +25,7 @@ from sourcebasesite.views import *
 # look into it and see, but change to something like /new/source/ anyway.
 urlpatterns = [
     # url(r'^$', RedirectView.as_view(url='/source/')), # change to source/
-    url(r'^$', home, name='home'),
+    url(r'^$', source, name='source'),
     url(r'^about/', about, name='about'),
     url(r'^discuss/', discuss, name='discuss'),
     url(r'^read/', read, name='read'),
