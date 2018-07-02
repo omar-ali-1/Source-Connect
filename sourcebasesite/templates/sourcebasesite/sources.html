@@ -63,12 +63,11 @@
 	    			<input type="text" class="form-control" name="title" id="new_source_title" />
 	    			<label for="description"> Add details: </label>
 	    			<textarea class="form-control" rows="5" name="description" id="new_source_textarea"></textarea>
-	    			<div id='loader' style="display: none;"><img style="width: 35%; height: auto; margin: auto; display: block;" src="{% static 'sourcebasesite/pics/loader.gif' %}"/></div>
 	    			<div id='source-message'></div>
 				</div>
 	      </div>
 	      <div class="modal-footer">
-
+	      	<div class="" id="spinner-container"style="position: relative;"></div>
 	        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
 	        <button type="button submit" id="submit-new-source" class="btn btn-outline-primary">Continue</button>
 	      </div>
@@ -155,6 +154,7 @@
 	    });
 	</script> -->
 	<script src="{% static 'sourcebasesite/js/source_page_script.js' %}"></script>
+	<script async src="{% static 'issuesite/js/loader.js' %}"></script>
 
 	<script>
 		var menuid = "navbar-source";
@@ -179,10 +179,12 @@
 								$('#submit-new-source').attr('disabled', 'disabled');
 								$('#source-message').hide();
 								$('#loader').show();
+								addSpinner($('#spinner-container'));
 							},
 							complete: function(){
 								$('#submit-new-source').removeAttr('disabled', 'disabled');
 								$('#loader').hide();
+								removeSpinner($('#spinner-container'));
 
 							},
 						    success: function (data) {
