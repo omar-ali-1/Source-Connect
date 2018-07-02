@@ -37,8 +37,8 @@ $(function(){
         $('#signed-in-dropdown').show();
         var profileLink = "/users/" + user.uid + "/";
         $("#my-profile").attr("href", profileLink );
-        $('#my-profile').show();
-        $('#sign-out-2').show();
+        $('#navbar-profile').show();
+        $('#navbar-sign-out-2').show();
         
         var name = user.displayName;
         currentUser = user;
@@ -64,9 +64,9 @@ $(function(){
         $('#navbar-signIn').show();
         $('#signed-in-dropdown').hide();
         $("#my-profile").attr("href", "/" );
-        $('#my-profile').hide();
-        $('#sign-out-2').hide();
-        
+        $('#navbar-profile').hide();
+        $('#navbar-sign-out-2').hide();
+
 
 
         //$('#logged-in').hide();

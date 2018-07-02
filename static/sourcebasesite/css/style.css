@@ -12,7 +12,8 @@ body {
   font-family: 'Linux Libertine','Georgia','Times',serif;
 }
 .bg-inverse {
-    background-color: #212427d1!important;
+    background-color: #212427e6!important;
+    /*background-color: #212427d1!important;*/
 }
 
 /* CUSTOMIZE THE NAVBAR
@@ -988,8 +989,9 @@ input#title {
 }
 
 @media (min-width: 768px) {
-  input#title {
-      font-size: 3rem;
+    input#title {
+        font-size: 3rem;
+  }
 }
 
 .btn-outline-secondary {
@@ -1017,4 +1019,15 @@ input#title {
     text-decoration-line: none;
     text-decoration-style: initial;
     text-decoration-color: initial;
+}
+
+@media (max-width: 768px) {
+  ul.navbar-nav.mr-auto {
+      margin-right: 3.5rem;
+      margin-left: 1.5rem;
+      border-left: solid;
+      padding-left: 0.5rem;
+      margin-bottom: 1rem;
+      border-left-color: #d4d3d3;
+  }
 }
