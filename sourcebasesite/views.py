@@ -434,7 +434,7 @@ def saveSource(request, sourceID):
         tag.source = source.key
         tag.put()
 
-    return HttpResponseRedirect(reverse('sourcebasesite:detail', args=(source.key.id(),)))
+    return HttpResponseRedirect(reverse('sourcebasesite:sourceDetail', args=(source.key.id(),)))
 
 def discuss(request):
     return render(request, "sourcebasesite/discuss.html")

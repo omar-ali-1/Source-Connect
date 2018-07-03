@@ -736,7 +736,7 @@ link:hover {
 
 .nav-link {
     display: block;
-    padding: .76em 1em;
+    padding: .53em 1em;
 }
 
 .btn-primary {
@@ -1021,7 +1021,7 @@ input#title {
     text-decoration-color: initial;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 990px) {
   ul.navbar-nav.mr-auto {
       margin-right: 3.5rem;
       margin-left: 1.5rem;
@@ -1030,4 +1030,14 @@ input#title {
       margin-bottom: 1rem;
       border-left-color: #d4d3d3;
   }
+}
+
+
+@media (min-width: 990px) {
+    .abs-center-x {
+        position: absolute;
+        top: 5px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
 }
