@@ -13,17 +13,11 @@ from google.appengine.ext import webapp
 from google.appengine.ext import ndb
 from models import *
 from google.appengine.ext.webapp.util import run_wsgi_app
+from google.appengine.datastore.datastore_query import Cursor
 
 from django.template.defaultfilters import slugify
 from ast import literal_eval
 import logging
-
-# request urls and get the response, and be able to manipulate it, etc.
-import urllib, urllib2
-
-# json.loads() and json.dumps() loads and dumps a json string, taking it from
-# valid json string to python dic object, and vice versa, respectively, with
-# dumps() doing the appropriate escaping for us.
 import json
 
 # google oauth2 verification
@@ -45,15 +39,6 @@ import google.oauth2.id_token
 import requests_toolbelt.adapters.appengine
 requests_toolbelt.adapters.appengine.monkeypatch()
 HTTP_REQUEST = google.auth.transport.requests.Request()
-
-providers = {
-    'Google'   : 'https://www.google.com/accounts/o8/id',
-    'Yahoo'    : 'yahoo.com',
-    'MySpace'  : 'myspace.com',
-    'AOL'      : 'aol.com',
-    'MyOpenID' : 'myopenid.com'
-    # add more here
-}
 
 def admin(request):
     return render(request, "sourcebasesite/admin.html")
