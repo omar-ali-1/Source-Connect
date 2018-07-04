@@ -16,30 +16,7 @@ body {
     /*background-color: #212427d1!important;*/
 }
 
-/* CUSTOMIZE THE NAVBAR
--------------------------------------------------- */
 
-/* Special class on .container surrounding .navbar, used for positioning it into place. */
-.navbar-wrapper {
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  z-index: 20;
-}
-
-/* Flip around the padding for proper display in narrow viewports */
-.navbar-wrapper > .container {
-  padding-right: 0;
-  padding-left: 0;
-}
-.navbar-wrapper .navbar {
-  padding-right: 15px;
-  padding-left: 15px;
-}
-.navbar-wrapper .navbar .container {
-  width: auto;
-}
 
 
 /* CUSTOMIZE THE CAROUSEL
@@ -104,24 +81,6 @@ body {
 /* RESPONSIVE CSS
 -------------------------------------------------- */
 
-@media (min-width: 768px) {
-  /* Navbar positioning foo */
-  .navbar-wrapper {
-    margin-top: 20px;
-  }
-  .navbar-wrapper .container {
-    padding-right: 15px;
-    padding-left: 15px;
-  }
-  .navbar-wrapper .navbar {
-    padding-right: 0;
-    padding-left: 0;
-  }
-
-  /* The navbar becomes detached from the top, so we round the corners */
-  .navbar-wrapper .navbar {
-    border-radius: 0;
-  }
 
   /* Bump up size of carousel content */
   .carousel-caption p {
@@ -678,7 +637,7 @@ li.active {
 
 
 
-nav.navbar.navbar-toggleable-md.navbar-inverse.bg-inverse.fixed-top {
+nav.navbar.navbar-expand-md.navbar-dark.fixed-top.bg-dark {
     padding-top: 0;
     padding-bottom: 0;
 }
@@ -1021,7 +980,7 @@ input#title {
     text-decoration-color: initial;
 }
 
-@media (max-width: 990px) {
+@media (max-width: 767px) {
   ul.navbar-nav.mr-auto {
       margin-right: 3.5rem;
       margin-left: 1.5rem;
@@ -1033,11 +992,15 @@ input#title {
 }
 
 
-@media (min-width: 990px) {
+@media (min-width: 768px) {
     .abs-center-x {
         position: absolute;
         top: 5px;
         left: 50%;
         transform: translateX(-50%);
     }
+}
+
+a.navbar-brand {
+    color: white;
 }
