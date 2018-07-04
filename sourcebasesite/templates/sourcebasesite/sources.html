@@ -11,16 +11,12 @@
 			<div class='col-sm-12 col-sm-12 col-md-10'> 
 				<form action="{% url 'sourcebasesite:source' %}" method="get">
 					<div class="input-group">
-					  <input type="text" name="q" id="q" class="form-control search" aria-label="..." value="{{ q }}" placeholder="Search sources">
-					  <div class="input-group-btn">
-					    <!-- Button and dropdown menu -->
-					    
-						<div class="btn-group">
+					  <input type="text" name="q" id="q" class="form-control search" aria-label="Search sources" value="{{ q }}" placeholder="Search sources" aria-describedby="search">
+					  <div class="input-group-append">
 						  <button type="button submit" class="btn btn-success"><i class="fas fa-search"></i></button>
 						  <button type="button" class="btn btn-success" data-toggle="modal" id="add-source" data-target="#addSourceModal" href="#" aria-haspopup="true" aria-expanded="false">
 						    <i class="fas fa-plus"></i>
 						  </button>
-						</div>
 					  </div>
 					</div>
 				</form>

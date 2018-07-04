@@ -913,7 +913,7 @@ h4.modal-title {
 
 }
 
-.input-group .form-control, .autocomplete-wrapper {
+.autocomplete-wrapper {
     width: 100%;
 }
 
