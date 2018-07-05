@@ -364,12 +364,6 @@ def newSource(request):
         logging.info(e)
 
 def saveSource(request, sourceID):
-    id_token = request.META['HTTP_AUTHORIZATION'].split(' ').pop()
-    claims = google.oauth2.id_token.verify_firebase_token(
-        id_token, HTTP_REQUEST)
-    if not claims:
-        return 'Unauthorized', 401
-        
     key = ndb.Key('Source', sourceID)
     source = key.get()
     tagNames = request.POST.getlist('taggles[]')

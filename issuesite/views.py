@@ -309,11 +309,6 @@ def _migrate_related_entities(issue_key, relations):
 
 
 def saveIssue(request, issueID):
-    id_token = request.META['HTTP_AUTHORIZATION'].split(' ').pop()
-    claims = google.oauth2.id_token.verify_firebase_token(
-        id_token, HTTP_REQUEST)
-    if not claims:
-        return 'Unauthorized', 401
     post = request.POST
     issue_key = ndb.Key('Issue', issueID)
     issue = issue_key.get()
