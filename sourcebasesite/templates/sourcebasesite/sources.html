@@ -9,7 +9,7 @@
 	<div class='row'>
 		<div class='col-sm-0 col-sm-0 col-md-1'></div>
 			<div class='col-sm-12 col-sm-12 col-md-10'> 
-				<form action="{% url 'sourcebasesite:source' %}" method="get">
+				<form action="{% url 'sourcebasesite:source' %}" id="source-search" method="get">
 					<div class="input-group">
 					  <input type="text" name="q" id="q" class="form-control search" aria-label="Search sources" value="{{ q }}" placeholder="Search sources" aria-describedby="search">
 					  <div class="input-group-append">
@@ -225,6 +225,23 @@ $( "#new-source-form" ).on( "submit", function( event ) {
 
 });
 	</script>
+
+<script async src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<!--<script src="https://www.prefixy.io/prefixy.js"></script>-->
+<script src="{% static 'issuesite/js/prefixy.min.js' %}"></script>
+<script>
+  var searchQuery = document.getElementById('q');
+  var sourceSearchForm = document.getElementById('source-search');
+
+  var myPrefixy = new Prefixy({
+    input: searchQuery,
+    form: sourceSearchForm,
+    token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5hbnQiOiJzRzZsVEIiLCJpYXQiOjE1MzA3NjU0Mjh9.W76G2sa_9BeEMAHVcKkpo5aCmlxNGhsteBz5d_PFpoA",
+    suggestionCount: 5,
+    minChars: 1,
+    delay: 50
+  });
+</script>
 
 {% endblock scripts %}
 
